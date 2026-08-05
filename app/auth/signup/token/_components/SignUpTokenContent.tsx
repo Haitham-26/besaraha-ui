@@ -12,6 +12,9 @@ import { OTPInput } from "@/app/components/OTPInput";
 import { Controller, useForm } from "react-hook-form";
 import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { Icon } from "@/app/components/Icon";
+import { SignUpVerifyTokenDto } from "@/model/auth/signup/SignUpVerifyTokenDto";
+import { AppDirections } from "@/model/shared/types/AppDirections.enum";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type SignUpTokenContentProps = {
   email: string;
@@ -24,13 +27,15 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
   const [loading, setLoading] = useState(false);
 
-  const { control, handleSubmit, getValues, reset } = useForm<{
-    token: string;
-  }>({
-    defaultValues: {
-      token: "",
-    },
-  });
+  const { control, handleSubmit, getValues, reset } =
+    useForm<SignUpVerifyTokenDto>({
+      defaultValues: {
+        token: "",
+        email,
+        lang: document.documentElement.lang as AppLangs,
+        dir: document.documentElement.dir as AppDirections,
+      },
+    });
 
   const LOCAL_STORAGE_RESEND_KEY = `signup-verification-${email}`;
 
@@ -40,10 +45,7 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
       await NextClient("/auth/signup/token", {
         method: "POST",
-        data: {
-          email,
-          token: getValues("token"),
-        },
+        data: getValues(),
         withCredentials: true,
       });
 
@@ -67,6 +69,8 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
       method: "POST",
       data: {
         email,
+        lang: document.documentElement.lang as AppLangs,
+        dir: document.documentElement.dir as AppDirections,
       },
       withCredentials: true,
     });

@@ -19,22 +19,35 @@ export const Input: React.FC<InputProps> = ({
   className,
   labelClassName,
   required,
+  type: initialType = "text",
+  dir: propDir,
   ...props
 }) => {
-  const [type, setType] = useState<HTMLInputElement["type"]>(
-    props?.type || "text",
-  );
+  const [type, setType] = useState<HTMLInputElement["type"]>(initialType);
 
-  const forceLTR = () => {
-    switch (props?.type) {
-      case "email":
-      case "password":
-      case "tel":
-        return true;
-      default:
-        return false;
+  const getInputDirectionByType = () => {
+    if (propDir) {
+      return propDir;
     }
+
+    const ltrInputTypes = [
+      "password",
+      "email",
+      "tel",
+      "number",
+      "url",
+    ] as React.HTMLInputTypeAttribute[];
+
+    if (ltrInputTypes.includes(initialType as React.HTMLInputTypeAttribute)) {
+      return "ltr";
+    }
+
+    return "inherit";
   };
+
+  const docDirection = "rtl";
+  const inputDirectionByType = getInputDirectionByType();
+  const isLtrInRtl = inputDirectionByType === "ltr" && docDirection === "rtl";
 
   return (
     <div className="flex flex-col gap-1.5 w-full group">
@@ -48,14 +61,14 @@ export const Input: React.FC<InputProps> = ({
           } ${labelClassName || ""}`}
         >
           {title}
-          {required && <span className="text-danger"> *</span>}
+          {required ? <span className="text-danger"> *</span> : null}
         </label>
       ) : null}
 
       <div className="relative">
-        {props.type === "password" ? (
+        {initialType === "password" ? (
           <Button
-            className="shadow-none !bg-transparent !p-2 !text-accent !absolute top-1/2 right-3 -translate-y-1/2"
+            className="shadow-none !bg-transparent !p-2 !text-accent !absolute top-1/2 left-3 -translate-y-1/2 z-10"
             icon={type === "text" ? faEye : faEyeSlash}
             onClick={() =>
               setType((prev) => (prev === "password" ? "text" : "password"))
@@ -63,40 +76,36 @@ export const Input: React.FC<InputProps> = ({
           />
         ) : null}
         <input
-          id={props.id || props.name}
+          id={props.id}
+          {...props}
+          dir={inputDirectionByType}
+          type={type}
           className={`
             w-full py-3.5 px-5 rounded-2xl outline-none transition-all duration-300
             bg-surface border-2 text-text-primary placeholder:text-text-muted/50
             
-            ${valid ? "border-border shadow-sm" : "border-danger bg-danger/5"}
-            ${
-              valid
-                ? "focus:border-accent focus:ring-4 focus:ring-accent/10 focus:shadow-md"
-                : "focus:ring-4 focus:ring-danger/10"
-            }
-            ${props.type === "password" ? "pr-12" : ""}
-            ${forceLTR() ? "[direction:ltr] placeholder:text-right" : ""}
+            ${valid ? "border-border shadow-sm focus:border-accent focus:ring-4 focus:ring-accent/10 focus:shadow-md" : "border-danger bg-danger/5 focus:ring-4 focus:ring-danger/10"}
+            ${initialType === "password" ? "pl-12" : ""}
+            ${isLtrInRtl ? "placeholder:text-right [&:placeholder-shown]:text-right" : ""}
             
             ${className || ""}
           `}
-          {...props}
-          type={type}
         />
 
-        {!valid && (
+        {!valid ? (
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-danger">
             <Icon icon={faCircleExclamation} />
           </div>
-        )}
+        ) : null}
       </div>
 
-      {!valid && errorMessage && (
+      {!valid && errorMessage ? (
         <div className="min-h-[20px] px-1">
           <p className="text-danger text-xs font-semibold animate-in fade-in slide-in-from-top-1 duration-200">
             {errorMessage}
           </p>
         </div>
-      )}
+      ) : null}
 
       {props.maxLength ? (
         <span className={`block ms-auto text-xs font-black text-text-muted`}>

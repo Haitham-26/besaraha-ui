@@ -6,8 +6,15 @@ const labelClass = "!text-slate-300 !font-black !text-xs !tracking-widest";
 
 type AuthInputProps = InputProps;
 
-export const AuthInput: React.FC<AuthInputProps> = (props) => {
+export const AuthInput: React.FC<AuthInputProps> = ({
+  className,
+  ...props
+}) => {
   return (
-    <Input className={inputClass} labelClassName={labelClass} {...props} />
+    <Input
+      className={`${inputClass} ${className || ""}`}
+      labelClassName={labelClass}
+      {...props}
+    />
   );
 };

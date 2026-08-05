@@ -4,7 +4,7 @@ import React, { Fragment, useState } from "react";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/app/components/Button";
-import { SignUpDto } from "@/model/auth/signup/SignUpDto";
+import { SignUpEmailDto } from "@/model/auth/signup/SignUpEmailDto";
 import { Toast } from "@/tools/Toast";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
 
@@ -18,8 +18,13 @@ export const SignUpEmailContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { control, handleSubmit, getValues, reset } = useForm<SignUpDto>({
-    defaultValues: { username: "", name: "", email: "", password: "" },
+  const { control, handleSubmit, getValues, reset } = useForm<SignUpEmailDto>({
+    defaultValues: {
+      username: "",
+      name: "",
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = async () => {
@@ -63,6 +68,7 @@ export const SignUpEmailContent: React.FC = () => {
               valid={!error}
               errorMessage={error?.message}
               required
+              dir="ltr"
             />
           )}
         />

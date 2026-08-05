@@ -4,6 +4,8 @@ import { Button } from "@/app/components/Button";
 import { OTPInput } from "@/app/components/OTPInput";
 import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { ForgotPasswordTokenDto } from "@/model/auth/forgot-password/dto/ForgotPasswordTokenDto";
+import { AppDirections } from "@/model/shared/types/AppDirections.enum";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -56,7 +58,11 @@ export const ForgotPasswordTokenContent: React.FC = () => {
 
     await NextClient("/auth/forgot-password/token-send", {
       method: "POST",
-      data: { email },
+      data: {
+        email,
+        lang: document.documentElement.lang as AppLangs,
+        dir: document.documentElement.dir as AppDirections,
+      },
     });
   };
 

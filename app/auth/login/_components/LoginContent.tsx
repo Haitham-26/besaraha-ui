@@ -59,6 +59,7 @@ export const LoginContent: React.FC = () => {
               }}
               valid={!error}
               errorMessage={error?.message}
+              type="email"
               required
             />
           )}
@@ -84,7 +85,7 @@ export const LoginContent: React.FC = () => {
 
           <Link
             href={"/auth/forgot-password/email"}
-            className="text-accent text-xs ms-auto inline-block"
+            className="text-accent font-bold text-xs ms-auto mt-2 inline-block"
           >
             نسيت كلمة السر؟
           </Link>
