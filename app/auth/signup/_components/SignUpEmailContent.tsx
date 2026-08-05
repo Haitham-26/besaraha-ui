@@ -7,32 +7,25 @@ import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/app/components/Button";
 import { SignUpDto } from "@/model/auth/signup/SignUpDto";
 import { Toast } from "@/tools/Toast";
-import { SignUpTokenModal } from "./SignUpTokenModal";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
 
 import { Icon } from "@/app/components/Icon";
 import { NextClient } from "@/tools/NextClient";
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
+import { useRouter } from "next/navigation";
 
-const disabledInputClass = `
-    !bg-white/[0.03] !border-white/10 !rounded-2xl !h-14 
-    !text-slate-400 placeholder:!text-slate-600 
-    !shadow-none cursor-not-allowed opacity-60
-  `;
-
-export const SignUpContent: React.FC = () => {
+export const SignUpEmailContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [verificationModalVisible, setVerificationModalVisible] =
-    useState(false);
-  const [email, setEmail] = useState("");
 
-  const { control, handleSubmit, getValues } = useForm<SignUpDto>({
+  const router = useRouter();
+  const { control, handleSubmit, getValues, reset } = useForm<SignUpDto>({
     defaultValues: { username: "", name: "", email: "", password: "" },
   });
 
   const onSubmit = async () => {
     try {
       setLoading(true);
+
       const dto = getValues();
 
       await NextClient("/auth/signup/email", {
@@ -41,9 +34,9 @@ export const SignUpContent: React.FC = () => {
         withCredentials: true,
       });
 
-      setEmail(dto.email);
-      setVerificationModalVisible(true);
-      Toast.success("تم ارسال رمز التحقق إلى بريدك الإلكتروني");
+      router.push(`/auth/signup/token?email=${dto.email}`);
+
+      reset();
     } catch (e: any) {
       console.log(e);
       Toast.apiError(e);
@@ -54,7 +47,7 @@ export const SignUpContent: React.FC = () => {
 
   return (
     <Fragment>
-      <div className="flex flex-col gap-4 opacity-50">
+      <div className="flex flex-col gap-4">
         <Controller
           control={control}
           name="username"
@@ -64,12 +57,12 @@ export const SignUpContent: React.FC = () => {
               title="اسم المستخدم"
               placeholder="مثال: ahmad_mohamad"
               value={value}
-              onChange={onChange}
+              onChange={(e) => {
+                onChange(e.currentTarget.value.toLowerCase());
+              }}
               valid={!error}
               errorMessage={error?.message}
               required
-              disabled
-              className={disabledInputClass}
               labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
@@ -88,8 +81,6 @@ export const SignUpContent: React.FC = () => {
               valid={!error}
               errorMessage={error?.message}
               required
-              disabled
-              className={disabledInputClass}
               labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
@@ -104,13 +95,13 @@ export const SignUpContent: React.FC = () => {
               title="البريد الإلكتروني"
               placeholder="name@example.com"
               value={value}
-              onChange={onChange}
+              onChange={(e) => {
+                onChange(e.currentTarget.value.toLowerCase());
+              }}
               valid={!error}
               errorMessage={error?.message}
               type="email"
               required
-              disabled
-              className={disabledInputClass}
               labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
@@ -129,8 +120,6 @@ export const SignUpContent: React.FC = () => {
               errorMessage={error?.message}
               required
               type="password"
-              disabled
-              className={disabledInputClass}
               labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
@@ -142,7 +131,6 @@ export const SignUpContent: React.FC = () => {
           loading={loading}
           onClick={handleSubmit(onSubmit)}
           className="w-full h-14 rounded-2xl bg-accent text-white font-bold text-lg shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-          disabled
         >
           <span>إنشاء حساب جديد</span>
           <Icon icon={faUserPlus} className="text-sm" />
@@ -168,8 +156,6 @@ export const SignUpContent: React.FC = () => {
           </span>
         </Link>
       </div>
-
-      <SignUpTokenModal open={verificationModalVisible} email={email} />
     </Fragment>
   );
 };

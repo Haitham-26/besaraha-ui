@@ -2,7 +2,7 @@
 
 import { Button } from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
-import { Spinner } from "@/app/components/Spinner";
+import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { ForgotPasswordTokenDto } from "@/model/auth/forgot-password/dto/ForgotPasswordTokenDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
@@ -16,12 +16,10 @@ const inputClass = `
     !shadow-none
   `;
 
-const RESEND_COOLDOWN = 60;
+const RESEND_LOCALSTORAGE_KEY = "resend-forgot-password-token-last-sent";
 
 export const ForgotPasswordTokenContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -34,38 +32,6 @@ export const ForgotPasswordTokenContent: React.FC = () => {
     });
 
   const token = watch("token");
-
-  useEffect(() => {
-    const lastResend = localStorage.getItem(
-      "forgotPasswordTokenLastResendTime",
-    );
-    const now = Date.now();
-
-    if (lastResend) {
-      const diff = Math.floor((now - Number(lastResend)) / 1000);
-      const remaining = RESEND_COOLDOWN - diff;
-
-      if (remaining > 0) {
-        setTimeLeft(remaining);
-      } else {
-        setTimeLeft(0);
-      }
-    } else {
-      // First time ever: Start timer and save timestamp
-      localStorage.setItem("forgotPasswordTokenLastResendTime", now.toString());
-      setTimeLeft(RESEND_COOLDOWN);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (timeLeft <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [timeLeft]);
 
   const onSubmit = async () => {
     try {
@@ -89,7 +55,6 @@ export const ForgotPasswordTokenContent: React.FC = () => {
 
   const onResendToken = async () => {
     try {
-      setResendLoading(true);
       const email = getValues("email");
 
       await NextClient("/auth/forgot-password/token-resend", {
@@ -97,15 +62,9 @@ export const ForgotPasswordTokenContent: React.FC = () => {
         data: { email },
       });
 
-      const now = Date.now();
-      localStorage.setItem("forgotPasswordTokenLastResendTime", now.toString());
-      setTimeLeft(RESEND_COOLDOWN);
-
       Toast.success("تم ارسال رمز التحقق إلى بريدك الإلكتروني");
     } catch (e) {
       Toast.apiError(e);
-    } finally {
-      setResendLoading(false);
     }
   };
 
@@ -145,23 +104,10 @@ export const ForgotPasswordTokenContent: React.FC = () => {
           )}
         />
 
-        <div className="flex items-center min-h-[20px]">
-          {timeLeft > 0 ? (
-            <p className="text-slate-400 text-xs font-bold">
-              يمكنك طلب رمز جديد خلال{" "}
-              <span className="text-accent">{timeLeft} ثانية</span>
-            </p>
-          ) : (
-            <Button
-              onClick={onResendToken}
-              disabled={resendLoading}
-              className="!h-auto !bg-transparent shadow-none !text-accent text-xs font-black hover:opacity-80 transition-opacity flex items-center gap-2"
-            >
-              <span>إرسال رمز تحقق جديد</span>
-              {resendLoading ? <Spinner className="!static" /> : null}
-            </Button>
-          )}
-        </div>
+        <ResendTokenButton
+          localStorageKey={RESEND_LOCALSTORAGE_KEY}
+          onResend={onResendToken}
+        />
       </div>
 
       <Button

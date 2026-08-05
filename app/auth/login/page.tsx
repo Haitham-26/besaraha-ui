@@ -1,14 +1,9 @@
-import { Info } from "@/app/components/Info";
 import { AuthFormContainer } from "../_components/AuthFormContainer";
 import { LoginContent } from "./_components/LoginContent";
 
 export default function Page() {
   return (
     <AuthFormContainer title="مرحبًا بك في بصراحة" subtitle="تسجيل الدخول">
-      <Info>
-        تسجيل الدخول باستخدام البريد الإلكتروني وكلمة المرور غير متوفر بعد
-        لأسباب تقنية، يرجى تسجيل الدخول باستخدام جوجل في الأسفل.
-      </Info>
       <LoginContent />
 
       <div className="mt-8 text-center space-y-4">

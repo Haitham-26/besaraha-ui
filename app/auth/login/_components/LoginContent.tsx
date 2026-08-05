@@ -12,12 +12,6 @@ import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrow
 import { NextClient } from "@/tools/NextClient";
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
 
-const disabledInputClass = `
-    !bg-white/[0.03] !border-white/10 !rounded-2xl !h-14 
-    !text-slate-400 placeholder:!text-slate-600 
-    !shadow-none cursor-not-allowed opacity-60
-  `;
-
 export const LoginContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -58,13 +52,13 @@ export const LoginContent: React.FC = () => {
               title="البريد الإلكتروني أو اسم المستخدم"
               placeholder="name@example.com / abc123"
               value={value}
-              onChange={onChange}
+              onChange={(e) => {
+                onChange(e.currentTarget.value.toLowerCase());
+              }}
               valid={!error}
               errorMessage={error?.message}
-              className={disabledInputClass}
               labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
               required
-              disabled
             />
           )}
         />
@@ -82,10 +76,8 @@ export const LoginContent: React.FC = () => {
                 valid={!error}
                 errorMessage={error?.message}
                 type="password"
-                className={disabledInputClass}
                 labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
                 required
-                disabled
               />
             )}
           />
@@ -105,7 +97,6 @@ export const LoginContent: React.FC = () => {
           onClick={handleSubmit(onSubmit)}
           className="w-full h-14 rounded-2xl bg-accent text-white font-bold text-lg shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
           icon={faArrowRightToBracket}
-          disabled
         >
           تسجيل الدخول
         </Button>

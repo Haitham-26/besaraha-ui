@@ -9,10 +9,20 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn() {
-      return true;
+    async jwt({ token, account }) {
+      if (account?.id_token) {
+        token.idToken = account.id_token;
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.idToken = token.idToken;
+      return session;
     },
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 });
 

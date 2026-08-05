@@ -25,9 +25,7 @@ export const GoogleAuth = () => {
         await NextClient("/auth/google-login", {
           method: "POST",
           data: {
-            email: session.user?.email,
-            name: session.user?.name,
-            avatar: session.user?.image,
+            idToken: session.idToken,
           },
           withCredentials: true,
         });
@@ -48,7 +46,7 @@ export const GoogleAuth = () => {
     };
 
     login();
-  }, [status, session?.user, router]);
+  }, [status, session?.idToken, session?.user, router]);
 
   if (loading) {
     return (

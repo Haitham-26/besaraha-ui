@@ -1,15 +1,11 @@
-import { Info } from "@/app/components/Info";
 import { AuthFormContainer } from "../_components/AuthFormContainer";
-import { SignUpContent } from "./_components/SignUpContent";
+import { SignUpEmailContent } from "./_components/SignUpEmailContent";
 
 export default function Page() {
   return (
     <AuthFormContainer title="مرحبًا بك في بصراحة" subtitle="إنشاء حساب">
-      <Info>
-        التسجيل باستخدام البريد الإلكتروني وكلمة المرور غير متوفر بعد لأسباب
-        تقنية، يرجى التسجيل باستخدام جوجل في الأسفل.
-      </Info>
-      <SignUpContent />
+      <SignUpEmailContent />
+
       <div className="mt-8 text-center space-y-4">
         <p className="text-xs font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
           من خلال الاستمرار، أنت توافق على <br />

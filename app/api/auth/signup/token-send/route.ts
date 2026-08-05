@@ -2,7 +2,7 @@ import { proxyRequest } from "@/tools/proxyRequest";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const expressRes = await proxyRequest("/auth/signup", {
+  const expressRes = await proxyRequest("/auth/signup/token-send", {
     method: "POST",
     data: await req.json(),
   });
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   if (!expressRes.ok) {
     return NextResponse.json(
       {
-        message: data.message || "فشل عملية إنشاء الحساب",
+        message: data.message,
         field: data.field,
       },
       { status: expressRes.status },
