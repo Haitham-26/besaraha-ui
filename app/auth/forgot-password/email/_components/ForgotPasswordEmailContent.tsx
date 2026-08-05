@@ -1,7 +1,7 @@
 "use client";
 
+import { AuthInput } from "@/app/auth/_components/AuthInput";
 import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
 import { ForgotPasswordEmailDto } from "@/model/auth/forgot-password/dto/ForgotPasswordEmailDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
@@ -9,17 +9,11 @@ import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-const inputClass = `
-    !bg-white/[0.03] !border-white/10 !!h-14 
-    !text-secondary placeholder:!text-slate-600 
-    !shadow-none
-  `;
-
 export const ForgotPasswordEmailContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const { control, getValues, handleSubmit, watch } =
+  const { control, getValues, handleSubmit, watch, reset } =
     useForm<ForgotPasswordEmailDto>({
       defaultValues: { email: "" },
     });
@@ -39,7 +33,9 @@ export const ForgotPasswordEmailContent: React.FC = () => {
         },
       });
 
-      router.push(`/auth/forgot-password/token?email=${email}`);
+      reset();
+
+      router.replace(`/auth/forgot-password/token?email=${email}`);
     } catch (e) {
       console.log(e);
       Toast.apiError(e);
@@ -55,14 +51,12 @@ export const ForgotPasswordEmailContent: React.FC = () => {
         name="email"
         rules={{ required: "البريد الإلكتروني مطلوب" }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <Input
+          <AuthInput
             title="البريد الإلكتروني"
             value={value}
             onChange={onChange}
             valid={!error}
             errorMessage={error?.message}
-            className={inputClass}
-            labelClassName="!text-slate-300 !font-black !text-xs !tracking-widest"
             required
           />
         )}

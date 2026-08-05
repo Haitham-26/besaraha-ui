@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
+import { OTPInput } from "@/app/components/OTPInput";
 import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { ForgotPasswordTokenDto } from "@/model/auth/forgot-password/dto/ForgotPasswordTokenDto";
 import { NextClient } from "@/tools/NextClient";
@@ -9,12 +9,6 @@ import { Toast } from "@/tools/Toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-
-const inputClass = `
-    !bg-white/[0.03] !border-white/10 !!h-14 
-    !text-secondary text-lg
-    !shadow-none
-  `;
 
 const RESEND_LOCALSTORAGE_KEY = "resend-forgot-password-token-last-sent";
 
@@ -26,7 +20,7 @@ export const ForgotPasswordTokenContent: React.FC = () => {
   const { control, getValues, handleSubmit, reset, watch } =
     useForm<ForgotPasswordTokenDto>({
       defaultValues: {
-        email: "",
+        email: searchParams.get("email") || "",
         token: "",
       },
     });
@@ -43,8 +37,12 @@ export const ForgotPasswordTokenContent: React.FC = () => {
         data: dto,
       });
 
-      router.push(
-        `/auth/forgot-password/new?email=${dto.email}&token=${dto.token}`,
+      Toast.success(
+        "تم التحقق من البريد الإلكتروني بنجاح. قم بتعيين كلمة مرور جديدة وتأكيدها.",
+      );
+
+      router.replace(
+        `/auth/forgot-password/new?email=${searchParams.get("email")}&token=${dto.token}`,
       );
     } catch (e) {
       Toast.apiError(e);
@@ -54,26 +52,19 @@ export const ForgotPasswordTokenContent: React.FC = () => {
   };
 
   const onResendToken = async () => {
-    try {
-      const email = getValues("email");
+    const email = getValues("email");
 
-      await NextClient("/auth/forgot-password/token-resend", {
-        method: "POST",
-        data: { email },
-      });
-
-      Toast.success("تم ارسال رمز التحقق إلى بريدك الإلكتروني");
-    } catch (e) {
-      Toast.apiError(e);
-    }
+    await NextClient("/auth/forgot-password/token-send", {
+      method: "POST",
+      data: { email },
+    });
   };
 
   useEffect(() => {
     const email = searchParams.get("email");
+
     if (!email) {
       router.replace("/auth/forgot-password/email");
-    } else {
-      reset({ email, token: "" });
     }
   }, [searchParams, router, reset]);
 
@@ -88,19 +79,8 @@ export const ForgotPasswordTokenContent: React.FC = () => {
             minLength: { value: 6, message: "رمز التحقق يجب ان يكون 6 خانات" },
             maxLength: { value: 6, message: "رمز التحقق يجب ان يكون 6 خانات" },
           }}
-          render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <Input
-              title="رمز التحقق"
-              value={value}
-              onChange={onChange}
-              valid={!error}
-              errorMessage={error?.message}
-              className={inputClass}
-              labelClassName="!text-slate-300 !font-black !tracking-widest"
-              required
-              maxLength={6}
-              autoComplete="off"
-            />
+          render={({ field: { value, onChange } }) => (
+            <OTPInput value={value} onChange={onChange} length={6} />
           )}
         />
 

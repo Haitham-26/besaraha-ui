@@ -49,10 +49,12 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
       Toast.success("تم تفعيل حسابك بنجاح");
 
-      router.replace("/");
-
       reset();
+
       localStorage.removeItem(LOCAL_STORAGE_RESEND_KEY);
+
+      router.replace("/");
+      router.refresh();
     } catch (e) {
       Toast.apiError(e);
     } finally {

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
-import { Input } from "@/app/components/Input";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { LoginDto } from "@/model/auth/login/LoginDto";
@@ -11,6 +10,7 @@ import { Toast } from "@/tools/Toast";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
 import { NextClient } from "@/tools/NextClient";
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
+import { AuthInput } from "../../_components/AuthInput";
 
 export const LoginContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,8 @@ export const LoginContent: React.FC = () => {
         withCredentials: true,
       });
 
+      Toast.success("تم تسجيل دخولك بنجاح");
+
       router.replace("/questions");
       router.refresh();
     } catch (e) {
@@ -48,7 +50,7 @@ export const LoginContent: React.FC = () => {
           control={control}
           name="identifier"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <Input
+            <AuthInput
               title="البريد الإلكتروني أو اسم المستخدم"
               placeholder="name@example.com / abc123"
               value={value}
@@ -57,7 +59,6 @@ export const LoginContent: React.FC = () => {
               }}
               valid={!error}
               errorMessage={error?.message}
-              labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
               required
             />
           )}
@@ -68,7 +69,7 @@ export const LoginContent: React.FC = () => {
             control={control}
             name="password"
             render={({ field: { value, onChange }, fieldState: { error } }) => (
-              <Input
+              <AuthInput
                 title="كلمة المرور"
                 placeholder="••••••••"
                 value={value}
@@ -76,7 +77,6 @@ export const LoginContent: React.FC = () => {
                 valid={!error}
                 errorMessage={error?.message}
                 type="password"
-                labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
                 required
               />
             )}

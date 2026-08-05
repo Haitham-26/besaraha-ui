@@ -1,7 +1,7 @@
 "use client";
 
+import { AuthInput } from "@/app/auth/_components/AuthInput";
 import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
 import { ForgotPasswordNewDto } from "@/model/auth/forgot-password/dto/ForgotPasswordNewDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
@@ -9,23 +9,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-const inputClass = `
-    !bg-white/[0.03] !border-white/10 !!h-14 
-    !text-secondary placeholder:!text-slate-600 
-    !shadow-none
-  `;
-
 export const ForgotPasswordNewContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { control, handleSubmit, watch, reset } = useForm<
+  const { control, handleSubmit, watch, reset, getValues } = useForm<
     ForgotPasswordNewDto & { passwordConfirm: string }
   >({
     defaultValues: {
-      email: "",
-      token: "",
+      email: searchParams.get("email") || "",
+      token: searchParams.get("token") || "",
       password: "",
       passwordConfirm: "",
     },
@@ -33,16 +27,23 @@ export const ForgotPasswordNewContent: React.FC = () => {
 
   const [password, passwordConfirm] = watch(["password", "passwordConfirm"]);
 
-  const onSubmit = async (
-    data: ForgotPasswordNewDto & { passwordConfirm: string },
-  ) => {
+  const onSubmit = async () => {
     try {
       setLoading(true);
 
+      const data = {
+        email: searchParams.get("email") || "",
+        token: searchParams.get("token") || "",
+        password: getValues("password"),
+        passwordConfirm: getValues("passwordConfirm"),
+      };
+
       await NextClient("/auth/forgot-password/new", {
         method: "POST",
-        data: data,
+        data,
       });
+
+      Toast.success("تمت إعادة تعيين كلمة المرور بنجاح");
 
       router.replace("/auth/login");
     } catch (e) {
@@ -59,13 +60,6 @@ export const ForgotPasswordNewContent: React.FC = () => {
 
     if (!email || !token) {
       router.replace("/auth/forgot-password/email");
-    } else {
-      reset({
-        email,
-        token,
-        password: "",
-        passwordConfirm: "",
-      });
     }
   }, [reset, router, searchParams]);
 
@@ -82,15 +76,13 @@ export const ForgotPasswordNewContent: React.FC = () => {
           },
         }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <Input
+          <AuthInput
             title="كلمة السر الجديدة"
             value={value}
             onChange={onChange}
             valid={!error}
             errorMessage={error?.message}
-            className={inputClass}
             type="password"
-            labelClassName="!text-slate-300 !font-black !text-xs !tracking-widest"
             required
           />
         )}
@@ -104,15 +96,13 @@ export const ForgotPasswordNewContent: React.FC = () => {
           validate: (value) => value === password || "كلمات السر غير متطابقة",
         }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <Input
+          <AuthInput
             title="تأكيد كلمة السر الجديدة"
             value={value}
             onChange={onChange}
             valid={!error}
             errorMessage={error?.message}
-            className={inputClass}
             type="password"
-            labelClassName="!text-slate-300 !font-black !text-xs !tracking-widest"
             required
           />
         )}

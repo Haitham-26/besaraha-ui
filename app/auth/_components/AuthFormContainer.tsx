@@ -25,7 +25,7 @@ export const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
           </h1>
         </div>
 
-        <div className="bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-[3rem] p-6 md:p-12 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] transition-all duration-500 hover:border-white/20">
+        <div className="bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-[3rem] p-6 py-10 md:p-12 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] transition-all duration-500 hover:border-white/20">
           <div className="flex flex-col gap-8">
             {subtitle ? (
               <h2 className="text-2xl font-black text-white text-center">

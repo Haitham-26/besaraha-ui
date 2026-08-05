@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
-import { Input } from "@/app/components/Input";
 import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/app/components/Button";
@@ -13,6 +12,7 @@ import { Icon } from "@/app/components/Icon";
 import { NextClient } from "@/tools/NextClient";
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
 import { useRouter } from "next/navigation";
+import { AuthInput } from "../../_components/AuthInput";
 
 export const SignUpEmailContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -34,9 +34,9 @@ export const SignUpEmailContent: React.FC = () => {
         withCredentials: true,
       });
 
-      router.push(`/auth/signup/token?email=${dto.email}`);
-
       reset();
+
+      router.push(`/auth/signup/token?email=${dto.email}`);
     } catch (e: any) {
       console.log(e);
       Toast.apiError(e);
@@ -53,7 +53,7 @@ export const SignUpEmailContent: React.FC = () => {
           name="username"
           rules={{ required: "اسم المستخدم مطلوب" }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <Input
+            <AuthInput
               title="اسم المستخدم"
               placeholder="مثال: ahmad_mohamad"
               value={value}
@@ -63,7 +63,6 @@ export const SignUpEmailContent: React.FC = () => {
               valid={!error}
               errorMessage={error?.message}
               required
-              labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
         />
@@ -73,7 +72,7 @@ export const SignUpEmailContent: React.FC = () => {
           name="name"
           rules={{ required: "الاسم الكامل مطلوب" }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <Input
+            <AuthInput
               title="الاسم الكامل"
               placeholder="مثال: أحمد محمد"
               value={value}
@@ -81,7 +80,6 @@ export const SignUpEmailContent: React.FC = () => {
               valid={!error}
               errorMessage={error?.message}
               required
-              labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
         />
@@ -91,7 +89,7 @@ export const SignUpEmailContent: React.FC = () => {
           name="email"
           rules={{ required: "البريد الإلكتروني مطلوب" }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <Input
+            <AuthInput
               title="البريد الإلكتروني"
               placeholder="name@example.com"
               value={value}
@@ -102,7 +100,6 @@ export const SignUpEmailContent: React.FC = () => {
               errorMessage={error?.message}
               type="email"
               required
-              labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
         />
@@ -111,7 +108,7 @@ export const SignUpEmailContent: React.FC = () => {
           control={control}
           name="password"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
-            <Input
+            <AuthInput
               title="كلمة المرور"
               placeholder="••••••••"
               value={value}
@@ -120,7 +117,6 @@ export const SignUpEmailContent: React.FC = () => {
               errorMessage={error?.message}
               required
               type="password"
-              labelClassName="!text-slate-300 !font-black !text-xs !uppercase !tracking-widest"
             />
           )}
         />
