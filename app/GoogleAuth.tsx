@@ -26,6 +26,7 @@ export const GoogleAuth = () => {
           method: "POST",
           data: {
             idToken: session.idToken,
+            lang: document.documentElement.dir,
           },
           withCredentials: true,
         });
