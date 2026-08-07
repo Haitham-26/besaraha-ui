@@ -5,6 +5,7 @@ import { useGlobalContext } from "@/app/questions/context/global-context";
 import { faInbox } from "@fortawesome/free-solid-svg-icons/faInbox";
 import { Select } from "@/app/components/Select";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
+import { Button } from "@/app/components/Button";
 
 export default function MessagesCounter() {
   const {
@@ -12,6 +13,18 @@ export default function MessagesCounter() {
     messagesFilters: { sort, isStarred },
     setMessagesFilters,
   } = useGlobalContext();
+
+  const shouldDisplayClearFilters = () => {
+    if (isStarred !== undefined) {
+      return true;
+    }
+
+    if (sort !== undefined) {
+      return true;
+    }
+
+    return false;
+  };
 
   return (
     <aside className="lg:col-span-4 space-y-6">
@@ -56,6 +69,7 @@ export default function MessagesCounter() {
 
         <Select
           items={[
+            { label: "الافتراضي", value: undefined },
             { label: "الأحدث أولاً", value: GenericSortType.NEWEST },
             { label: "الأقدم أولاً", value: GenericSortType.OLDEST },
           ]}
@@ -65,6 +79,21 @@ export default function MessagesCounter() {
           }
           placeholder="اختر الترتيب"
         />
+
+        {shouldDisplayClearFilters() ? (
+          <Button
+            onClick={() => {
+              setMessagesFilters((prev) => ({
+                ...prev,
+                isStarred: undefined,
+                sort: undefined,
+              }));
+            }}
+            className="w-full"
+          >
+            إلغاء التصفية
+          </Button>
+        ) : null}
       </div>
     </aside>
   );

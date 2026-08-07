@@ -50,7 +50,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
         method: "POST",
         data: {
           userId: question.userId,
-          page: globalMeta.currentPage,
+          page: globalMeta.page,
           limit: 5,
           isPublic,
           sort,
@@ -76,11 +76,20 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
       await NextClient(`/questions/${question._id}/delete`, {
         method: "DELETE",
       });
+
+      const currentPage = globalMeta?.page || 1;
+      const limit = globalMeta?.limit || 10;
+      const total = (globalMeta?.total || 1) - 1;
+
+      const totalPages = Math.ceil(total / limit);
+
+      const newPage = currentPage > totalPages ? totalPages : currentPage;
+
       const { data } = await NextClient("/questions", {
         method: "POST",
         data: {
           userId: question.userId,
-          page: globalMeta.currentPage,
+          page: newPage,
           limit: 5,
           isPublic,
           sort,

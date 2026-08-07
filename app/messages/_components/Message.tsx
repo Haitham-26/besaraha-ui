@@ -18,6 +18,7 @@ import { Toast } from "@/tools/Toast";
 import { NextClient } from "@/tools/NextClient";
 import { useGlobalContext } from "@/app/questions/context/global-context";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
+import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
 
 type Props = {
   message: MessageModel;
@@ -29,33 +30,46 @@ export default function Message({ message }: Props) {
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [starLoading, setStarLoading] = useState(false);
 
-  const {
-    setMessages,
-    setMessagesLoading,
-    globalMeta,
-    messagesFilters: { isStarred, sort },
-  } = useGlobalContext();
+  const [isStarred, setIsStarred] = useState(message?.isStarred);
+
+  const { setMessages, setMessagesLoading, globalMeta, messagesFilters } =
+    useGlobalContext();
 
   const textRef = useRef<HTMLParagraphElement>(null);
 
   const deleteMessage = async () => {
     try {
       setDeleteLoading(true);
+
       await NextClient("/message/delete", {
         method: "DELETE",
         data: { messageId: message._id },
       });
 
       setMessagesLoading(true);
+
+      const currentPage = globalMeta?.page || 1;
+      const limit = globalMeta?.limit || 10;
+      const total = (globalMeta?.total || 1) - 1;
+
+      const totalPages = Math.ceil(total / limit);
+
+      const newPage = currentPage > totalPages ? totalPages : currentPage;
+
       const { data } = await NextClient("/message/messages", {
-        method: "POST",
-        data: { page: globalMeta.currentPage, limit: 10 },
+        method: "GET",
+        params: {
+          page: newPage,
+          limit,
+          isStarred: messagesFilters.isStarred,
+          sort: messagesFilters.sort,
+        },
       });
 
-      setMessages(data as any);
+      setMessages(data as DataWithMeta<MessageModel>);
       setDeleteModalVisible(false);
+
       Toast.success("تم حذف الرسالة بنجاح");
     } catch (e) {
       console.log(e);
@@ -68,7 +82,8 @@ export default function Message({ message }: Props) {
 
   const toggleStar = async () => {
     try {
-      setStarLoading(true);
+      setIsStarred((prev) => !prev);
+
       await NextClient(`/message/toggle-star`, {
         method: "PATCH",
         data: {
@@ -78,19 +93,25 @@ export default function Message({ message }: Props) {
       });
 
       const { data } = await NextClient("/message/messages", {
-        method: "POST",
-        data: { page: globalMeta.currentPage, limit: 10, isStarred, sort },
+        method: "GET",
+        params: {
+          page: globalMeta.page,
+          limit: 10,
+          isStarred: messagesFilters.isStarred,
+          sort: messagesFilters.sort,
+        },
       });
 
-      setMessages(data as any);
+      setMessages(data as DataWithMeta<MessageModel>);
+
       Toast.success(
         message?.isStarred ? "تم إزالة التميز" : "تم تمييز الرسالة بنجاح",
       );
     } catch (e) {
+      setIsStarred((prev) => !prev);
+
       console.log(e);
       Toast.apiError(e);
-    } finally {
-      setStarLoading(false);
     }
   };
 
@@ -149,16 +170,15 @@ export default function Message({ message }: Props) {
 
             <Button
               onClick={toggleStar}
-              loading={starLoading}
               className={`!w-fit !p-0 !bg-transparent shadow-none border-none ${
-                message.isStarred
+                isStarred
                   ? "!text-amber-500 scale-110"
                   : "!text-text-muted/40 hover:!text-amber-400"
               }`}
             >
               <Icon
                 icon={faStar}
-                className={`text-sm ${message.isStarred ? "drop-shadow-[0_0_5px_rgba(245,158,11,0.4)]" : ""}`}
+                className={`text-sm ${isStarred ? "drop-shadow-[0_0_5px_rgba(245,158,11,0.4)]" : ""}`}
               />
             </Button>
           </div>
@@ -181,7 +201,7 @@ export default function Message({ message }: Props) {
             )}
           </div>
 
-          {isCollapsible && (
+          {isCollapsible ? (
             <Button
               onClick={() => setIsExpanded(!isExpanded)}
               className="mt-3 flex items-center gap-1.5 text-[11px] font-black !text-accent hover:opacity-80 transition-all uppercase tracking-tighter !p-2 !bg-transparent shadow-none"
@@ -192,7 +212,7 @@ export default function Message({ message }: Props) {
                 className="text-[9px]"
               />
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
 

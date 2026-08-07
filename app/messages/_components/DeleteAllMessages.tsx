@@ -23,7 +23,7 @@ export default function DeleteAllMessages() {
 
       setMessages({
         data: [],
-        meta: { total: 0, currentPage: 1, hasNext: false, totalPages: 1 },
+        meta: { total: 0, page: 1, hasNext: false, limit: 10 },
       });
 
       setOpen(false);

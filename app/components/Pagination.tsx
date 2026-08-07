@@ -34,11 +34,11 @@ export const Pagination: React.FC<PaginationProps> = ({
   action,
   limit = 5,
 }) => {
-  const { globalMeta, setGlobalMeta } = useGlobalContext();
+  const { globalMeta, setGlobalMeta, messagesFilters } = useGlobalContext();
 
   const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && newPage <= globalMeta.totalPages) {
-      setGlobalMeta((prev) => ({ ...prev, currentPage: newPage }));
+    if (newPage >= 1) {
+      setGlobalMeta((prev) => ({ ...prev, page: newPage }));
     }
   };
 
@@ -54,34 +54,41 @@ export const Pagination: React.FC<PaginationProps> = ({
           {
             ...restActionProps,
             data: { ...restActionProps?.data, page: pageNumber, limit },
-            params: { page: pageNumber, limit },
+            params: {
+              page: pageNumber,
+              limit,
+              isStarred: messagesFilters.isStarred,
+              sort: messagesFilters.sort,
+            },
           },
         );
 
         setData(data);
         setGlobalMeta((prev) => ({ ...prev, hasNext: data.meta?.hasNext }));
-
-        if (data.meta?.totalPages) {
-          setGlobalMeta((prev) => ({
-            ...prev,
-            totalPages: Math.ceil(data.meta.totalPages),
-          }));
-        }
       } catch (e) {
         console.error(e);
       } finally {
         setLoading(false);
       }
     },
-    [action, limit, setData, setLoading, setGlobalMeta],
+    [
+      action,
+      limit,
+      setData,
+      setLoading,
+      setGlobalMeta,
+      messagesFilters.isStarred,
+      messagesFilters.sort,
+    ],
   );
 
   useEffect(() => {
-    onFetch(globalMeta.currentPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [globalMeta.currentPage, onFetch]);
+    onFetch(globalMeta.page);
 
-  if (globalMeta.totalPages <= 1) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [globalMeta.page, onFetch]);
+
+  if (globalMeta.total <= globalMeta.limit) {
     return null;
   }
 
@@ -89,29 +96,30 @@ export const Pagination: React.FC<PaginationProps> = ({
     <div className="flex items-center justify-center gap-2 mt-8 pb-12">
       <Button
         icon={faAngleRight}
-        disabled={globalMeta.currentPage === 1}
-        onClick={() => handlePageChange(globalMeta.currentPage - 1)}
+        disabled={globalMeta.page === 1}
+        onClick={() => handlePageChange(globalMeta.page - 1)}
         className={getButtonStyles(false)}
       />
 
       <div className="flex items-center gap-2">
-        {Array.from({ length: globalMeta.totalPages }, (_, i) => i + 1).map(
-          (p) => (
-            <Button
-              key={p}
-              onClick={() => handlePageChange(p)}
-              className={getButtonStyles(p === globalMeta.currentPage)}
-            >
-              <span className="text-xs font-black">{p}</span>
-            </Button>
-          ),
-        )}
+        {Array.from(
+          { length: Math.ceil(globalMeta.total / globalMeta.limit) },
+          (_, i) => i + 1,
+        ).map((p) => (
+          <Button
+            key={p}
+            onClick={() => handlePageChange(p)}
+            className={getButtonStyles(p === globalMeta.page)}
+          >
+            <span className="text-xs font-black">{p}</span>
+          </Button>
+        ))}
       </div>
 
       <Button
         icon={faAngleLeft}
         disabled={!globalMeta.hasNext}
-        onClick={() => handlePageChange(globalMeta.currentPage + 1)}
+        onClick={() => handlePageChange(globalMeta.page + 1)}
         className={getButtonStyles(false)}
       />
     </div>

@@ -32,7 +32,7 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
   } = useForm<SendMessageDto & { asAnnonymous: boolean }>({
     defaultValues: {
       message: "",
-      name: "",
+      senderName: "",
       recipientUsername: username,
       asAnnonymous: true,
     },
@@ -42,7 +42,7 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
 
   const onCheckAnonymous = (checked: boolean) => {
     setValue("asAnnonymous", checked);
-    resetField("name");
+    resetField("senderName");
   };
 
   const onSubmit = async () => {
@@ -131,7 +131,7 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
             <div className="w-full md:w-fit animate-in fade-in slide-in-from-right-2 duration-300">
               <Controller
                 control={control}
-                name="name"
+                name="senderName"
                 rules={{ maxLength: 32 }}
                 render={({ field: { value, onChange } }) => (
                   <Input

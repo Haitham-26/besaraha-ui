@@ -98,7 +98,7 @@ export default async function Page({ params }: Props) {
                   {profile?.name}
                 </span>
               </h1>
-              <p className="text-slate-400 text-xl font-medium leading-relaxed max-w-sm">
+              <p className="text-slate-400 text-xl font-medium leading-relaxed">
                 قل ما يدور في ذهنك بصدق. التشفير يحمي هويتك تماماً.
               </p>
             </div>

@@ -25,10 +25,10 @@ type MessagesFilters = {
 const defaultDataWithMeta = {
   data: [],
   meta: {
-    currentPage: 1,
-    hasNext: false,
-    totalPages: 1,
+    page: 1,
+    limit: 1,
     total: 0,
+    hasNext: false,
   },
 };
 
@@ -73,10 +73,10 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const [globalMeta, setGlobalMeta] = useState<PageMeta>({
-    currentPage: 1,
-    hasNext: false,
-    totalPages: 1,
+    page: 1,
+    limit: 1,
     total: 0,
+    hasNext: false,
   });
 
   return (

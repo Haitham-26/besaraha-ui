@@ -17,7 +17,7 @@ export default function Page() {
   const paginationAction = useMemo(
     () => ({
       endpoint: "/message/messages",
-      method: "POST" as const,
+      method: "GET" as const,
       data: { isStarred, sort },
     }),
     [isStarred, sort],

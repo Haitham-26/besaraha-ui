@@ -56,17 +56,23 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   };
 
   const onReply = async () => {
-    if (!reply.trim()) return;
+    if (!reply.trim()) {
+      return;
+    }
+
     try {
       setReplyLoading(true);
+
       await NextClient(`/replies/${question._id}/reply`, {
         method: "POST",
         data: { reply, name },
       });
+
       const { data } = await NextClient<Reply[]>(
         `/replies/${question._id}/all`,
         { method: "POST", data: { userId } },
       );
+
       setReplies(data);
       setReply("");
       setName("");
@@ -80,21 +86,28 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   };
 
   useEffect(() => {
-    if (isListView) return;
-    (async () => {
+    if (isListView) {
+      return;
+    }
+
+    const fetchReplies = async () => {
       try {
         setRepliesLoading(true);
+
         const { data } = await NextClient<Reply[]>(
           `/replies/${question._id}/all`,
           { method: "POST", data: { userId } },
         );
+
         setReplies(data);
       } catch (err) {
         console.error(err);
       } finally {
         setRepliesLoading(false);
       }
-    })();
+    };
+
+    fetchReplies();
   }, [question._id, setReplies, userId, isListView]);
 
   return (
@@ -121,14 +134,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               </div>
             </div>
 
-            {isOnProfilePage && isOwner && (
+            {isOnProfilePage && isOwner ? (
               <div
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase ${question.isPublic ? "bg-accent/5 border-accent/20 text-accent" : "bg-surface-muted border-border/50 text-text-muted"}`}
               >
                 <Icon icon={question.isPublic ? faEarthAmericas : faLock} />
                 <span>{question.isPublic ? "عام" : "خاص"}</span>
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="mb-6">
@@ -151,7 +164,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             )}
           </div>
 
-          {!isListView && (
+          {!isListView ? (
             <div className="mt-8 pt-8 border-t border-border/40">
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-[10px] font-black text-text-muted uppercase tracking-widest whitespace-nowrap">
@@ -244,7 +257,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
 
           <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/40">
             <button
@@ -254,9 +267,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               <Icon icon={faShareNodes} />
               <span>مشاركة</span>
             </button>
-            {isOnProfilePage && isOwner && (
+
+            {isOnProfilePage && isOwner ? (
               <QuestionActions question={question} />
-            )}
+            ) : null}
           </div>
         </div>
       </div>

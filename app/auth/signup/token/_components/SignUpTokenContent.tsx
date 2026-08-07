@@ -13,7 +13,6 @@ import { Controller, useForm } from "react-hook-form";
 import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { Icon } from "@/app/components/Icon";
 import { SignUpVerifyTokenDto } from "@/model/auth/signup/SignUpVerifyTokenDto";
-import { AppDirections } from "@/model/shared/types/AppDirections.enum";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type SignUpTokenContentProps = {
@@ -33,7 +32,6 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
         token: "",
         email,
         lang: document.documentElement.lang as AppLangs,
-        dir: document.documentElement.dir as AppDirections,
       },
     });
 
@@ -70,7 +68,6 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
       data: {
         email,
         lang: document.documentElement.lang as AppLangs,
-        dir: document.documentElement.dir as AppDirections,
       },
       withCredentials: true,
     });
