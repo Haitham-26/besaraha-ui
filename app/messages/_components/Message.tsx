@@ -31,6 +31,7 @@ export default function Message({ message }: Props) {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const [toggleStarLoading, setToggleStarLoading] = useState(false);
   const [isStarred, setIsStarred] = useState(message?.isStarred);
 
   const { setMessages, setMessagesLoading, globalMeta, messagesFilters } =
@@ -82,6 +83,7 @@ export default function Message({ message }: Props) {
 
   const toggleStar = async () => {
     try {
+      setToggleStarLoading(true);
       setIsStarred((prev) => !prev);
 
       await NextClient(`/message/toggle-star`, {
@@ -112,6 +114,8 @@ export default function Message({ message }: Props) {
 
       console.log(e);
       Toast.apiError(e);
+    } finally {
+      setToggleStarLoading(false);
     }
   };
 
@@ -128,7 +132,6 @@ export default function Message({ message }: Props) {
 
       <div className="relative bg-surface border border-border rounded-2xl md:rounded-3xl transition-all duration-300 hover:border-accent/20 shadow-sm hover:shadow-md">
         <div className="flex flex-wrap items-start justify-between px-4 py-3 border-b border-border bg-surface-muted/30 gap-y-3">
-          {/* Left Side: Identity Info */}
           <div className="flex items-center gap-2.5 min-w-0 max-w-full">
             <div
               className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs shadow-sm ${
@@ -170,6 +173,7 @@ export default function Message({ message }: Props) {
 
             <Button
               onClick={toggleStar}
+              disabled={toggleStarLoading}
               className={`!w-fit !p-0 !bg-transparent shadow-none border-none ${
                 isStarred
                   ? "!text-amber-500 scale-110"
@@ -196,9 +200,10 @@ export default function Message({ message }: Props) {
             >
               {message.message}
             </p>
-            {isCollapsible && !isExpanded && (
+
+            {isCollapsible && !isExpanded ? (
               <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-surface to-transparent" />
-            )}
+            ) : null}
           </div>
 
           {isCollapsible ? (
