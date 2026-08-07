@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "node --dns-result-order=ipv4first node_modules/.bin/next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

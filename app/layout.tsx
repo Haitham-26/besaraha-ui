@@ -7,7 +7,6 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./Providers";
-import { GoogleAuth } from "./GoogleAuth";
 import Footer from "./components/Footer";
 
 config.autoAddCss = false;
@@ -33,11 +32,7 @@ export default async function RootLayout({
       >
         <Header token={token} />
         <main className="pt-16 flex-grow flex">
-          <Providers>
-            {children}
-
-            <GoogleAuth />
-          </Providers>
+          <Providers>{children}</Providers>
         </main>
         {!token ? <Footer /> : null}
 
