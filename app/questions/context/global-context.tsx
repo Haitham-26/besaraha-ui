@@ -68,7 +68,7 @@ export const GlobalProvider = ({ children }: { children: ReactNode }) => {
     useState<DataWithMeta<Message>>(defaultDataWithMeta);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [messagesFilters, setMessagesFilters] = useState<MessagesFilters>({
-    sort: GenericSortType.NEWEST,
+    sort: undefined,
     isStarred: undefined,
   });
 
