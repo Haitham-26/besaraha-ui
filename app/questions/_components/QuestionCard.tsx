@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { Question } from "@/model/question/Question";
-import { Reply } from "@/model/reply/Reply";
+import { Reply } from "@/model/reply/types/Reply";
 import { Button } from "@/app/components/Button";
 import { faShareNodes } from "@fortawesome/free-solid-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons/faAngleLeft";
-import { faQuoteRight } from "@fortawesome/free-solid-svg-icons/faQuoteRight";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons/faEarthAmericas";
@@ -19,10 +18,12 @@ import { NextClient } from "@/tools/NextClient";
 import Link from "next/link";
 import { useGlobalContext } from "../context/global-context";
 import { Icon } from "@/app/components/Icon";
-import { Empty } from "@/app/components/Empty";
 import { Toast } from "@/tools/Toast";
 import { QuestionActions } from "./QuestionActions";
 import { Textarea } from "@/app/components/Textarea";
+import { Controller, useForm } from "react-hook-form";
+import { ReplyDto } from "@/model/reply/dto/ReplyDto";
+import { Input } from "@/app/components/Input";
 
 type QuestionCardProps = {
   question: Question;
@@ -36,13 +37,23 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   openRegisterModal,
 }) => {
   const [replyLoading, setReplyLoading] = useState(false);
-  const [reply, setReply] = useState("");
-  const [replyAsAnnonymous, setReplyAsAnonymous] = useState(true);
-  const [name, setName] = useState("");
   const [repliesLoading, setRepliesLoading] = useState(false);
+
+  const { control, getValues, reset, handleSubmit, setValue, watch } = useForm<
+    ReplyDto & { replyAsAnnonymous?: boolean }
+  >({
+    defaultValues: {
+      questionId: question._id,
+      reply: "",
+      replierName: "",
+      replyAsAnnonymous: true,
+    },
+  });
 
   const { replies, setReplies } = useGlobalContext();
   const pathname = usePathname();
+
+  const replyAsAnnonymous = watch("replyAsAnnonymous");
 
   const isOnProfilePage = !Boolean(pathname.replace("/questions", "").length);
   const isListView = isOnProfilePage || pathname === "/questions/public";
@@ -56,27 +67,29 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   };
 
   const onReply = async () => {
-    if (!reply.trim()) {
+    const dto = getValues();
+
+    if (!dto.reply.trim()) {
       return;
     }
 
     try {
       setReplyLoading(true);
 
-      await NextClient(`/replies/${question._id}/reply`, {
+      await NextClient(`/replies/${dto.questionId}/reply`, {
         method: "POST",
-        data: { reply, name },
+        data: { reply: dto.reply, replierName: dto.replierName },
       });
 
       const { data } = await NextClient<Reply[]>(
         `/replies/${question._id}/all`,
-        { method: "POST", data: { userId } },
+        { method: "GET", params: { userId } },
       );
 
       setReplies(data);
-      setReply("");
-      setName("");
-      setReplyAsAnonymous(true);
+
+      reset();
+
       Toast.success("تم إرسال الرد بنجاح");
     } catch (e: any) {
       Toast.apiError(e);
@@ -96,7 +109,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
         const { data } = await NextClient<Reply[]>(
           `/replies/${question._id}/all`,
-          { method: "POST", data: { userId } },
+          { method: "GET", params: { userId } },
         );
 
         setReplies(data);
@@ -111,168 +124,147 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
   }, [question._id, setReplies, userId, isListView]);
 
   return (
-    <div className="relative group/card max-w-3xl mx-auto w-full">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent rounded-[2rem] blur-xl opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
+    <div className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
+      <div className="flex items-center justify-between mb-4 text-xs text-text-muted">
+        <span className="flex items-center gap-1.5">
+          <Icon icon={faClock} className="text-accent" />
+          <span className="dir-ltr">{formattedDate(question.createdAt)}</span>
+        </span>
 
-      <div className="relative bg-surface border border-border/60 rounded-[2.5rem] transition-all duration-300 hover:border-accent/30">
-        <div className="p-6 md:p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
-                <Icon icon={faQuoteRight} className="text-lg" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black text-text-muted uppercase tracking-tighter opacity-60">
-                  تاريخ النشر
-                </span>
-                <div className="flex items-center gap-1.5 text-text-primary font-bold text-xs">
-                  <Icon icon={faClock} className="text-[10px] text-accent" />
-                  <span className="dir-ltr">
-                    {formattedDate(question.createdAt)}
-                  </span>
-                </div>
-              </div>
+        {isOnProfilePage && isOwner ? (
+          <span className="bg-surface-muted rounded-3xl flex items-center gap-1 font-bold text-[10px] py-2 px-3">
+            <Icon icon={question.isPublic ? faEarthAmericas : faLock} />
+            {question.isPublic ? "عام" : "خاص"}
+          </span>
+        ) : null}
+      </div>
+
+      {isListView ? (
+        <Link
+          href={`/questions/${question._id}`}
+          className="group/title flex items-center justify-between gap-3"
+        >
+          <h2 className="text-lg font-bold text-text-primary leading-snug line-clamp-2 group-hover/title:text-accent transition-colors">
+            {question.question}
+          </h2>
+          <Icon
+            icon={faAngleLeft}
+            className="text-text-muted shrink-0 group-hover/title:text-accent transition-colors"
+          />
+        </Link>
+      ) : (
+        <h2 className="text-xl sm:text-2xl font-black text-text-primary leading-snug">
+          {question.question}
+        </h2>
+      )}
+
+      {!isListView ? (
+        <div className="mt-6 space-y-4">
+          {repliesLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
             </div>
+          ) : replies.length ? (
+            <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+              {replies.map((reply) => (
+                <QuestionReply
+                  key={reply._id}
+                  reply={reply}
+                  userId={userId}
+                  openRegisterModal={openRegisterModal}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-text-muted text-sm text-center py-4">
+              لا توجد ردود بعد، كن أول من يرد
+            </p>
+          )}
 
-            {isOnProfilePage && isOwner ? (
-              <div
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase ${question.isPublic ? "bg-accent/5 border-accent/20 text-accent" : "bg-surface-muted border-border/50 text-text-muted"}`}
+          <div className="pt-2 space-y-3">
+            <Controller
+              control={control}
+              name="reply"
+              render={({ field: { value, onChange } }) => (
+                <Textarea
+                  value={value}
+                  onChange={onChange}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      onReply();
+                    }
+                  }}
+                  placeholder="اكتب ردك هنا..."
+                />
+              )}
+            />
+
+            <div className="flex flex-wrap items-center gap-3">
+              <label
+                htmlFor={`reply-as-anonymous-${question._id}`}
+                className="flex items-center gap-2 text-xs font-bold text-text-muted cursor-pointer select-none shrink-0"
               >
-                <Icon icon={question.isPublic ? faEarthAmericas : faLock} />
-                <span>{question.isPublic ? "عام" : "خاص"}</span>
-              </div>
-            ) : null}
-          </div>
+                <Controller
+                  control={control}
+                  name="replyAsAnnonymous"
+                  render={({ field: { value, onChange } }) => (
+                    <input
+                      id={`reply-as-anonymous-${question._id}`}
+                      type="checkbox"
+                      checked={value}
+                      onChange={(e) => {
+                        onChange(e.target.checked);
+                        setValue("replierName", "");
+                      }}
+                      className="accent-accent cursor-pointer"
+                    />
+                  )}
+                />
+                هوية مجهولة
+              </label>
 
-          <div className="mb-6">
-            {isListView ? (
-              <Link
-                href={`/questions/${question._id}`}
-                className="group/title flex items-center justify-between gap-4"
-              >
-                <h2 className="text-xl md:text-2xl font-black text-text-primary leading-snug group-hover/title:text-accent transition-colors line-clamp-2">
-                  {question.question}
-                </h2>
-                <div className="shrink-0 w-8 h-8 rounded-full bg-surface-muted flex items-center justify-center text-text-muted group-hover/title:bg-accent group-hover/title:text-white transition-all">
-                  <Icon icon={faAngleLeft} className="text-sm" />
-                </div>
-              </Link>
-            ) : (
-              <h2 className="text-2xl md:text-4xl font-black text-text-primary leading-tight tracking-tight">
-                {question.question}
-              </h2>
-            )}
-          </div>
-
-          {!isListView ? (
-            <div className="mt-8 pt-8 border-t border-border/40">
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-[10px] font-black text-text-muted uppercase tracking-widest whitespace-nowrap">
-                  الردود المباشرة
-                </span>
-                <div className="h-px w-full bg-gradient-to-r from-border/60 to-transparent" />
-              </div>
-
-              <div className="space-y-4 mb-8">
-                {repliesLoading ? (
-                  <div className="flex justify-center py-10">
-                    <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                  </div>
-                ) : replies.length > 0 ? (
-                  <div className="space-y-4 max-h-[450px] overflow-y-auto custom-scrollbar pr-2">
-                    {replies.map((reply) => (
-                      <QuestionReply
-                        key={reply._id}
-                        reply={reply}
-                        userId={userId}
-                        openRegisterModal={openRegisterModal}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <Empty
-                    title="لا توجد ردود"
-                    description="كن أول من يترك بصمته هنا."
+              <Controller
+                control={control}
+                name="replierName"
+                render={({ field: { value, onChange } }) => (
+                  <Input
+                    placeholder="اسمك المستعار"
+                    value={value}
+                    onChange={onChange}
+                    classNames={{
+                      container: `flex-1 min-w-[120px] ${replyAsAnnonymous ? "opacity-0 pointer-events-none" : ""}`,
+                      input: "h-9 !text-xs",
+                    }}
                   />
                 )}
-              </div>
+              />
 
-              <div className="bg-surface-muted/40 p-1.5 rounded-[2rem] border border-border/40">
-                <div className="bg-surface rounded-[1.8rem] p-4">
-                  <Textarea
-                    value={reply}
-                    onChange={(e) => setReply(e.target.value)}
-                    onKeyDown={(e) =>
-                      e.key === "Enter" &&
-                      !e.shiftKey &&
-                      (e.preventDefault(), onReply())
-                    }
-                    placeholder="اكتب ردك هنا..."
-                  />
-                  <div className="flex justify-between border-t border-border/30 pt-3">
-                    <div className="flex items-center gap-4">
-                      <div className="flex flex-col gap-2">
-                        <label className="flex items-center gap-2 cursor-pointer group/anon">
-                          <input
-                            type="checkbox"
-                            checked={replyAsAnnonymous}
-                            onChange={(e) => {
-                              setReplyAsAnonymous(e.target.checked);
-                              setName("");
-                            }}
-                          />
-                          <span className="text-[11px] font-bold text-text-muted group-hover/anon:text-text-primary">
-                            هوية مجهولة
-                          </span>
-                        </label>
-
-                        {!replyAsAnnonymous ? (
-                          <input
-                            placeholder="اسمك المستعار"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="sm:hidden mt-2 bg-surface-muted border-none rounded-lg px-3 py-2 text-[11px] focus:ring-1 focus:ring-accent outline-none w-28 animate-in fade-in zoom-in-95"
-                          />
-                        ) : null}
-                      </div>
-
-                      {!replyAsAnnonymous ? (
-                        <input
-                          placeholder="اسمك المستعار"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="hidden sm:inline bg-surface-muted border-none rounded-lg px-3 py-2 text-[11px] focus:ring-1 focus:ring-accent outline-none w-28 animate-in fade-in zoom-in-95"
-                        />
-                      ) : null}
-                    </div>
-                    <Button
-                      loading={replyLoading}
-                      onClick={onReply}
-                      className="!h-10 !px-3 !rounded-xl !text-xs !font-black !bg-primary !text-secondary hover:!bg-accent transition-all"
-                      icon={faPaperPlane}
-                    >
-                      إرسال
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              <Button
+                loading={replyLoading}
+                onClick={handleSubmit(onReply)}
+                icon={faPaperPlane}
+                className="!h-9 !px-4 !text-xs !font-bold !bg-primary !text-secondary hover:!bg-accent transition-colors shrink-0 w-full sm:w-auto sm:ms-auto"
+              >
+                إرسال
+              </Button>
             </div>
-          ) : null}
-
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-border/40">
-            <button
-              onClick={onShare}
-              className="cursor-pointer flex items-center gap-2 text-[11px] font-black text-text-muted hover:text-accent transition-colors px-2 py-1"
-            >
-              <Icon icon={faShareNodes} />
-              <span>مشاركة</span>
-            </button>
-
-            {isOnProfilePage && isOwner ? (
-              <QuestionActions question={question} />
-            ) : null}
           </div>
         </div>
+      ) : null}
+
+      <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
+        <Button
+          onClick={onShare}
+          icon={faShareNodes}
+          className="text-xs bg-surface-muted shadow-none font-bold !text-text-muted hover:bg-surface-muted"
+        >
+          مشاركة
+        </Button>
+
+        {isOnProfilePage && isOwner ? (
+          <QuestionActions question={question} />
+        ) : null}
       </div>
     </div>
   );

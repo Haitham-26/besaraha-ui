@@ -138,7 +138,10 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
                     placeholder="ضع اسماً مستعاراً"
                     value={value}
                     onChange={onChange}
-                    className="!bg-white/5 !border-white/10 !text-white h-11 px-6 rounded-xl text-sm w-full md:w-52 focus:!border-accent/50"
+                    classNames={{
+                      input:
+                        "!bg-white/5 !border-white/10 !text-white h-11 px-6 rounded-xl text-sm w-full md:w-52 focus:!border-accent/50",
+                    }}
                   />
                 )}
               />

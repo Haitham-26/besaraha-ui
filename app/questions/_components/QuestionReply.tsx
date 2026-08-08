@@ -1,6 +1,6 @@
 "use client";
 
-import { Reply } from "@/model/reply/Reply";
+import { Reply } from "@/model/reply/types/Reply";
 import { formattedDate } from "@/tools/Date";
 import { NextClient } from "@/tools/NextClient";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
@@ -9,6 +9,8 @@ import { faCircleUser } from "@fortawesome/free-solid-svg-icons/faCircleUser";
 import React, { useState } from "react";
 import { Icon } from "@/app/components/Icon";
 import { Button } from "@/app/components/Button";
+import { ReplyToggleLikeResponseDto } from "@/model/reply/dto/ReplyToggleLikeResponseDto";
+import { Toast } from "@/tools/Toast";
 
 type QuestionReplyProps = {
   reply: Reply;
@@ -22,35 +24,35 @@ export const QuestionReply: React.FC<QuestionReplyProps> = ({
   openRegisterModal,
 }) => {
   const [reply, setReply] = useState<Reply>(_reply);
-  const [isLiking, setIsLiking] = useState(false);
+  const [toggleLikeLoading, setToggleLikeLoading] = useState(false);
+  const [hasLiked, setHasLiked] = useState(reply.hasLiked);
 
-  const onLike = async () => {
+  const toggleLike = async () => {
     if (!userId) {
       openRegisterModal?.();
       return;
     }
 
     try {
-      setIsLiking(true);
-      await NextClient(`/replies/${reply._id}/toggle-like`, {
+      setToggleLikeLoading(true);
+      setHasLiked((prev) => !prev);
+
+      const { data } = (await NextClient(`/replies/${reply._id}/toggle-like`, {
         method: "POST",
-      });
+      })) as { data: ReplyToggleLikeResponseDto };
 
-      const { data: updatedReply } = await NextClient<Reply>(
-        `/replies/${reply._id}`,
-        { method: "POST" }
-      );
-
-      const { data } = await NextClient<{ hasLiked: boolean }>(
-        `/replies/${reply._id}/has-liked`,
-        { method: "POST" }
-      );
-
-      setReply({ ...updatedReply, hasLiked: data.hasLiked });
+      setReply((prev) => ({
+        ...prev,
+        hasLiked: data.hasLiked,
+        likesCount: data.likesCount,
+      }));
     } catch (e) {
-      console.error(e);
+      setHasLiked((prev) => !prev);
+
+      console.log(e);
+      Toast.apiError(e);
     } finally {
-      setIsLiking(false);
+      setToggleLikeLoading(false);
     }
   };
 
@@ -83,10 +85,10 @@ export const QuestionReply: React.FC<QuestionReplyProps> = ({
         </div>
 
         <Button
-          onClick={onLike}
-          disabled={isLiking}
+          onClick={toggleLike}
+          disabled={toggleLikeLoading}
           className={`shadow-none flex items-center gap-2 !px-3 !py-1.5 rounded-xl border-2 transition-all duration-300 ${
-            reply.hasLiked
+            hasLiked
               ? "!bg-danger/10 !border-danger/20 !text-danger shadow-sm shadow-danger/10"
               : "!bg-surface !border-border !text-text-muted hover:!border-danger/30 hover:!text-danger"
           }`}
@@ -94,7 +96,7 @@ export const QuestionReply: React.FC<QuestionReplyProps> = ({
           <Icon
             icon={faHeart}
             className={`text-sm transition-transform duration-300 ${
-              reply.hasLiked ? "scale-110" : "group-hover:scale-110"
+              hasLiked ? "scale-110" : "group-hover:scale-110"
             }`}
           />
           <span className="text-xs font-black">{reply.likesCount || 0}</span>

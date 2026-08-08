@@ -37,7 +37,7 @@ export const Textarea: React.FC<TextareaProps> = ({
           id={props.id || props.name}
           autoComplete="off"
           className={`
-            w-full py-3.5 px-5 rounded-2xl outline-none transition-all duration-300
+            w-full py-3.5 px-5 rounded-2xl outline-none transition-colors duration-300 max-h-32 min-h-12
             bg-surface border-2 text-text-primary placeholder:text-text-muted/50
             ${valid ? "border-border shadow-sm" : "border-danger bg-danger/5"}
             ${

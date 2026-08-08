@@ -1,4 +1,4 @@
-import { Reply } from "../reply/Reply";
+import { Reply } from "../reply/types/Reply";
 
 export interface Question {
   _id: string;

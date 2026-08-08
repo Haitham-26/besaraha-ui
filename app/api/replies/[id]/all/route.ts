@@ -1,15 +1,13 @@
 import { proxyRequest } from "@/tools/proxyRequest";
 import { NextRequest } from "next/server";
 
-type Context = {
-  params: Promise<{ id: string }>;
-};
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
 
-export async function POST(req: NextRequest, context: Context) {
-  const { id } = await context.params;
-
-  return await proxyRequest(`/replies/${id}/all`, {
-    method: "POST",
-    data: await req.json(),
+  return await proxyRequest(`/replies/${searchParams.get("questionId")}/all`, {
+    method: "GET",
+    params: {
+      userId: searchParams.get("userId"),
+    },
   });
 }

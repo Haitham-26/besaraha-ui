@@ -4,6 +4,7 @@ export interface Reply {
   reply: string;
   questionId: string;
   likesCount: number;
+  likedBy: string[];
   hasLiked: boolean;
   createdAt: string;
   updatedAt: string;

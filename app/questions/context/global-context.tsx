@@ -2,7 +2,7 @@
 
 import { Message } from "@/model/message/types/Message";
 import { Question } from "@/model/question/Question";
-import { Reply } from "@/model/reply/Reply";
+import { Reply } from "@/model/reply/types/Reply";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
 import { PageMeta } from "@/model/shared/types/PageMeta";
 import { createContext, useContext, useState, ReactNode } from "react";

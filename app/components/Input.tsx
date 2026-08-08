@@ -5,19 +5,25 @@ import { Button } from "./Button";
 import { faEye } from "@fortawesome/free-solid-svg-icons/faEye";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons/faEyeSlash";
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type InputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "className"
+> & {
   title?: string;
   valid?: boolean;
   errorMessage?: string;
-  labelClassName?: string;
+  classNames?: {
+    container?: string;
+    label?: string;
+    input?: string;
+  };
 };
 
 export const Input: React.FC<InputProps> = ({
   title,
   valid = true,
   errorMessage,
-  className,
-  labelClassName,
+  classNames,
   required,
   type: initialType = "text",
   dir: propDir,
@@ -50,7 +56,9 @@ export const Input: React.FC<InputProps> = ({
   const isLtrInRtl = inputDirectionByType === "ltr" && docDirection === "rtl";
 
   return (
-    <div className="flex flex-col gap-1.5 w-full group">
+    <div
+      className={`flex flex-col gap-1.5 w-full group ${classNames?.container || ""}`}
+    >
       {title ? (
         <label
           htmlFor={props.id || props.name}
@@ -58,7 +66,7 @@ export const Input: React.FC<InputProps> = ({
             valid
               ? "text-text-primary group-focus-within:text-accent"
               : "text-danger"
-          } ${labelClassName || ""}`}
+          } ${classNames?.label || ""}`}
         >
           {title}
           {required ? <span className="text-danger"> *</span> : null}
@@ -88,7 +96,7 @@ export const Input: React.FC<InputProps> = ({
             ${initialType === "password" ? "pl-12" : ""}
             ${isLtrInRtl ? "placeholder:text-right [&:placeholder-shown]:text-right" : ""}
             
-            ${className || ""}
+            ${classNames?.input || ""}
           `}
         />
 
