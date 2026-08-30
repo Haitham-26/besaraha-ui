@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Question } from "@/model/question/Question";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
@@ -9,104 +10,97 @@ import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { Dropdown, DropdownItem } from "@/app/components/Dropdown";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
-import { useGlobalContext } from "../context/global-context";
 import { Button } from "@/app/components/Button";
 import { WarningModal } from "@/app/components/WarningModal";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
+
 const markPublicModalDescription =
   "سيتم عرض هذا السؤال في صفحة الأسئلة العامة. هل تريد المتابعة؟";
 
 type QuestionActionsProps = {
   question: Question;
+  setPage?: (newPage: number) => void;
 };
 
 export const QuestionActions: React.FC<QuestionActionsProps> = ({
   question,
+  setPage,
 }) => {
-  const [loading, setLoading] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [togglePrivacyModalVisible, setTogglePrivacyModalVisible] =
     useState(false);
-  const {
-    setQuestions,
-    globalMeta,
-    questionsFilters: { isPublic, sort },
-  } = useGlobalContext();
 
-  const togglePrivacy = async () => {
-    try {
-      setLoading(true);
+  const queryClient = useQueryClient();
 
-      const newStatus = !question.isPublic;
+  // if there is only one page, we want to go back to the previous page
+  // for toggle privacy and delete
+  const goToFirstPage = () => {
+    if (!setPage) {
+      return;
+    }
 
+    setPage(1);
+  };
+
+  const togglePrivacyMutation = useMutation({
+    mutationFn: async () => {
       await NextClient(`/questions/${question._id}/toggle-privacy`, {
         method: "PATCH",
-        data: { isPublic: newStatus },
+        data: { isPublic: !question.isPublic },
       });
+    },
 
-      const { data } = await NextClient("/questions", {
-        method: "POST",
-        data: {
-          userId: question.userId,
-          page: globalMeta.page,
-          limit: 5,
-          isPublic,
-          sort,
-        },
+    onSuccess: async () => {
+      goToFirstPage();
+
+      await queryClient.invalidateQueries({
+        queryKey: ["questions", "user"],
       });
-
-      setQuestions(data as any);
 
       setTogglePrivacyModalVisible(false);
 
-      Toast.success(newStatus ? "تم جعل السؤال عاماً" : "تم جعل السؤال خاصاً");
-    } catch (e) {
+      Toast.success(
+        question.isPublic ? "تم جعل السؤال خاصاً" : "تم جعل السؤال عاماً",
+      );
+    },
+
+    onError: (e) => {
       Toast.apiError(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
       await NextClient(`/questions/${question._id}/delete`, {
         method: "DELETE",
       });
+    },
 
-      const currentPage = globalMeta?.page || 1;
-      const limit = globalMeta?.limit || 10;
-      const total = (globalMeta?.total || 1) - 1;
+    onSuccess: async () => {
+      goToFirstPage();
 
-      const totalPages = Math.ceil(total / limit);
-
-      const newPage = currentPage > totalPages ? totalPages : currentPage;
-
-      const { data } = await NextClient("/questions", {
-        method: "POST",
-        data: {
-          userId: question.userId,
-          page: newPage,
-          limit: 5,
-          isPublic,
-          sort,
-        },
+      await queryClient.invalidateQueries({
+        queryKey: ["questions", "user"],
       });
-
-      setQuestions(data as any);
 
       setDeleteModalVisible(false);
 
       Toast.success("تم حذف السؤال بنجاح");
-    } catch (e: any) {
-      console.log(e);
-      Toast.apiError(e);
-    } finally {
-      setLoading(false);
-    }
+    },
+
+    onError: (error) => {
+      Toast.apiError(error);
+    },
+  });
+
+  const togglePrivacy = () => {
+    togglePrivacyMutation.mutate();
+  };
+
+  const onDelete = () => {
+    deleteMutation.mutate();
   };
 
   const dropdownItems: DropdownItem[] = [
@@ -136,7 +130,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
         open={deleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
         onConfirm={onDelete}
-        loading={loading}
+        loading={deleteMutation.isPending}
         title={`حذف السؤال "${question.question}"`}
       />
 
@@ -144,8 +138,8 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
         open={togglePrivacyModalVisible}
         onClose={() => setTogglePrivacyModalVisible(false)}
         onConfirm={togglePrivacy}
-        loading={loading}
-        title={"تغيير خصوصية السؤال"}
+        loading={togglePrivacyMutation.isPending}
+        title="تغيير خصوصية السؤال"
         description={
           question.isPublic
             ? markPrivateModalDescription

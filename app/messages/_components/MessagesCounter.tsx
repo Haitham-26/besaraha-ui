@@ -1,18 +1,22 @@
 "use client";
 
 import { Icon } from "@/app/components/Icon";
-import { useGlobalContext } from "@/app/questions/context/global-context";
 import { faInbox } from "@fortawesome/free-solid-svg-icons/faInbox";
 import { Select } from "@/app/components/Select";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
 import { Button } from "@/app/components/Button";
 
+const messages = {
+  meta: {
+    total: 0,
+    page: 1,
+    hasNext: false,
+    limit: 10,
+  },
+};
+
 export default function MessagesCounter() {
-  const {
-    messages,
-    messagesFilters: { sort, isStarred },
-    setMessagesFilters,
-  } = useGlobalContext();
+  const { isStarred, sort } = { isStarred: undefined, sort: undefined };
 
   const shouldDisplayClearFilters = () => {
     if (isStarred !== undefined) {
@@ -61,9 +65,9 @@ export default function MessagesCounter() {
             { label: "غير المميزة", value: false },
           ]}
           value={isStarred}
-          onChange={(val) =>
-            setMessagesFilters((prev) => ({ ...prev, isStarred: val }))
-          }
+          onChange={(val) => {
+            // setMessagesFilters((prev) => ({ ...prev, isStarred: val }))
+          }}
           placeholder="اختر النوع"
         />
 
@@ -74,20 +78,20 @@ export default function MessagesCounter() {
             { label: "الأقدم أولاً", value: GenericSortType.OLDEST },
           ]}
           value={sort}
-          onChange={(val) =>
-            setMessagesFilters((prev) => ({ ...prev, sort: val }))
-          }
+          onChange={(val) => {
+            // setMessagesFilters((prev) => ({ ...prev, sort: val }))
+          }}
           placeholder="اختر الترتيب"
         />
 
         {shouldDisplayClearFilters() ? (
           <Button
             onClick={() => {
-              setMessagesFilters((prev) => ({
-                ...prev,
-                isStarred: undefined,
-                sort: undefined,
-              }));
+              // setMessagesFilters((prev) => ({
+              //   ...prev,
+              //   isStarred: undefined,
+              //   sort: undefined,
+              // }));
             }}
             className="w-full"
           >

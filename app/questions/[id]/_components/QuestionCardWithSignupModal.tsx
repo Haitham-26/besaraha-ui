@@ -13,12 +13,11 @@ import { useRouter } from "next/navigation";
 
 type QuestionCardWithSignupModalProps = {
   question: Question;
-  userId: string | null;
 };
 
 export const QuestionCardWithSignupModal: React.FC<
   QuestionCardWithSignupModalProps
-> = ({ question, userId }) => {
+> = ({ question }) => {
   const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
   const router = useRouter();
@@ -33,7 +32,6 @@ export const QuestionCardWithSignupModal: React.FC<
     <Fragment>
       <QuestionCard
         question={question}
-        userId={userId}
         openRegisterModal={() => setRegisterModalVisible(true)}
       />
 

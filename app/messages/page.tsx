@@ -3,26 +3,9 @@
 import MessagesList from "./_components/MessagesList";
 import MessagesCounter from "./_components/MessagesCounter";
 import DeleteAllMessages from "./_components/DeleteAllMessages";
-import { useGlobalContext } from "../questions/context/global-context";
-import { useMemo } from "react";
 import { Pagination } from "../components/Pagination";
 
 export default function Page() {
-  const {
-    setMessagesLoading,
-    setMessages,
-    messagesFilters: { isStarred, sort },
-  } = useGlobalContext();
-
-  const paginationAction = useMemo(
-    () => ({
-      endpoint: "/message/messages",
-      method: "GET" as const,
-      data: { isStarred, sort },
-    }),
-    [isStarred, sort],
-  );
-
   return (
     <div className="w-full bg-surface-muted p-4 pt-6 md:p-8 lg:p-12 relative">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -43,10 +26,8 @@ export default function Page() {
               <MessagesList />
 
               <Pagination
-                setData={setMessages}
-                setLoading={setMessagesLoading}
-                action={paginationAction}
-                limit={10}
+                onPageChange={() => {}}
+                meta={{ hasNext: false, limit: 10, page: 1, total: 10 }}
               />
             </div>
           </div>

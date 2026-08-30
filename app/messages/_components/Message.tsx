@@ -16,7 +16,6 @@ import { Dropdown } from "@/app/components/Dropdown";
 import { WarningModal } from "@/app/components/WarningModal";
 import { Toast } from "@/tools/Toast";
 import { NextClient } from "@/tools/NextClient";
-import { useGlobalContext } from "@/app/questions/context/global-context";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
 
@@ -34,9 +33,6 @@ export default function Message({ message }: Props) {
   const [toggleStarLoading, setToggleStarLoading] = useState(false);
   const [isStarred, setIsStarred] = useState(message?.isStarred);
 
-  const { setMessages, setMessagesLoading, globalMeta, messagesFilters } =
-    useGlobalContext();
-
   const textRef = useRef<HTMLParagraphElement>(null);
 
   const deleteMessage = async () => {
@@ -48,11 +44,17 @@ export default function Message({ message }: Props) {
         data: { messageId: message._id },
       });
 
-      setMessagesLoading(true);
+      // setMessagesLoading(true);
 
-      const currentPage = globalMeta?.page || 1;
-      const limit = globalMeta?.limit || 10;
-      const total = (globalMeta?.total || 1) - 1;
+      const meta = {
+        page: 1,
+        limit: 10,
+        total: 1,
+      };
+
+      const currentPage = meta?.page || 1;
+      const limit = meta?.limit || 10;
+      const total = (meta?.total || 1) - 1;
 
       const totalPages = Math.ceil(total / limit);
 
@@ -63,12 +65,12 @@ export default function Message({ message }: Props) {
         params: {
           page: newPage,
           limit,
-          isStarred: messagesFilters.isStarred,
-          sort: messagesFilters.sort,
+          // isStarred: messagesFilters.isStarred,
+          // sort: messagesFilters.sort,
         },
       });
 
-      setMessages(data as DataWithMeta<MessageModel>);
+      // setMessages(data as DataWithMeta<MessageModel>);
       setDeleteModalVisible(false);
 
       Toast.success("تم حذف الرسالة بنجاح");
@@ -77,7 +79,7 @@ export default function Message({ message }: Props) {
       Toast.apiError(e);
     } finally {
       setDeleteLoading(false);
-      setMessagesLoading(false);
+      // setMessagesLoading(false);
     }
   };
 
@@ -97,14 +99,14 @@ export default function Message({ message }: Props) {
       const { data } = await NextClient("/message/messages", {
         method: "GET",
         params: {
-          page: globalMeta.page,
-          limit: 10,
-          isStarred: messagesFilters.isStarred,
-          sort: messagesFilters.sort,
+          // page: globalMeta.page,
+          // limit: 10,
+          // isStarred: messagesFilters.isStarred,
+          // sort: messagesFilters.sort,
         },
       });
 
-      setMessages(data as DataWithMeta<MessageModel>);
+      // setMessages(data as DataWithMeta<MessageModel>);
 
       Toast.success(
         message?.isStarred ? "تم إزالة التميز" : "تم تمييز الرسالة بنجاح",

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "./Button";
 import Image from "next/image";
+import { Toast } from "@/tools/Toast";
 
 type Props = {
   title: string;
@@ -17,8 +18,9 @@ export const GoogleLoginButton: React.FC<Props> = ({ title }) => {
         callbackUrl: "/profile",
         redirect: true,
       });
-    } catch (error) {
-      console.error("Login error:", error);
+    } catch (e) {
+      console.error("Login error:", e);
+      Toast.apiError(e);
       setLoading(false);
     }
   };

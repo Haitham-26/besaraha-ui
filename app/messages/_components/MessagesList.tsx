@@ -2,11 +2,13 @@
 
 import Message from "./Message";
 import { Empty } from "../../components/Empty";
-import { useGlobalContext } from "@/app/questions/context/global-context";
 import { Spinner } from "@/app/components/Spinner";
 
 export default function MessagesList() {
-  const { messages, messagesLoading } = useGlobalContext();
+  const messages = {
+    data: [],
+  };
+  const messagesLoading = false;
 
   if (messagesLoading) {
     return <Spinner className="text-accent static" />;
@@ -23,9 +25,10 @@ export default function MessagesList() {
 
   return (
     <div className="space-y-6 group/list">
-      {messages.data.map((message) => (
+      {messages.data.map((message, index) => (
         <div
-          key={message._id}
+          // TODO: Fix this key
+          key={index}
           className="transition-all duration-500 hover:!blur-none group-hover/list:blur-[2px] group-hover/list:opacity-50 hover:!opacity-100"
         >
           <Message message={message} />

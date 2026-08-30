@@ -3,15 +3,17 @@
 import { Fragment, useState } from "react";
 import { Button } from "@/app/components/Button";
 import { WarningModal } from "@/app/components/WarningModal";
-import { useGlobalContext } from "@/app/questions/context/global-context";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 
+const messages = {
+  data: [],
+};
+
 export default function DeleteAllMessages() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { messages, setMessages } = useGlobalContext();
 
   const handleDeleteAll = async () => {
     try {
@@ -21,10 +23,10 @@ export default function DeleteAllMessages() {
         method: "DELETE",
       });
 
-      setMessages({
-        data: [],
-        meta: { total: 0, page: 1, hasNext: false, limit: 10 },
-      });
+      // setMessages({
+      //   data: [],
+      //   meta: { total: 0, page: 1, hasNext: false, limit: 10 },
+      // });
 
       setOpen(false);
       Toast.success("تم حذف جميع الرسائل بنجاح");

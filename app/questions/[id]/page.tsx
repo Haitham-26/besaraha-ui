@@ -1,7 +1,6 @@
 import { Question } from "@/model/question/Question";
 import { QuestionCardWithSignupModal } from "./_components/QuestionCardWithSignupModal";
 import getToken from "@/tools/getToken";
-import { User } from "@/model/user/User";
 import { notFound } from "next/navigation";
 import { AuthClient } from "@/tools/AuthClient";
 
@@ -14,7 +13,6 @@ export default async function Page(props: Props) {
 
   const token = await getToken();
 
-  let user: User | null = null;
   let question: Question | null = null;
 
   try {
@@ -31,18 +29,6 @@ export default async function Page(props: Props) {
     console.log(e);
   }
 
-  if (token) {
-    const { data } = await AuthClient<User>(
-      `/user`,
-      {
-        method: "POST",
-      },
-      token,
-    );
-
-    user = data;
-  }
-
   if (!question) {
     return notFound();
   }
@@ -50,10 +36,7 @@ export default async function Page(props: Props) {
   return (
     <main className="px-4 md:px-8 py-6 flex-1">
       <div className="md:max-w-2xl mx-auto">
-        <QuestionCardWithSignupModal
-          question={question}
-          userId={user?._id || null}
-        />
+        <QuestionCardWithSignupModal question={question} />
       </div>
     </main>
   );

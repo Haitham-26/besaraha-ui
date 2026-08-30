@@ -4,9 +4,8 @@ import { Button } from "@/app/components/Button";
 import { CreateQuestionDto } from "@/model/question/dto/CreateQuestionDto";
 import { Question } from "@/model/question/Question";
 import { NextClient } from "@/tools/NextClient";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useGlobalContext } from "../context/global-context";
 import { Modal } from "@/app/components/Modal";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
@@ -15,58 +14,63 @@ import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons/faEarthAmeric
 import { Toast } from "@/tools/Toast";
 import { Textarea } from "@/app/components/Textarea";
 import { Icon } from "@/app/components/Icon";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type QuestionCreateModalProps = {
-  userId: string | null;
   open: boolean;
   onClose: VoidFunction;
 };
 
 export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
-  userId,
   onClose,
   open = false,
 }) => {
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { control, handleSubmit, getValues, reset, setValue, watch } =
+  const { control, handleSubmit, reset, setValue, watch } =
     useForm<CreateQuestionDto>({
       defaultValues: {
         question: "",
-        userId: userId || "",
         isPublic: false,
       },
     });
 
-  const { setQuestions } = useGlobalContext();
-
   const isPublic = watch("isPublic");
 
-  const onSubmit = async () => {
-    try {
-      setLoading(true);
-
-      await NextClient<Question>("/questions/create", {
+  const createQuestionMutation = useMutation({
+    mutationFn: async (dto: CreateQuestionDto) => {
+      const { data } = await NextClient<Question>("/questions/create", {
         method: "POST",
-        data: { ...getValues(), userId },
+        data: dto,
       });
 
-      const { data } = await NextClient("/questions", {
-        method: "POST",
-        data: { userId },
+      return data;
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["questions"],
       });
 
-      reset({ question: "", userId: userId || "", isPublic: false });
-
-      setQuestions(data as any);
+      reset({
+        question: "",
+        isPublic: false,
+      });
 
       Toast.success("تم نشر سؤالك بنجاح");
+
       onClose();
-    } catch (e: any) {
-      Toast.apiError(e);
-    } finally {
-      setLoading(false);
-    }
+    },
+
+    onError: (error) => {
+      Toast.apiError(error);
+    },
+  });
+
+  const onSubmit = (values: CreateQuestionDto) => {
+    createQuestionMutation.mutate({
+      ...values,
+    });
   };
 
   return (
@@ -76,10 +80,12 @@ export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
           <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center text-white shadow-lg shadow-accent/20">
             <Icon icon={faCircleQuestion} className="text-xl" />
           </div>
+
           <div>
             <h4 className="text-sm font-black text-text-primary">
               ماذا يدور في ذهنك؟
             </h4>
+
             <p className="text-xs text-text-muted font-medium">
               سيتمكن الجميع من الرد على سؤالك فور نشره.
             </p>
@@ -91,7 +97,10 @@ export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
           name="question"
           rules={{
             required: "يرجى كتابة السؤال أولاً",
-            minLength: { value: 5, message: "السؤال قصير جداً" },
+            minLength: {
+              value: 5,
+              message: "السؤال قصير جداً",
+            },
           }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <div className="flex flex-col gap-2">
@@ -119,6 +128,7 @@ export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
           <label className="text-sm font-bold text-text-primary px-1">
             خصوصية السؤال
           </label>
+
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -136,8 +146,10 @@ export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
                     isPublic === false ? "text-accent" : "text-text-muted"
                   }
                 />
+
                 <span className="font-bold text-sm">سؤال خاص</span>
               </div>
+
               <p className="text-[10px] leading-relaxed text-text-muted">
                 يظهر فقط لمن يملك الرابط المباشر
               </p>
@@ -157,8 +169,10 @@ export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
                   icon={faEarthAmericas}
                   className={isPublic ? "text-accent" : "text-text-muted"}
                 />
+
                 <span className="font-bold text-sm">سؤال عام</span>
               </div>
+
               <p className="text-[10px] leading-relaxed text-text-muted">
                 يظهر في صفحة الأسئلة العامة للجميع
               </p>
@@ -169,7 +183,7 @@ export const QuestionCreateModal: React.FC<QuestionCreateModalProps> = ({
         <div className="flex flex-col gap-3 pt-2">
           <Button
             onClick={handleSubmit(onSubmit)}
-            loading={loading}
+            loading={createQuestionMutation.isPending}
             variant="primary"
             className="h-14 w-full shadow-xl shadow-accent/20 text-lg"
             icon={faPaperPlane}

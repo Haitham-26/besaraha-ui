@@ -13,6 +13,7 @@
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@fortawesome/react-fontawesome": "^0.2.3",
+    "@tanstack/react-query": "^5.101.4",
     "@types/axios": "^0.14.4",
     "input-otp": "^1.4.2",
     "next": "^16.1.1",

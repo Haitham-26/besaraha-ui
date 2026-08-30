@@ -1,9 +1,16 @@
 import { proxyRequest } from "@/tools/proxyRequest";
 import { NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+
   return await proxyRequest("/questions", {
-    method: "POST",
-    data: await req.json(),
+    method: "GET",
+    params: {
+      page: searchParams.get("page"),
+      limit: searchParams.get("limit"),
+      isPublic: searchParams.get("isPublic"),
+      sort: searchParams.get("sort"),
+    },
   });
 }

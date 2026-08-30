@@ -11,24 +11,25 @@ import { Icon } from "@/app/components/Icon";
 import { Button } from "@/app/components/Button";
 import { ReplyToggleLikeResponseDto } from "@/model/reply/dto/ReplyToggleLikeResponseDto";
 import { Toast } from "@/tools/Toast";
+import { useSession } from "next-auth/react";
 
 type QuestionReplyProps = {
   reply: Reply;
-  userId: string | null;
   openRegisterModal?: VoidFunction;
 };
 
 export const QuestionReply: React.FC<QuestionReplyProps> = ({
   reply: _reply,
-  userId,
   openRegisterModal,
 }) => {
   const [reply, setReply] = useState<Reply>(_reply);
   const [toggleLikeLoading, setToggleLikeLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState(reply.hasLiked);
 
+  const { data } = useSession();
+
   const toggleLike = async () => {
-    if (!userId) {
+    if (!data?.user?._id) {
       openRegisterModal?.();
       return;
     }
@@ -37,8 +38,9 @@ export const QuestionReply: React.FC<QuestionReplyProps> = ({
       setToggleLikeLoading(true);
       setHasLiked((prev) => !prev);
 
-      const { data } = (await NextClient(`/replies/${reply._id}/toggle-like`, {
+      const { data } = (await NextClient(`/replies/toggle-like`, {
         method: "POST",
+        data: { replyId: reply._id },
       })) as { data: ReplyToggleLikeResponseDto };
 
       setReply((prev) => ({

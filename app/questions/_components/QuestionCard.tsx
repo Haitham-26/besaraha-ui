@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Question } from "@/model/question/Question";
 import { Reply } from "@/model/reply/types/Reply";
 import { Button } from "@/app/components/Button";
@@ -16,7 +17,6 @@ import { formattedDate } from "@/tools/Date";
 import { QuestionReply } from "./QuestionReply";
 import { NextClient } from "@/tools/NextClient";
 import Link from "next/link";
-import { useGlobalContext } from "../context/global-context";
 import { Icon } from "@/app/components/Icon";
 import { Toast } from "@/tools/Toast";
 import { QuestionActions } from "./QuestionActions";
@@ -24,20 +24,28 @@ import { Textarea } from "@/app/components/Textarea";
 import { Controller, useForm } from "react-hook-form";
 import { ReplyDto } from "@/model/reply/dto/ReplyDto";
 import { Input } from "@/app/components/Input";
+import { Pagination } from "@/app/components/Pagination";
+import { useSession } from "next-auth/react";
+import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
 
 type QuestionCardProps = {
   question: Question;
-  userId: string | null;
   openRegisterModal?: VoidFunction;
+  setPage?: (newPage: number) => void;
 };
+
+const REPLIES_LIMIT = 10;
 
 export const QuestionCard: React.FC<QuestionCardProps> = ({
   question,
-  userId,
   openRegisterModal,
+  setPage,
 }) => {
-  const [replyLoading, setReplyLoading] = useState(false);
-  const [repliesLoading, setRepliesLoading] = useState(false);
+  const { data, status } = useSession();
+  const queryClient = useQueryClient();
+  const pathname = usePathname();
+
+  const [repliesPage, setRepliesPage] = useState(1);
 
   const { control, getValues, reset, handleSubmit, setValue, watch } = useForm<
     ReplyDto & { replyAsAnnonymous?: boolean }
@@ -50,90 +58,109 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
     },
   });
 
-  const { replies, setReplies } = useGlobalContext();
-  const pathname = usePathname();
-
   const replyAsAnnonymous = watch("replyAsAnnonymous");
 
   const isOnProfilePage = !Boolean(pathname.replace("/questions", "").length);
+
   const isListView = isOnProfilePage || pathname === "/questions/public";
-  const isOwner = userId === question.userId;
+
+  const userId = data?.user?._id;
+
+  const isOwner = userId && userId === question.userId;
+
+  const { data: replies, isLoading: repliesLoading } = useQuery({
+    queryKey: [
+      "questions",
+      question._id,
+      "replies",
+      {
+        questionId: question._id,
+        page: repliesPage,
+        limit: REPLIES_LIMIT,
+        userId,
+      },
+    ],
+
+    queryFn: async () => {
+      const { data } = await NextClient<DataWithMeta<Reply>>(
+        `/questions/${question._id}/replies`,
+        {
+          method: "GET",
+          params: {
+            questionId: question._id,
+            page: repliesPage,
+            limit: REPLIES_LIMIT,
+            userId,
+          },
+        },
+      );
+
+      return data;
+    },
+
+    enabled: !isListView && status !== "loading",
+  });
+
+  const replyMutation = useMutation({
+    mutationFn: async (dto: ReplyDto) => {
+      const { data } = await NextClient<Reply>("/replies", {
+        method: "POST",
+        data: {
+          reply: dto.reply,
+          replierName: dto.replierName,
+          questionId: question._id,
+        },
+      });
+
+      return data;
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["questions", question._id, "replies"],
+      });
+
+      reset();
+
+      Toast.success("تم إرسال الرد بنجاح");
+    },
+
+    onError: (error) => {
+      Toast.apiError(error);
+    },
+  });
 
   const onShare = () => {
     navigator.clipboard.writeText(
       `${window.location.origin}/questions/${question._id}`,
     );
+
     Toast.success("تم نسخ الرابط بنجاح");
   };
 
-  const onReply = async () => {
+  const onReply = () => {
     const dto = getValues();
 
     if (!dto.reply.trim()) {
       return;
     }
 
-    try {
-      setReplyLoading(true);
-
-      await NextClient(`/replies/${dto.questionId}/reply`, {
-        method: "POST",
-        data: { reply: dto.reply, replierName: dto.replierName },
-      });
-
-      const { data } = await NextClient<Reply[]>(
-        `/replies/${question._id}/all`,
-        { method: "GET", params: { userId } },
-      );
-
-      setReplies(data);
-
-      reset();
-
-      Toast.success("تم إرسال الرد بنجاح");
-    } catch (e: any) {
-      Toast.apiError(e);
-    } finally {
-      setReplyLoading(false);
-    }
+    replyMutation.mutate(dto);
   };
-
-  useEffect(() => {
-    if (isListView) {
-      return;
-    }
-
-    const fetchReplies = async () => {
-      try {
-        setRepliesLoading(true);
-
-        const { data } = await NextClient<Reply[]>(
-          `/replies/${question._id}/all`,
-          { method: "GET", params: { userId } },
-        );
-
-        setReplies(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setRepliesLoading(false);
-      }
-    };
-
-    fetchReplies();
-  }, [question._id, setReplies, userId, isListView]);
 
   return (
     <div className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
       <div className="flex items-center justify-between mb-4 text-xs text-text-muted">
         <span className="flex items-center gap-1.5">
           <Icon icon={faClock} className="text-accent" />
+
           <span className="dir-ltr">{formattedDate(question.createdAt)}</span>
         </span>
 
         {isOnProfilePage && isOwner ? (
           <span className="bg-surface-muted rounded-3xl flex items-center gap-1 font-bold text-[10px] py-2 px-3">
             <Icon icon={question.isPublic ? faEarthAmericas : faLock} />
+
             {question.isPublic ? "عام" : "خاص"}
           </span>
         ) : null}
@@ -147,6 +174,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           <h2 className="text-lg font-bold text-text-primary leading-snug line-clamp-2 group-hover/title:text-accent transition-colors">
             {question.question}
           </h2>
+
           <Icon
             icon={faAngleLeft}
             className="text-text-muted shrink-0 group-hover/title:text-accent transition-colors"
@@ -164,16 +192,17 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             <div className="flex justify-center py-8">
               <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : replies.length ? (
+          ) : replies?.data?.length ? (
             <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
-              {replies.map((reply) => (
+              {replies.data.map((reply) => (
                 <QuestionReply
                   key={reply._id}
                   reply={reply}
-                  userId={userId}
                   openRegisterModal={openRegisterModal}
                 />
               ))}
+
+              <Pagination meta={replies.meta} onPageChange={setRepliesPage} />
             </div>
           ) : (
             <p className="text-text-muted text-sm text-center py-4">
@@ -233,7 +262,9 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
                     value={value}
                     onChange={onChange}
                     classNames={{
-                      container: `flex-1 min-w-[120px] ${replyAsAnnonymous ? "opacity-0 pointer-events-none" : ""}`,
+                      container: `flex-1 min-w-[120px] ${
+                        replyAsAnnonymous ? "opacity-0 pointer-events-none" : ""
+                      }`,
                       input: "h-9 !text-xs",
                     }}
                   />
@@ -241,7 +272,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               />
 
               <Button
-                loading={replyLoading}
+                loading={replyMutation.isPending}
                 onClick={handleSubmit(onReply)}
                 icon={faPaperPlane}
                 className="!h-9 !px-4 !text-xs !font-bold !bg-primary !text-secondary hover:!bg-accent transition-colors shrink-0 w-full sm:w-auto sm:ms-auto"
@@ -263,7 +294,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
         </Button>
 
         {isOnProfilePage && isOwner ? (
-          <QuestionActions question={question} />
+          <QuestionActions question={question} setPage={setPage} />
         ) : null}
       </div>
     </div>
