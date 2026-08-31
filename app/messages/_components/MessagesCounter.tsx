@@ -5,18 +5,15 @@ import { faInbox } from "@fortawesome/free-solid-svg-icons/faInbox";
 import { Select } from "@/app/components/Select";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
 import { Button } from "@/app/components/Button";
-
-const messages = {
-  meta: {
-    total: 0,
-    page: 1,
-    hasNext: false,
-    limit: 10,
-  },
-};
+import { useRouter } from "next/router";
 
 export default function MessagesCounter() {
-  const { isStarred, sort } = { isStarred: undefined, sort: undefined };
+  const router = useRouter();
+
+  const url = new URLSearchParams(router.pathname);
+
+  const isStarred = url.get("isStarred");
+  const sort = url.get("sort");
 
   const shouldDisplayClearFilters = () => {
     if (isStarred !== undefined) {

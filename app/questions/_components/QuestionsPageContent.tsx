@@ -1,86 +1,46 @@
 "use client";
 
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useState } from "react";
-import { GenericSortType } from "@/model/shared/dto/GenericSortType";
-import { NextClient } from "@/tools/NextClient";
-import { GetQuestionsDto } from "@/model/question/dto/GetQuestionsDto";
 import { Icon } from "../../components/Icon";
 import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
-import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
-import { Button } from "../../components/Button";
-import { Select } from "../../components/Select";
-import { Spinner } from "../../components/Spinner";
-import { QuestionCard } from "./QuestionCard";
+
+import QuestionCard from "./QuestionCard";
 import { Empty } from "../../components/Empty";
 import { Pagination } from "../../components/Pagination";
-import { QuestionCreateModal } from "./QuestionCreateModal";
+import { QuestionCreateModalAndButton } from "./QuestionCreateModalAndButton";
+import { QuestionsFilters } from "./QuestionsFilters";
 import { GetQuestionsResponseDto } from "@/model/question/dto/GetQuestionsResponseDto";
-import { useSession } from "next-auth/react";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@/app/components/Spinner";
+import { NextClient } from "@/tools/NextClient";
+import { GenericSortType } from "@/model/shared/dto/GenericSortType";
 
-type Props = {
-  limit: number;
+const PATHNAME = "/questions";
+
+type QuestionsPageContentProps = {
+  searchParams: URLSearchParams;
+  normalizedParams: {
+    sort: GenericSortType;
+    isPublic?: boolean;
+    page: number;
+    limit: number;
+  };
 };
 
-export function QuestionsPageContent({ limit }: Props) {
-  const [createQuestionModalVisible, setCreateQuestionModalVisible] =
-    useState(false);
-  const [page, setPage] = useState(1);
-  const [isPublic, setIsPublic] = useState<boolean | undefined>(undefined);
-  const [sort, setSort] = useState<GenericSortType>(GenericSortType.NEWEST);
-
-  const { data } = useSession();
-  const queryClient = useQueryClient();
-
-  const {
-    data: questions,
-    isLoading,
-    isFetching,
-  } = useQuery({
-    queryKey: [
-      "questions",
-      "user",
-      {
-        page,
-        limit,
-        isPublic,
-        sort,
-      },
-    ],
+export function QuestionsPageContent({
+  searchParams,
+  normalizedParams,
+}: QuestionsPageContentProps) {
+  const { data: questions, isLoading } = useQuery<GetQuestionsResponseDto>({
+    queryKey: ["questions", "user", normalizedParams],
     queryFn: async () => {
       const { data } = await NextClient<GetQuestionsResponseDto>("/questions", {
         method: "GET",
-        params: {
-          page,
-          limit,
-          isPublic,
-          sort,
-        } as GetQuestionsDto,
+        params: normalizedParams,
       });
 
       return data;
     },
-    enabled: Boolean(data?.user?._id),
-    placeholderData: keepPreviousData,
   });
-
-  const handlePublicFilterChange = async (value?: boolean) => {
-    setIsPublic(value);
-    await queryClient.invalidateQueries({
-      queryKey: ["questions", "user", page, limit, isPublic, sort],
-    });
-  };
-
-  const handleSortChange = async (value: GenericSortType) => {
-    setSort(value);
-    await queryClient.invalidateQueries({
-      queryKey: ["questions", "user", page, limit, isPublic, sort],
-    });
-  };
 
   return (
     <div className="w-full min-h-screen bg-surface-muted p-4 pt-6 md:p-8 lg:p-12">
@@ -108,55 +68,11 @@ export function QuestionsPageContent({ limit }: Props) {
                 </span>
               </div>
 
-              <Button
-                onClick={() => setCreateQuestionModalVisible(true)}
-                className="w-full !h-14 !rounded-2xl !bg-accent !text-secondary font-black shadow-lg shadow-accent/20"
-                icon={faPlus}
-              >
-                طرح سؤال جديد
-              </Button>
+              <QuestionCreateModalAndButton />
             </div>
           </div>
 
-          <div className="bg-surface border border-border rounded-[2.5rem] p-6 space-y-4 shadow-sm">
-            <h3 className="font-bold text-text-primary px-2">نتائج الأسئلة</h3>
-
-            <Select
-              items={[
-                {
-                  label: "كل الأنواع",
-                  value: undefined,
-                },
-                {
-                  label: "خاص",
-                  value: false,
-                },
-                {
-                  label: "عام",
-                  value: true,
-                },
-              ]}
-              value={isPublic}
-              onChange={handlePublicFilterChange}
-              placeholder="اختر النوع"
-            />
-
-            <Select
-              items={[
-                {
-                  label: "الأحدث أولاً",
-                  value: GenericSortType.NEWEST,
-                },
-                {
-                  label: "الأقدم أولاً",
-                  value: GenericSortType.OLDEST,
-                },
-              ]}
-              value={sort}
-              onChange={handleSortChange}
-              placeholder="اختر الترتيب"
-            />
-          </div>
+          <QuestionsFilters />
         </aside>
 
         <main className="lg:col-span-8">
@@ -169,21 +85,16 @@ export function QuestionsPageContent({ limit }: Props) {
             </div>
 
             <div className="flex-1 p-6 md:p-8">
-              {isLoading ? (
-                <div className="flex justify-center items-center py-20">
-                  <Spinner className="text-accent static" />
-                </div>
-              ) : questions?.data?.length ? (
-                <div
-                  className={`space-y-6 group/list transition-opacity ${
-                    isFetching ? "opacity-60" : ""
-                  }`}
-                >
+              {isLoading ? <Spinner /> : null}
+
+              {questions?.data?.length && !isLoading ? (
+                <div className="space-y-6">
                   {questions.data.map((question) => (
                     <QuestionCard
                       key={question._id}
                       question={question}
-                      setPage={setPage}
+                      pathname={PATHNAME}
+                      isLast={questions.data.length === 1}
                     />
                   ))}
                 </div>
@@ -191,25 +102,18 @@ export function QuestionsPageContent({ limit }: Props) {
                 <Empty
                   title="لا توجد نتائج"
                   description="جرب تغيير فلاتر البحث أو ابدأ بإضافة سؤال جديد."
-                  action={{
-                    title: "أضف سؤالك الأول",
-                    onClick: () => setCreateQuestionModalVisible(true),
-                  }}
                 />
               )}
 
-              {questions?.meta ? (
-                <Pagination meta={questions.meta} onPageChange={setPage} />
-              ) : null}
+              <Pagination
+                meta={questions?.meta}
+                pathname={PATHNAME}
+                searchParams={searchParams}
+              />
             </div>
           </div>
         </main>
       </div>
-
-      <QuestionCreateModal
-        open={createQuestionModalVisible}
-        onClose={() => setCreateQuestionModalVisible(false)}
-      />
     </div>
   );
 }

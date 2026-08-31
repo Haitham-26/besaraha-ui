@@ -1,97 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { Question } from "@/model/question/Question";
 import { Reply } from "@/model/reply/types/Reply";
-import { Button } from "@/app/components/Button";
-import { faShareNodes } from "@fortawesome/free-solid-svg-icons";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons/faAngleLeft";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons/faEarthAmericas";
 
-import { usePathname } from "next/navigation";
 import { formattedDate } from "@/tools/Date";
-import { QuestionReply } from "./QuestionReply";
-import { NextClient } from "@/tools/NextClient";
+import QuestionReply from "./replies/QuestionReply";
 import Link from "next/link";
 import { Icon } from "@/app/components/Icon";
-import { Toast } from "@/tools/Toast";
 import { QuestionActions } from "./QuestionActions";
-import { Textarea } from "@/app/components/Textarea";
-import { Controller, useForm } from "react-hook-form";
-import { ReplyDto } from "@/model/reply/dto/ReplyDto";
-import { Input } from "@/app/components/Input";
-import { Pagination } from "@/app/components/Pagination";
-import { useSession } from "next-auth/react";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
+import { QuestionReplyForm } from "./replies/QuestionReplyForm";
+import { Pagination } from "@/app/components/Pagination";
+import { NextClient } from "@/tools/NextClient";
+import { useSearchParams } from "next/navigation";
 
 type QuestionCardProps = {
   question: Question;
-  openRegisterModal?: VoidFunction;
-  setPage?: (newPage: number) => void;
+  pathname: string;
+  isLast?: boolean;
 };
 
 const REPLIES_LIMIT = 10;
 
-export const QuestionCard: React.FC<QuestionCardProps> = ({
+export default function QuestionCard({
   question,
-  openRegisterModal,
-  setPage,
-}) => {
-  const { data, status } = useSession();
-  const queryClient = useQueryClient();
-  const pathname = usePathname();
+  pathname,
+  isLast,
+}: QuestionCardProps) {
+  const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
 
-  const [repliesPage, setRepliesPage] = useState(1);
-
-  const { control, getValues, reset, handleSubmit, setValue, watch } = useForm<
-    ReplyDto & { replyAsAnnonymous?: boolean }
-  >({
-    defaultValues: {
-      questionId: question._id,
-      reply: "",
-      replierName: "",
-      replyAsAnnonymous: true,
-    },
-  });
-
-  const replyAsAnnonymous = watch("replyAsAnnonymous");
-
-  const isOnProfilePage = !Boolean(pathname.replace("/questions", "").length);
-
+  const isOnProfilePage = pathname === "/questions";
   const isListView = isOnProfilePage || pathname === "/questions/public";
 
-  const userId = data?.user?._id;
+  const userId = session?.user?._id;
+  const isOwner = question.userId === userId;
 
-  const isOwner = userId && userId === question.userId;
+  const repliesPage = Number(searchParams.get("page") || 1) || 1;
 
-  const { data: replies, isLoading: repliesLoading } = useQuery({
-    queryKey: [
-      "questions",
-      question._id,
-      "replies",
-      {
-        questionId: question._id,
-        page: repliesPage,
-        limit: REPLIES_LIMIT,
-        userId,
-      },
-    ],
+  const getRepliesParams = {
+    questionId: question._id,
+    page: repliesPage,
+    limit: REPLIES_LIMIT,
+    userId,
+  };
+
+  const {
+    data: replies,
+    isLoading: repliesLoading,
+    isFetching: repliesFetching,
+  } = useQuery({
+    queryKey: ["questions", question._id, "replies", getRepliesParams],
 
     queryFn: async () => {
       const { data } = await NextClient<DataWithMeta<Reply>>(
         `/questions/${question._id}/replies`,
         {
           method: "GET",
-          params: {
-            questionId: question._id,
-            page: repliesPage,
-            limit: REPLIES_LIMIT,
-            userId,
-          },
+          params: getRepliesParams,
         },
       );
 
@@ -100,53 +72,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
 
     enabled: !isListView && status !== "loading",
   });
-
-  const replyMutation = useMutation({
-    mutationFn: async (dto: ReplyDto) => {
-      const { data } = await NextClient<Reply>("/replies", {
-        method: "POST",
-        data: {
-          reply: dto.reply,
-          replierName: dto.replierName,
-          questionId: question._id,
-        },
-      });
-
-      return data;
-    },
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["questions", question._id, "replies"],
-      });
-
-      reset();
-
-      Toast.success("تم إرسال الرد بنجاح");
-    },
-
-    onError: (error) => {
-      Toast.apiError(error);
-    },
-  });
-
-  const onShare = () => {
-    navigator.clipboard.writeText(
-      `${window.location.origin}/questions/${question._id}`,
-    );
-
-    Toast.success("تم نسخ الرابط بنجاح");
-  };
-
-  const onReply = () => {
-    const dto = getValues();
-
-    if (!dto.reply.trim()) {
-      return;
-    }
-
-    replyMutation.mutate(dto);
-  };
 
   return (
     <div className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
@@ -193,16 +118,20 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
             </div>
           ) : replies?.data?.length ? (
-            <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+            <div
+              className={`space-y-3 max-h-[420px] overflow-y-auto pr-1 ${
+                repliesFetching ? "opacity-60" : ""
+              }`}
+            >
               {replies.data.map((reply) => (
-                <QuestionReply
-                  key={reply._id}
-                  reply={reply}
-                  openRegisterModal={openRegisterModal}
-                />
+                <QuestionReply key={reply._id} reply={reply} />
               ))}
 
-              <Pagination meta={replies.meta} onPageChange={setRepliesPage} />
+              <Pagination
+                meta={replies.meta}
+                pathname={pathname}
+                searchParams={searchParams}
+              />
             </div>
           ) : (
             <p className="text-text-muted text-sm text-center py-4">
@@ -210,93 +139,14 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
             </p>
           )}
 
-          <div className="pt-2 space-y-3">
-            <Controller
-              control={control}
-              name="reply"
-              render={({ field: { value, onChange } }) => (
-                <Textarea
-                  value={value}
-                  onChange={onChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      onReply();
-                    }
-                  }}
-                  placeholder="اكتب ردك هنا..."
-                />
-              )}
-            />
-
-            <div className="flex flex-wrap items-center gap-3">
-              <label
-                htmlFor={`reply-as-anonymous-${question._id}`}
-                className="flex items-center gap-2 text-xs font-bold text-text-muted cursor-pointer select-none shrink-0"
-              >
-                <Controller
-                  control={control}
-                  name="replyAsAnnonymous"
-                  render={({ field: { value, onChange } }) => (
-                    <input
-                      id={`reply-as-anonymous-${question._id}`}
-                      type="checkbox"
-                      checked={value}
-                      onChange={(e) => {
-                        onChange(e.target.checked);
-                        setValue("replierName", "");
-                      }}
-                      className="accent-accent cursor-pointer"
-                    />
-                  )}
-                />
-                هوية مجهولة
-              </label>
-
-              <Controller
-                control={control}
-                name="replierName"
-                render={({ field: { value, onChange } }) => (
-                  <Input
-                    placeholder="اسمك المستعار"
-                    value={value}
-                    onChange={onChange}
-                    classNames={{
-                      container: `flex-1 min-w-[120px] ${
-                        replyAsAnnonymous ? "opacity-0 pointer-events-none" : ""
-                      }`,
-                      input: "h-9 !text-xs",
-                    }}
-                  />
-                )}
-              />
-
-              <Button
-                loading={replyMutation.isPending}
-                onClick={handleSubmit(onReply)}
-                icon={faPaperPlane}
-                className="!h-9 !px-4 !text-xs !font-bold !bg-primary !text-secondary hover:!bg-accent transition-colors shrink-0 w-full sm:w-auto sm:ms-auto"
-              >
-                إرسال
-              </Button>
-            </div>
-          </div>
+          <QuestionReplyForm
+            question={question}
+            getRepliesParams={getRepliesParams}
+          />
         </div>
       ) : null}
 
-      <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
-        <Button
-          onClick={onShare}
-          icon={faShareNodes}
-          className="text-xs bg-surface-muted shadow-none font-bold !text-text-muted hover:bg-surface-muted"
-        >
-          مشاركة
-        </Button>
-
-        {isOnProfilePage && isOwner ? (
-          <QuestionActions question={question} setPage={setPage} />
-        ) : null}
-      </div>
+      <QuestionActions question={question} isLast={isLast} />
     </div>
   );
-};
+}

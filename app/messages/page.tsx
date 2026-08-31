@@ -1,38 +1,44 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { GenericSortType } from "@/model/shared/dto/GenericSortType";
+import { GetQuestionsResponseDto } from "@/model/question/dto/GetQuestionsResponseDto";
+import { getQueryClient } from "../get-query-client";
+import { NextClient } from "@/tools/NextClient";
+import { MessagesPageContent } from "./_components/MessagesPageContent";
+import { authOptions } from "@/lib/auth";
 
-import MessagesList from "./_components/MessagesList";
-import MessagesCounter from "./_components/MessagesCounter";
-import DeleteAllMessages from "./_components/DeleteAllMessages";
-import { Pagination } from "../components/Pagination";
+const MESSAGES_LIMIT = 10;
 
-export default function Page() {
+export default async function Page() {
+  const session = await getServerSession(authOptions);
+  const queryClient = getQueryClient();
+
+  const defaultParams = {
+    page: 1,
+    limit: MESSAGES_LIMIT,
+    isStarred: undefined,
+    sort: GenericSortType.NEWEST,
+  };
+
+  if (session?.user?._id) {
+    await queryClient.prefetchQuery({
+      queryKey: ["messages", defaultParams],
+      queryFn: async () => {
+        const { data } = await NextClient<GetQuestionsResponseDto>(
+          "/messages",
+          {
+            method: "GET",
+            params: defaultParams,
+          },
+        );
+        return data;
+      },
+    });
+  }
+
   return (
-    <div className="w-full bg-surface-muted p-4 pt-6 md:p-8 lg:p-12 relative">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <MessagesCounter />
-
-        <div className="lg:col-span-8">
-          <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col overflow-hidden">
-            <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
-              <h2 className="font-bold text-text-primary flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                الرسائل الأخيرة
-              </h2>
-
-              <DeleteAllMessages />
-            </div>
-
-            <div className="flex-1 p-6 md:p-8">
-              <MessagesList />
-
-              <Pagination
-                onPageChange={() => {}}
-                meta={{ hasNext: false, limit: 10, page: 1, total: 10 }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <MessagesPageContent limit={MESSAGES_LIMIT} />
+    </HydrationBoundary>
   );
 }

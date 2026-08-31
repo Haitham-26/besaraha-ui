@@ -1,8 +1,9 @@
 import { AuthClient } from "@/tools/AuthClient";
-import { QuestionCard } from "../_components/QuestionCard";
-import { PublicQuestionsPagination } from "./_components/PublicQuestionsPagination";
+import QuestionCard from "../_components/QuestionCard";
 import { Question } from "@/model/question/Question";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
+import { Pagination } from "@/app/components/Pagination";
+import getToken from "@/tools/getToken";
 
 const QUESTIONS_LIMIT = 10;
 
@@ -11,8 +12,11 @@ export default async function Page({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
-  const sp = await searchParams;
-  const page = Number(sp.page) || 1;
+  const [_searchParams, token] = await Promise.all([searchParams, getToken()]);
+
+  const currentSearchParams = new URLSearchParams(_searchParams);
+
+  const page = Number(currentSearchParams.get("page") || 1) || 1;
 
   const { data: questions } = await AuthClient<DataWithMeta<Question>>(
     "/questions/public",
@@ -20,6 +24,7 @@ export default async function Page({
       method: "GET",
       params: { page, limit: QUESTIONS_LIMIT },
     },
+    token,
   );
 
   return (
@@ -38,11 +43,14 @@ export default async function Page({
           انقر على السؤال لمشاهدة الردود الخاصة به.
         </p>
       </div>
-
       <div className="flex flex-col gap-6 mb-12">
         {questions?.data?.length ? (
           questions.data.map((question) => (
-            <QuestionCard key={question._id} question={question} />
+            <QuestionCard
+              key={question._id}
+              question={question}
+              pathname="/questions/public"
+            />
           ))
         ) : (
           <div className="text-center py-20 bg-surface border border-dashed border-border rounded-3xl text-slate-400">
@@ -51,7 +59,11 @@ export default async function Page({
         )}
       </div>
 
-      <PublicQuestionsPagination meta={questions?.meta} />
+      <Pagination
+        meta={questions?.meta}
+        pathname={"/questions/public"}
+        searchParams={currentSearchParams}
+      />
     </div>
   );
 }

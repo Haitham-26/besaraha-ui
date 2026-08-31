@@ -12,6 +12,10 @@ import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { Button } from "@/app/components/Button";
 import { WarningModal } from "@/app/components/WarningModal";
+import { faShareNodes } from "@fortawesome/free-solid-svg-icons/faShareNodes";
+import { useSession } from "next-auth/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
@@ -21,27 +25,60 @@ const markPublicModalDescription =
 
 type QuestionActionsProps = {
   question: Question;
-  setPage?: (newPage: number) => void;
+  isLast?: boolean;
 };
 
 export const QuestionActions: React.FC<QuestionActionsProps> = ({
   question,
-  setPage,
+  isLast,
 }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [togglePrivacyModalVisible, setTogglePrivacyModalVisible] =
     useState(false);
 
+  const { data } = useSession();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const userId = data?.user?._id;
+
+  const isOnProfilePage = !Boolean(pathname.replace("/questions", "").length);
+
+  const dropdownItems: DropdownItem[] = [
+    {
+      title: question.isPublic ? "اجعله خاص" : "اجعله عام",
+      icon: question.isPublic ? faLock : faEarthAmericas,
+      onClick: () => setTogglePrivacyModalVisible(true),
+    },
+    {
+      title: "حذف السؤال",
+      icon: faTrash,
+      className: "!text-danger",
+      onClick: () => setDeleteModalVisible(true),
+    },
+  ];
+
+  const isOwner = userId && userId === question.userId;
 
   // if there is only one page, we want to go back to the previous page
   // for toggle privacy and delete
-  const goToFirstPage = () => {
-    if (!setPage) {
-      return;
-    }
+  const goToFirstPage = (isDelete?: boolean) => {
+    const numericPage = Number(searchParams.get("page") || 1);
 
-    setPage(1);
+    const isOnFirstPage = numericPage === 1;
+    const isPrivacyFilterApplied = searchParams.get("isPublic") !== "undefined";
+
+    if ((isPrivacyFilterApplied || isDelete) && isLast && !isOnFirstPage) {
+      const prevPage = numericPage - 1;
+
+      const updatedURL = getUpdatedURLQuery(searchParams, pathname, [
+        { key: "page", value: prevPage },
+      ]);
+
+      router.replace(updatedURL);
+    }
   };
 
   const togglePrivacyMutation = useMutation({
@@ -79,7 +116,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     },
 
     onSuccess: async () => {
-      goToFirstPage();
+      goToFirstPage(true);
 
       await queryClient.invalidateQueries({
         queryKey: ["questions", "user"],
@@ -103,49 +140,55 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     deleteMutation.mutate();
   };
 
-  const dropdownItems: DropdownItem[] = [
-    {
-      title: question.isPublic ? "اجعله خاص" : "اجعله عام",
-      icon: question.isPublic ? faLock : faEarthAmericas,
-      onClick: () => setTogglePrivacyModalVisible(true),
-    },
-    {
-      title: "حذف السؤال",
-      icon: faTrash,
-      className: "!text-danger",
-      onClick: () => setDeleteModalVisible(true),
-    },
-  ];
+  const onShare = () => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/questions/${question._id}`,
+    );
+
+    Toast.success("تم نسخ الرابط بنجاح");
+  };
 
   return (
-    <Fragment>
-      <Dropdown items={dropdownItems}>
-        <Button
-          icon={faEllipsisVertical}
-          className="!w-8 !h-8 aspect-square rounded-full !bg-transparent hover:!bg-border/50 !text-text-muted shadow-none !p-3"
-        />
-      </Dropdown>
+    <div className="flex items-center justify-between mt-5 pt-4 border-t border-border">
+      <Button
+        onClick={onShare}
+        icon={faShareNodes}
+        className="text-xs bg-surface-muted shadow-none font-bold !text-text-muted hover:bg-surface-muted"
+      >
+        مشاركة
+      </Button>
 
-      <WarningModal
-        open={deleteModalVisible}
-        onClose={() => setDeleteModalVisible(false)}
-        onConfirm={onDelete}
-        loading={deleteMutation.isPending}
-        title={`حذف السؤال "${question.question}"`}
-      />
+      {isOnProfilePage && isOwner ? (
+        <Fragment>
+          <Dropdown items={dropdownItems}>
+            <Button
+              icon={faEllipsisVertical}
+              className="!w-8 !h-8 aspect-square rounded-full !bg-transparent hover:!bg-border/50 !text-text-muted shadow-none !p-3"
+            />
+          </Dropdown>
 
-      <WarningModal
-        open={togglePrivacyModalVisible}
-        onClose={() => setTogglePrivacyModalVisible(false)}
-        onConfirm={togglePrivacy}
-        loading={togglePrivacyMutation.isPending}
-        title="تغيير خصوصية السؤال"
-        description={
-          question.isPublic
-            ? markPrivateModalDescription
-            : markPublicModalDescription
-        }
-      />
-    </Fragment>
+          <WarningModal
+            open={deleteModalVisible}
+            onClose={() => setDeleteModalVisible(false)}
+            onConfirm={onDelete}
+            loading={deleteMutation.isPending}
+            title={`حذف السؤال "${question.question}"`}
+          />
+
+          <WarningModal
+            open={togglePrivacyModalVisible}
+            onClose={() => setTogglePrivacyModalVisible(false)}
+            onConfirm={togglePrivacy}
+            loading={togglePrivacyMutation.isPending}
+            title="تغيير خصوصية السؤال"
+            description={
+              question.isPublic
+                ? markPrivateModalDescription
+                : markPublicModalDescription
+            }
+          />
+        </Fragment>
+      ) : null}
+    </div>
   );
 };
