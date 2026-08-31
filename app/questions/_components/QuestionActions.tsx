@@ -85,7 +85,6 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     mutationFn: async () => {
       await NextClient(`/questions/${question._id}/toggle-privacy`, {
         method: "PATCH",
-        data: { isPublic: !question.isPublic },
       });
     },
 

@@ -10,6 +10,5 @@ export async function PATCH(req: NextRequest, context: Context) {
 
   return await proxyRequest(`/questions/${id}/toggle-privacy`, {
     method: "PATCH",
-    data: await req.json(),
   });
 }
