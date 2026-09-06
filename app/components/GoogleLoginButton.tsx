@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "./Button";
 import Image from "next/image";
 import { Toast } from "@/tools/Toast";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   title: string;
@@ -11,19 +12,35 @@ type Props = {
 export const GoogleLoginButton: React.FC<Props> = ({ title }) => {
   const [loading, setLoading] = useState(false);
 
+  const searchParams = useSearchParams();
+  const currentPathname = usePathname();
+  const router = useRouter();
+
   const onLoginWithGoogle = async () => {
-    setLoading(true);
     try {
-      await signIn("google", {
-        callbackUrl: "/profile",
-        redirect: true,
-      });
+      setLoading(true);
+
+      const res = await signIn("google");
+
+      if (res?.ok) {
+        router.replace("/profile");
+        router.refresh();
+      }
     } catch (e) {
       console.error("Login error:", e);
       Toast.apiError(e);
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const errorMessage = searchParams.get("authError");
+
+    if (errorMessage) {
+      Toast.error(errorMessage);
+      router.replace(currentPathname);
+    }
+  }, [searchParams, currentPathname, router]);
 
   return (
     <Button

@@ -111,7 +111,6 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-
   callbacks: {
     async signIn({ account, user }) {
       if (account?.provider === "google" && account.id_token) {
@@ -123,11 +122,22 @@ export const authOptions: AuthOptions = {
           });
 
           if (!res.ok) {
-            return false;
+            const errBody = await res.json().catch(() => null);
+            const message = errBody?.message || "حدث خطأ أثناء تسجيل الدخول";
+
+            const cookieStore = await cookies();
+            const callbackUrlCookie =
+              cookieStore.get("next-auth.callback-url")?.value ??
+              cookieStore.get("__Secure-next-auth.callback-url")?.value ??
+              "/";
+
+            const url = new URL(callbackUrlCookie, process.env.NEXTAUTH_URL);
+            url.searchParams.set("authError", message);
+
+            return url.toString();
           }
 
           const data = await res.json();
-
           const cookieStore = await cookies();
 
           cookieStore.set("token", data.token, {
@@ -141,7 +151,15 @@ export const authOptions: AuthOptions = {
           (user as any).user = data.user;
         } catch (e) {
           console.error("Google login failed:", e);
-          return false;
+
+          const cookieStore = await cookies();
+          const callbackUrlCookie =
+            cookieStore.get("next-auth.callback-url")?.value ?? "/";
+
+          const url = new URL(callbackUrlCookie, process.env.NEXTAUTH_URL);
+          url.searchParams.set("authError", "حدث خطأ أثناء تسجيل الدخول");
+
+          return url.toString();
         }
       }
 
