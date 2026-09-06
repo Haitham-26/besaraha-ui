@@ -14,6 +14,7 @@ import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { Icon } from "@/app/components/Icon";
 import { SignUpVerifyTokenDto } from "@/model/auth/signup/SignUpVerifyTokenDto";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
+import { signIn } from "next-auth/react";
 
 type SignUpTokenContentProps = {
   email: string;
@@ -31,7 +32,7 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
       defaultValues: {
         token: "",
         email,
-        lang: document.documentElement.lang as AppLangs,
+        lang: (document.documentElement.lang as AppLangs) || AppLangs.EN,
       },
     });
 
@@ -41,20 +42,23 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
     try {
       setLoading(true);
 
-      await NextClient("/auth/signup/token", {
-        method: "POST",
-        data: getValues(),
-        withCredentials: true,
+      const res = await signIn("signup-token", {
+        redirect: false,
+        ...getValues(),
       });
 
-      Toast.success("تم تفعيل حسابك بنجاح");
+      if (!res?.ok) {
+        Toast.error(res?.error || "حدث خطأ ما");
+      } else {
+        Toast.success("تم تفعيل حسابك بنجاح");
 
-      reset();
+        reset();
 
-      localStorage.removeItem(LOCAL_STORAGE_RESEND_KEY);
+        localStorage.removeItem(LOCAL_STORAGE_RESEND_KEY);
 
-      router.replace("/");
-      router.refresh();
+        router.replace("/profile");
+        router.refresh();
+      }
     } catch (e) {
       Toast.apiError(e);
     } finally {

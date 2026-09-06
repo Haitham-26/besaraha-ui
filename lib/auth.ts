@@ -11,7 +11,8 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      id: "login",
+      name: "login",
       credentials: {
         identifier: { label: "Identifier", type: "text" },
         password: { label: "Password", type: "password" },
@@ -55,6 +56,57 @@ export const authOptions: AuthOptions = {
         } catch (e: any) {
           console.log("Backend credentials login failed:", e);
           throw new Error(e.message || "Invalid credentials");
+        }
+      },
+    }),
+    CredentialsProvider({
+      id: "signup-token",
+      name: "signup-token",
+      credentials: {
+        token: { label: "Token", type: "text" },
+        email: { label: "Email", type: "text" },
+        lang: { label: "Lang", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.token || !credentials?.email) {
+          return null;
+        }
+
+        try {
+          const res = await fetch(`${process.env.API_URL}/auth/signup/token`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: credentials.token,
+              email: credentials.email,
+              lang: credentials.lang,
+            }),
+          });
+
+          if (!res.ok) {
+            const errBody = await res.json();
+
+            throw new Error(errBody.message || "Invalid token");
+          }
+
+          const data = await res.json();
+
+          const cookieStore = await cookies();
+
+          cookieStore.set("token", data.token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+          });
+
+          return {
+            user: data.user,
+            id: data.user._id,
+          };
+        } catch (e: any) {
+          console.log("Backend token signup login failed:", e);
+          throw new Error(e.message || "Invalid token");
         }
       },
     }),

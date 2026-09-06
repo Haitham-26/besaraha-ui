@@ -25,7 +25,7 @@ export const LoginContent: React.FC = () => {
       setLoading(true);
       const dto = getValues();
 
-      const res = await signIn("credentials", {
+      const res = await signIn("login", {
         redirect: false,
         identifier: dto.identifier,
         password: dto.password,
