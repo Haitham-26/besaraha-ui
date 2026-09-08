@@ -2,7 +2,7 @@ import { proxyRequest } from "@/tools/proxyRequest";
 import { NextRequest } from "next/server";
 
 export async function DELETE(req: NextRequest) {
-  return proxyRequest(`/message/delete`, {
+  return proxyRequest(`/messages/delete`, {
     method: "DELETE",
     data: await req.json(),
   });

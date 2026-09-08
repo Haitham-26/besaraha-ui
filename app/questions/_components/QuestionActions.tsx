@@ -16,6 +16,7 @@ import { faShareNodes } from "@fortawesome/free-solid-svg-icons/faShareNodes";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
+import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
@@ -25,12 +26,16 @@ const markPublicModalDescription =
 
 type QuestionActionsProps = {
   question: Question;
-  isLast?: boolean;
+  normalizedParams: {
+    page: number;
+    limit: number;
+    isPublic?: boolean;
+  } | null;
 };
 
 export const QuestionActions: React.FC<QuestionActionsProps> = ({
   question,
-  isLast,
+  normalizedParams,
 }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [togglePrivacyModalVisible, setTogglePrivacyModalVisible] =
@@ -42,9 +47,18 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const cachedQuestions = queryClient.getQueryData([
+    "questions",
+    "user",
+    normalizedParams,
+  ]) as DataWithMeta<Question>;
+
   const userId = data?.user?._id;
 
-  const isOnProfilePage = !Boolean(pathname.replace("/questions", "").length);
+  const isOnPrivateQuestionsPage = !Boolean(
+    pathname.replace("/questions", "").length,
+  );
+  const isOwner = userId && userId === question.userId;
 
   const dropdownItems: DropdownItem[] = [
     {
@@ -60,24 +74,28 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     },
   ];
 
-  const isOwner = userId && userId === question.userId;
+  const navigateToPreviousPageIfNeeded = (isDelete?: boolean) => {
+    if (!normalizedParams) {
+      return;
+    }
 
-  // if there is only one page, we want to go back to the previous page
-  // for toggle privacy and delete
-  const goToFirstPage = (isDelete?: boolean) => {
-    const numericPage = Number(searchParams.get("page") || 1);
+    const isOnFirstPage = normalizedParams.page === 1;
+    const isIsPrivacyFilterApplied = normalizedParams.isPublic !== undefined;
 
-    const isOnFirstPage = numericPage === 1;
-    const isPrivacyFilterApplied = searchParams.get("isPublic") !== "undefined";
+    if (
+      isOnFirstPage ||
+      !isOnPrivateQuestionsPage ||
+      (!isDelete && !isIsPrivacyFilterApplied)
+    ) {
+      return;
+    }
 
-    if ((isPrivacyFilterApplied || isDelete) && isLast && !isOnFirstPage) {
-      const prevPage = numericPage - 1;
+    const updatedURL = getUpdatedURLQuery(searchParams, pathname, [
+      { key: "page", value: normalizedParams.page - 1 },
+    ]);
 
-      const updatedURL = getUpdatedURLQuery(searchParams, pathname, [
-        { key: "page", value: prevPage },
-      ]);
-
-      router.replace(updatedURL);
+    if (cachedQuestions.data.length === 1) {
+      router.replace(updatedURL, { scroll: false });
     }
   };
 
@@ -89,10 +107,10 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     },
 
     onSuccess: async () => {
-      goToFirstPage();
+      navigateToPreviousPageIfNeeded();
 
       await queryClient.invalidateQueries({
-        queryKey: ["questions", "user"],
+        queryKey: ["questions", "user", normalizedParams],
       });
 
       setTogglePrivacyModalVisible(false);
@@ -115,10 +133,10 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     },
 
     onSuccess: async () => {
-      goToFirstPage(true);
+      navigateToPreviousPageIfNeeded(true);
 
       await queryClient.invalidateQueries({
-        queryKey: ["questions", "user"],
+        queryKey: ["questions", "user", normalizedParams],
       });
 
       setDeleteModalVisible(false);
@@ -130,14 +148,6 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
       Toast.apiError(error);
     },
   });
-
-  const togglePrivacy = () => {
-    togglePrivacyMutation.mutate();
-  };
-
-  const onDelete = () => {
-    deleteMutation.mutate();
-  };
 
   const onShare = () => {
     navigator.clipboard.writeText(
@@ -157,7 +167,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
         مشاركة
       </Button>
 
-      {isOnProfilePage && isOwner ? (
+      {isOnPrivateQuestionsPage && isOwner ? (
         <Fragment>
           <Dropdown items={dropdownItems}>
             <Button
@@ -169,7 +179,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
           <WarningModal
             open={deleteModalVisible}
             onClose={() => setDeleteModalVisible(false)}
-            onConfirm={onDelete}
+            onConfirm={() => deleteMutation.mutate()}
             loading={deleteMutation.isPending}
             title={`حذف السؤال "${question.question}"`}
           />
@@ -177,7 +187,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
           <WarningModal
             open={togglePrivacyModalVisible}
             onClose={() => setTogglePrivacyModalVisible(false)}
-            onConfirm={togglePrivacy}
+            onConfirm={() => togglePrivacyMutation.mutate()}
             loading={togglePrivacyMutation.isPending}
             title="تغيير خصوصية السؤال"
             description={

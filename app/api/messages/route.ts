@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
 
-  return await proxyRequest(`/message/messages`, {
+  return await proxyRequest(`/messages`, {
     method: "GET",
     params: {
       page: searchParams.get("page") || "1",

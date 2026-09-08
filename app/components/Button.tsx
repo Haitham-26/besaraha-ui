@@ -18,16 +18,13 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   ...props
 }) => {
-  const variants = {
-    primary:
-      "bg-accent text-white shadow-lg shadow-accent/20 hover:bg-accent/90 border-transparent",
-    secondary:
-      "bg-primary text-white shadow-lg shadow-primary/10 hover:opacity-90 border-transparent",
-    outline:
-      "bg-transparent border-2 border-border text-text-primary hover:bg-surface-muted hover:border-text-muted/30",
-  };
-
   const isDisabled = loading || props.disabled;
+
+  const variants = {
+    primary: `bg-accent text-white shadow-lg shadow-accent/20 ${!isDisabled ? "hover:bg-accent/90" : ""} border-transparent`,
+    secondary: `bg-primary text-white shadow-lg shadow-primary/10 ${!isDisabled ? "hover:opacity-90" : ""} border-transparent`,
+    outline: `bg-transparent border-2 border-border text-text-primary ${!isDisabled ? "hover:bg-surface-muted hover:border-text-muted/30" : ""}`,
+  };
 
   return (
     <button

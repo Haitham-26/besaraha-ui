@@ -49,7 +49,7 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
     try {
       setLoading(true);
       const dto = getValues();
-      await NextClient(`/message/${username}/send-message`, {
+      await NextClient(`/messages/${username}/send-message`, {
         method: "POST",
         data: dto,
       });

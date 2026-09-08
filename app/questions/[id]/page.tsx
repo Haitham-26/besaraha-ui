@@ -38,6 +38,7 @@ export default async function Page({ params }: Props) {
         <QuestionCard
           question={question}
           pathname={`/questions/${question._id}`}
+          normalizedParams={null}
         />
 
         <SignupRequiredModal question={question} />

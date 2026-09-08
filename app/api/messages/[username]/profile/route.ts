@@ -8,7 +8,7 @@ type Context = {
 export async function POST(req: NextRequest, context: Context) {
   const { username } = await context.params;
 
-  return await proxyRequest(`/message/${username}/profile`, {
+  return await proxyRequest(`/messages/${username}/profile`, {
     method: "GET",
   });
 }

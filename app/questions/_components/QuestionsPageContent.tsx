@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/app/components/Spinner";
 import { NextClient } from "@/tools/NextClient";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
+import { Fragment } from "react";
 
 const PATHNAME = "/questions";
 
@@ -88,28 +89,32 @@ export function QuestionsPageContent({
               {isLoading ? <Spinner /> : null}
 
               {questions?.data?.length && !isLoading ? (
-                <div className="space-y-6">
-                  {questions.data.map((question) => (
-                    <QuestionCard
-                      key={question._id}
-                      question={question}
-                      pathname={PATHNAME}
-                      isLast={questions.data.length === 1}
-                    />
-                  ))}
-                </div>
-              ) : (
+                <Fragment>
+                  <div className="space-y-6">
+                    {questions.data.map((question) => (
+                      <QuestionCard
+                        key={question._id}
+                        question={question}
+                        pathname={PATHNAME}
+                        normalizedParams={normalizedParams}
+                      />
+                    ))}
+                  </div>
+
+                  <Pagination
+                    meta={questions?.meta}
+                    pathname={PATHNAME}
+                    searchParams={searchParams}
+                  />
+                </Fragment>
+              ) : null}
+
+              {!questions?.data?.length && !isLoading ? (
                 <Empty
                   title="لا توجد نتائج"
                   description="جرب تغيير فلاتر البحث أو ابدأ بإضافة سؤال جديد."
                 />
-              )}
-
-              <Pagination
-                meta={questions?.meta}
-                pathname={PATHNAME}
-                searchParams={searchParams}
-              />
+              ) : null}
             </div>
           </div>
         </main>

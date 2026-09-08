@@ -23,7 +23,11 @@ import { useSearchParams } from "next/navigation";
 type QuestionCardProps = {
   question: Question;
   pathname: string;
-  isLast?: boolean;
+  normalizedParams: {
+    page: number;
+    limit: number;
+    isPublic?: boolean;
+  } | null;
 };
 
 const REPLIES_LIMIT = 10;
@@ -31,7 +35,7 @@ const REPLIES_LIMIT = 10;
 export default function QuestionCard({
   question,
   pathname,
-  isLast,
+  normalizedParams,
 }: QuestionCardProps) {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
@@ -146,7 +150,10 @@ export default function QuestionCard({
         </div>
       ) : null}
 
-      <QuestionActions question={question} isLast={isLast} />
+      <QuestionActions
+        question={question}
+        normalizedParams={normalizedParams}
+      />
     </div>
   );
 }

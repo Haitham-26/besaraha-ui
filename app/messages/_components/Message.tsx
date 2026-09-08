@@ -17,114 +17,125 @@ import { WarningModal } from "@/app/components/WarningModal";
 import { Toast } from "@/tools/Toast";
 import { NextClient } from "@/tools/NextClient";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
+import { GenericSortType } from "@/model/shared/dto/GenericSortType";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
+import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
   message: MessageModel;
+  normalizedParams: {
+    sort: GenericSortType;
+    isStarred?: boolean;
+    page: number;
+    limit: number;
+  };
 };
 
-export default function Message({ message }: Props) {
+export default function Message({ message, normalizedParams }: Props) {
   const isAnonymous = !message.name;
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCollapsible, setIsCollapsible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const [toggleStarLoading, setToggleStarLoading] = useState(false);
   const [isStarred, setIsStarred] = useState(message?.isStarred);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const textRef = useRef<HTMLParagraphElement>(null);
 
-  const deleteMessage = async () => {
-    try {
-      setDeleteLoading(true);
+  const cachedMessages = queryClient.getQueryData([
+    "messages",
+    normalizedParams,
+  ]) as DataWithMeta<MessageModel>;
 
-      await NextClient("/message/delete", {
+  const navigateToPreviousPageIfNeeded = (isDelete?: boolean) => {
+    const isOnFirstPage = normalizedParams.page === 1;
+    const isIsStarredFilterApplied = normalizedParams.isStarred !== undefined;
+
+    if (isOnFirstPage || (!isDelete && !isIsStarredFilterApplied)) {
+      return;
+    }
+
+    const updatedURL = getUpdatedURLQuery(searchParams, pathname, [
+      { key: "page", value: normalizedParams.page - 1 },
+    ]);
+
+    if (cachedMessages.data.length === 1) {
+      router.replace(updatedURL, { scroll: false });
+    }
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      NextClient("/messages/delete", {
         method: "DELETE",
         data: { messageId: message._id },
+      }),
+
+    onSuccess: async () => {
+      navigateToPreviousPageIfNeeded();
+
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", normalizedParams],
       });
 
-      // setMessagesLoading(true);
-
-      const meta = {
-        page: 1,
-        limit: 10,
-        total: 1,
-      };
-
-      const currentPage = meta?.page || 1;
-      const limit = meta?.limit || 10;
-      const total = (meta?.total || 1) - 1;
-
-      const totalPages = Math.ceil(total / limit);
-
-      const newPage = currentPage > totalPages ? totalPages : currentPage;
-
-      const { data } = await NextClient("/message/messages", {
-        method: "GET",
-        params: {
-          page: newPage,
-          limit,
-          // isStarred: messagesFilters.isStarred,
-          // sort: messagesFilters.sort,
-        },
-      });
-
-      // setMessages(data as DataWithMeta<MessageModel>);
       setDeleteModalVisible(false);
 
       Toast.success("تم حذف الرسالة بنجاح");
-    } catch (e) {
+    },
+
+    onError: (e) => {
       console.log(e);
       Toast.apiError(e);
-    } finally {
-      setDeleteLoading(false);
-      // setMessagesLoading(false);
-    }
-  };
+    },
+  });
 
-  const toggleStar = async () => {
-    try {
-      setToggleStarLoading(true);
-      setIsStarred((prev) => !prev);
-
-      await NextClient(`/message/toggle-star`, {
+  const toggleStarMutation = useMutation({
+    mutationFn: () =>
+      NextClient("/messages/toggle-star", {
         method: "PATCH",
         data: {
           messageId: message._id,
-          isStarred: !message?.isStarred,
+          isStarred: !message.isStarred,
         },
-      });
+      }),
 
-      const { data } = await NextClient("/message/messages", {
-        method: "GET",
-        params: {
-          // page: globalMeta.page,
-          // limit: 10,
-          // isStarred: messagesFilters.isStarred,
-          // sort: messagesFilters.sort,
-        },
-      });
+    onMutate: () => {
+      setIsStarred((prev) => !prev);
+    },
 
-      // setMessages(data as DataWithMeta<MessageModel>);
+    onSuccess: async () => {
+      navigateToPreviousPageIfNeeded();
+
+      await queryClient.invalidateQueries({
+        queryKey: ["messages", normalizedParams],
+      });
 
       Toast.success(
-        message?.isStarred ? "تم إزالة التميز" : "تم تمييز الرسالة بنجاح",
+        message.isStarred ? "تم إلغاء تمييز الرسالة" : "تم تمييز الرسالة بنجاح",
       );
-    } catch (e) {
+    },
+
+    onError: (e) => {
       setIsStarred((prev) => !prev);
 
       console.log(e);
       Toast.apiError(e);
-    } finally {
-      setToggleStarLoading(false);
-    }
-  };
+    },
+  });
 
   useEffect(() => {
     if (textRef.current) {
       const height = textRef.current.scrollHeight;
-      if (height > 70) setIsCollapsible(true);
+
+      if (height > 70) {
+        setIsCollapsible(true);
+      }
     }
   }, [message.message]);
 
@@ -145,7 +156,7 @@ export default function Message({ message }: Props) {
               <Icon icon={isAnonymous ? faUserSecret : faCircleUser} />
             </div>
             <span className="font-black text-xs md:text-sm text-text-primary break-words leading-tight">
-              {message.name || "مجهول"}
+              {message.name}
             </span>
           </div>
 
@@ -174,8 +185,8 @@ export default function Message({ message }: Props) {
             </Dropdown>
 
             <Button
-              onClick={toggleStar}
-              disabled={toggleStarLoading}
+              onClick={() => toggleStarMutation.mutate()}
+              disabled={toggleStarMutation.isPending}
               className={`!w-fit !p-0 !bg-transparent shadow-none border-none ${
                 isStarred
                   ? "!text-amber-500 scale-110"
@@ -228,8 +239,8 @@ export default function Message({ message }: Props) {
         description="بمجرد حذف الرسالة لا يمكن استرجاعها لاحقًا."
         open={deleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
-        onConfirm={deleteMessage}
-        loading={deleteLoading}
+        onConfirm={() => deleteMutation.mutate()}
+        loading={deleteMutation.isPending}
       />
     </div>
   );
