@@ -5,17 +5,17 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { LoginDto } from "@/model/auth/login/LoginDto";
 import { Button } from "@/app/components/Button";
-import { useRouter } from "next/navigation";
 import { Toast } from "@/tools/Toast";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightToBracket";
-import { NextClient } from "@/tools/NextClient";
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
 import { AuthInput } from "../../_components/AuthInput";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export const LoginContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
+  const router = useRouter();
   const { control, handleSubmit, getValues } = useForm<LoginDto>({
     defaultValues: { identifier: "", password: "" },
   });
@@ -25,16 +25,19 @@ export const LoginContent: React.FC = () => {
       setLoading(true);
       const dto = getValues();
 
-      await NextClient("/auth/login", {
-        method: "POST",
-        data: dto,
-        withCredentials: true,
+      const res = await signIn("login", {
+        redirect: false,
+        identifier: dto.identifier,
+        password: dto.password,
       });
 
-      Toast.success("تم تسجيل دخولك بنجاح");
-
-      router.replace("/questions");
-      router.refresh();
+      if (!res?.ok) {
+        Toast.error(res?.error || "حدث خطأ ما");
+      } else {
+        Toast.success("تم تسجيل دخولك بنجاح");
+        router.push("/profile");
+        router.refresh();
+      }
     } catch (e) {
       console.log(e);
       Toast.apiError(e);

@@ -39,7 +39,7 @@ export default async function Page({ params }: Props) {
   try {
     const { data, status } =
       await AuthClient<GetMessageRecipientProfileResponseDto>(
-        `/message/${username}/profile`,
+        `/messages/${username}/profile`,
         { method: "GET" },
       );
     profile = data;

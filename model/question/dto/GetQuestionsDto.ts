@@ -1,7 +1,6 @@
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
-import { GenericWithUserId } from "@/model/shared/dto/GenericWithUserId";
 
-export interface GetQuestionsDto extends GenericWithUserId {
+export interface GetQuestionsDto {
   sort?: GenericSortType;
   isPublic?: boolean;
 }

@@ -1,57 +1,83 @@
-"use client";
+import { getServerSession } from "next-auth";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { GenericSortType } from "@/model/shared/dto/GenericSortType";
+import { getQueryClient } from "../get-query-client";
+import { MessagesPageContent } from "./_components/MessagesPageContent";
+import { authOptions } from "@/lib/auth";
+import { AuthClient } from "@/tools/AuthClient";
+import getToken from "@/tools/getToken";
 
-import MessagesList from "./_components/MessagesList";
-import MessagesCounter from "./_components/MessagesCounter";
-import DeleteAllMessages from "./_components/DeleteAllMessages";
-import { useGlobalContext } from "../questions/context/global-context";
-import { useMemo } from "react";
-import { Pagination } from "../components/Pagination";
+const MESSAGES_LIMIT = 2;
 
-export default function Page() {
-  const {
-    setMessagesLoading,
-    setMessages,
-    messagesFilters: { isStarred, sort },
-  } = useGlobalContext();
+type Props = {
+  searchParams: Promise<{
+    page?: string;
+    isStarred?: string;
+    sort?: string;
+  }>;
+};
 
-  const paginationAction = useMemo(
-    () => ({
-      endpoint: "/message/messages",
-      method: "GET" as const,
-      data: { isStarred, sort },
-    }),
-    [isStarred, sort],
-  );
+export default async function Page({ searchParams: _searchParams }: Props) {
+  const [session, token, searchParams] = await Promise.all([
+    getServerSession(authOptions),
+    getToken(),
+    _searchParams,
+  ]);
+
+  const queryClient = getQueryClient();
+
+  const page = Number(searchParams.page);
+
+  const normalizedParams = {
+    page: Number.isInteger(page) && page > 0 ? page : 1,
+    limit: MESSAGES_LIMIT,
+
+    ...(searchParams.isStarred &&
+    ["true", "false"].includes(searchParams.isStarred)
+      ? {
+          isStarred: searchParams.isStarred === "true",
+        }
+      : {}),
+
+    sort: Object.values(GenericSortType).includes(
+      searchParams.sort as GenericSortType,
+    )
+      ? (searchParams.sort as GenericSortType)
+      : GenericSortType.NEWEST,
+  };
+
+  const currentSearchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (value !== undefined) {
+      currentSearchParams.set(key, value);
+    }
+  }
+
+  if (session?.user?._id) {
+    await queryClient.prefetchQuery({
+      queryKey: ["messages", normalizedParams],
+      queryFn: async () => {
+        const { data } = await AuthClient(
+          "/messages",
+          {
+            method: "GET",
+            params: normalizedParams,
+          },
+          token,
+        );
+        return data;
+      },
+      staleTime: 0,
+    });
+  }
 
   return (
-    <div className="w-full bg-surface-muted p-4 pt-6 md:p-8 lg:p-12 relative">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <MessagesCounter />
-
-        <div className="lg:col-span-8">
-          <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col overflow-hidden">
-            <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
-              <h2 className="font-bold text-text-primary flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                الرسائل الأخيرة
-              </h2>
-
-              <DeleteAllMessages />
-            </div>
-
-            <div className="flex-1 p-6 md:p-8">
-              <MessagesList />
-
-              <Pagination
-                setData={setMessages}
-                setLoading={setMessagesLoading}
-                action={paginationAction}
-                limit={10}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <MessagesPageContent
+        searchParams={currentSearchParams}
+        normalizedParams={normalizedParams}
+      />
+    </HydrationBoundary>
   );
 }

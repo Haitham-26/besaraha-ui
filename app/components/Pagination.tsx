@@ -1,127 +1,89 @@
-"use client";
-
-import React, { useCallback, useEffect } from "react";
-import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "./Button";
-import { NextClient } from "@/tools/NextClient";
+import React from "react";
+import Link from "next/link";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
+import { faAngleLeft } from "@fortawesome/free-solid-svg-icons/faAngleLeft";
+import { Icon } from "./Icon";
 import { PageMeta } from "@/model/shared/types/PageMeta";
-import { useGlobalContext } from "../questions/context/global-context";
 
-const getButtonStyles = (active?: boolean) => {
+const getLinkStyles = (active?: boolean) => {
   const base =
-    "w-10 h-10 !p-2 flex items-center justify-center rounded-xl border transition-all shadow-none";
+    "w-10 h-10 p-2 flex items-center justify-center rounded-xl border transition-all shadow-none";
 
   if (active) {
-    return `${base} !bg-accent !text-white !border-accent`;
+    return `${base} bg-accent text-white border-accent`;
   }
-  return `${base} !bg-surface !border-border !text-text-muted hover:!border-accent hover:!text-accent`;
+
+  return `${base} bg-surface border-border text-text-muted hover:border-accent hover:text-accent`;
 };
 
 type PaginationProps = {
-  setData: (data: any) => void;
-  setLoading: (loading: boolean) => void;
-  action: {
-    endpoint: string;
-    data?: Record<string, any>;
-    method?: "POST" | "GET";
-  };
-  limit?: number;
+  meta?: PageMeta;
+  pathname: string;
+  searchParams: URLSearchParams;
 };
 
 export const Pagination: React.FC<PaginationProps> = ({
-  setData,
-  setLoading,
-  action,
-  limit = 5,
+  meta,
+  pathname,
+  searchParams,
 }) => {
-  const { globalMeta, setGlobalMeta, messagesFilters } = useGlobalContext();
-
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1) {
-      setGlobalMeta((prev) => ({ ...prev, page: newPage }));
-    }
-  };
-
-  const onFetch = useCallback(
-    async (pageNumber: number) => {
-      try {
-        setLoading(true);
-
-        const { endpoint, ...restActionProps } = action;
-
-        const { data } = await NextClient<{ data: any[]; meta: PageMeta }>(
-          endpoint,
-          {
-            ...restActionProps,
-            data: { ...restActionProps?.data, page: pageNumber, limit },
-            params: {
-              page: pageNumber,
-              limit,
-              isStarred: messagesFilters.isStarred,
-              sort: messagesFilters.sort,
-            },
-          },
-        );
-
-        setData(data);
-        setGlobalMeta((prev) => ({ ...prev, hasNext: data.meta?.hasNext }));
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [
-      action,
-      limit,
-      setData,
-      setLoading,
-      setGlobalMeta,
-      messagesFilters.isStarred,
-      messagesFilters.sort,
-    ],
-  );
-
-  useEffect(() => {
-    onFetch(globalMeta.page);
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [globalMeta.page, onFetch]);
-
-  if (globalMeta.total <= globalMeta.limit) {
+  if (!meta || meta.total <= meta.limit) {
     return null;
   }
 
+  const getPageUrl = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set("page", String(page));
+
+    return `${pathname}?${params.toString()}`;
+  };
+
   return (
     <div className="flex items-center justify-center gap-2 mt-8 pb-12">
-      <Button
-        icon={faAngleRight}
-        disabled={globalMeta.page === 1}
-        onClick={() => handlePageChange(globalMeta.page - 1)}
-        className={getButtonStyles(false)}
-      />
+      {meta.page > 1 ? (
+        <Link
+          href={getPageUrl(meta.page - 1)}
+          className={getLinkStyles()}
+          aria-label="الصفحة السابقة"
+        >
+          <Icon icon={faAngleRight} />
+        </Link>
+      ) : (
+        <span className={`${getLinkStyles()} opacity-40 cursor-not-allowed`}>
+          <Icon icon={faAngleRight} />
+        </span>
+      )}
 
       <div className="flex items-center gap-2">
         {Array.from(
-          { length: Math.ceil(globalMeta.total / globalMeta.limit) },
+          { length: Math.ceil(meta.total / meta.limit) },
           (_, i) => i + 1,
-        ).map((p) => (
-          <Button
-            key={p}
-            onClick={() => handlePageChange(p)}
-            className={getButtonStyles(p === globalMeta.page)}
+        ).map((page) => (
+          <Link
+            key={page}
+            href={getPageUrl(page)}
+            className={getLinkStyles(page === meta.page)}
+            aria-current={page === meta.page ? "page" : undefined}
           >
-            <span className="text-xs font-black">{p}</span>
-          </Button>
+            <span className="text-xs font-black">{page}</span>
+          </Link>
         ))}
       </div>
 
-      <Button
-        icon={faAngleLeft}
-        disabled={!globalMeta.hasNext}
-        onClick={() => handlePageChange(globalMeta.page + 1)}
-        className={getButtonStyles(false)}
-      />
+      {meta.hasNext ? (
+        <Link
+          href={getPageUrl(meta.page + 1)}
+          className={getLinkStyles()}
+          aria-label="الصفحة التالية"
+        >
+          <Icon icon={faAngleLeft} />
+        </Link>
+      ) : (
+        <span className={`${getLinkStyles()} opacity-40 cursor-not-allowed`}>
+          <Icon icon={faAngleLeft} />
+        </span>
+      )}
     </div>
   );
 };
