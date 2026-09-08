@@ -1,3 +1,5 @@
+"use client";
+
 import { Fragment } from "react";
 import QuestionCard from "../../_components/QuestionCard";
 import { useQuery } from "@tanstack/react-query";

@@ -2,7 +2,7 @@ import { AuthClient } from "@/tools/AuthClient";
 import { getQueryClient } from "@/app/get-query-client";
 import PublicQuestionsPageContent from "./_components/PublicQuestionsPageContent";
 
-const QUESTIONS_LIMIT = 10;
+const QUESTIONS_LIMIT = 5;
 
 export default async function Page({
   searchParams,
