@@ -8,6 +8,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./Providers";
 import Footer from "./components/Footer";
+import { MobilePrivateBottomBar } from "./components/MobilePrivateBottomBar";
 
 config.autoAddCss = false;
 
@@ -30,11 +31,11 @@ export default async function RootLayout({
       <body
         className={`${cairoFont.className} min-h-screen flex flex-col overflow-y-auto bg-secondary`}
       >
-        <Header token={token} />
-        <main className="pt-16 flex-grow flex">
-          <Providers>{children}</Providers>
-        </main>
-        {!token ? <Footer /> : null}
+        <Providers>
+          <Header token={token} />
+          <main className="pt-16 flex-grow flex">{children}</main>
+          {token ? <MobilePrivateBottomBar /> : <Footer />}
+        </Providers>
 
         <Toaster position="top-left" />
       </body>

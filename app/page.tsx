@@ -9,15 +9,10 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 
 export default function Page() {
   return (
-    <div className="w-full bg-background text-text-primary selection:bg-accent/20">
-      <section className="relative pt-16 pb-20 overflow-hidden">
+    <main className="w-full bg-background text-text-primary selection:bg-accent/20">
+      <section className="relative pt-24 pb-20 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           <div className="lg:col-span-7 space-y-8 text-right">
-            <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 px-4 py-2 rounded-xl">
-              <span className="text-[10px] font-black uppercase tracking-widest text-accent text-dir-ltr">
-                BeSaraha v1.0
-              </span>
-            </div>
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-primary">
               رسائل <span className="text-accent">سرية</span> وأسئلة تفاعلية.
             </h1>
@@ -100,6 +95,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

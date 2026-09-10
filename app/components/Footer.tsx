@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/app/components/Icon";
-import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons/faShieldHalved";
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
 import { faLinkedinIn } from "@fortawesome/free-brands-svg-icons/faLinkedinIn";
@@ -52,7 +51,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#0f172a] border-t border-white/10 mt-auto overflow-hidden">
-      <div className="mx-auto px-4 md:px-10 py-16">
+      <div className="max-w-6xl mx-auto p-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           <div className="md:col-span-4 space-y-8 text-right">
             <Link href="/" className="inline-block">
@@ -148,9 +147,7 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs font-bold text-slate-400 flex items-center gap-2">
-            تم التطوير بكل
-            <Icon icon={faHeart} className="text-accent animate-pulse" />
-            بواسطة هيثم &copy; {currentYear}
+            تم التطوير بواسطة هيثم &copy; {currentYear}
           </p>
         </div>
       </div>
