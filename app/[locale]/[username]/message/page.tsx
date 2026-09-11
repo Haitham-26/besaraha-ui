@@ -1,7 +1,6 @@
 import { GetMessageRecipientProfileResponseDto } from "@/model/message/GetMessageRecipientProfileResponseDto";
 import { AuthClient } from "@/tools/AuthClient";
 import getToken from "@/tools/getToken";
-import { redirect } from "next/navigation";
 import { SendMessageForm } from "../_components/SendMessageForm";
 import { Icon } from "@/app/components/Icon";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
@@ -10,16 +9,29 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { User } from "@/model/user/User";
 import Image from "next/image";
+import { redirect } from "@/i18n/navigation";
+import { cookies } from "next/headers";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type Props = {
   params: Promise<{ username: string }>;
 };
 
 export default async function Page({ params }: Props) {
-  const [{ username }, token] = await Promise.all([params, getToken()]);
+  const [{ username }, token, _cookies] = await Promise.all([
+    params,
+    getToken(),
+    cookies(),
+  ]);
+
+  const goHome = () =>
+    redirect({
+      href: "/",
+      locale: _cookies.get("locale")?.value || AppLangs.EN,
+    });
 
   if (!username) {
-    redirect("/");
+    goHome();
   }
 
   let user: User | null = null;
@@ -33,7 +45,7 @@ export default async function Page({ params }: Props) {
   }
 
   if (user?.username === username) {
-    redirect("/");
+    goHome();
   }
 
   try {
@@ -45,14 +57,14 @@ export default async function Page({ params }: Props) {
     profile = data;
 
     if (status !== 200) {
-      redirect("/");
+      goHome();
     }
   } catch (e) {
     console.log(e);
   }
 
   if (!profile) {
-    redirect("/");
+    goHome();
   }
 
   return (
@@ -107,7 +119,7 @@ export default async function Page({ params }: Props) {
           <div className="lg:col-span-7">
             <div className="relative group">
               <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[4rem] p-8 md:p-14 shadow-2xl relative">
-                <SendMessageForm username={profile?.username} />
+                <SendMessageForm username={profile!.username} />
               </div>
 
               <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">

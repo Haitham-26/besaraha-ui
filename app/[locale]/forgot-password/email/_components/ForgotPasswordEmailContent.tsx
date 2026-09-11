@@ -2,10 +2,10 @@
 
 import { AuthInput } from "@/app/components/AuthInput";
 import { Button } from "@/app/components/Button";
+import { useRouter } from "@/i18n/navigation";
 import { ForgotPasswordEmailDto } from "@/model/auth/forgot-password/dto/ForgotPasswordEmailDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
-import { useRouter } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -35,7 +35,7 @@ export const ForgotPasswordEmailContent: React.FC = () => {
 
       reset();
 
-      router.replace(`/auth/forgot-password/token?email=${email}`);
+      router.replace(`/forgot-password/token?email=${email}`);
     } catch (e) {
       console.log(e);
       Toast.apiError(e);

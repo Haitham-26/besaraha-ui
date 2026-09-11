@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
-import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { LoginDto } from "@/model/auth/login/LoginDto";
 import { Button } from "@/app/components/Button";
@@ -10,7 +9,7 @@ import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrow
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
 import { AuthInput } from "../../../components/AuthInput";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 
 export const LoginContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -87,7 +86,7 @@ export const LoginContent: React.FC = () => {
           />
 
           <Link
-            href={"/auth/forgot-password/email"}
+            href={"/forgot-password/email"}
             className="text-accent font-bold text-xs ms-auto mt-2 inline-block"
           >
             نسيت كلمة السر؟
@@ -116,7 +115,7 @@ export const LoginContent: React.FC = () => {
         <GoogleLoginButton title="تسجيل دخول باستخدام جوجل" />
 
         <Link
-          href="/auth/signup"
+          href="/signup"
           className="group text-center py-5 px-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500"
         >
           <span className="text-slate-400 font-medium">ليس لديك حساب؟ </span>

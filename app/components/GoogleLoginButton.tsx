@@ -3,7 +3,8 @@ import { signIn } from "next-auth/react";
 import { Button } from "./Button";
 import Image from "next/image";
 import { Toast } from "@/tools/Toast";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 
 type Props = {
   title: string;

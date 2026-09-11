@@ -8,7 +8,8 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
 import { Icon } from "@/app/components/Icon";
 import { Button } from "@/app/components/Button";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 
 type SignupRequiredModalProps = {
   question: Question;

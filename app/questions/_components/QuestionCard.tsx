@@ -41,7 +41,7 @@ export default function QuestionCard({
   const searchParams = useSearchParams();
 
   const isOnProfilePage = pathname === "/questions";
-  const isListView = isOnProfilePage || pathname === "/questions/public";
+  const isListView = isOnProfilePage || pathname === "/public-questions";
 
   const userId = session?.user?._id;
   const isOwner = question.userId === userId;

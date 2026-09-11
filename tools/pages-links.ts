@@ -7,13 +7,13 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 const privateLinks = [
   { title: "الرسائل الواردة", path: "/messages", icon: faMessage },
   { title: "أسئلتي", path: "/questions", icon: faComments },
-  { title: "أسئلة المنتدى", path: "/questions/public", icon: faBolt },
+  { title: "أسئلة المنتدى", path: "/public-questions", icon: faBolt },
 ];
 
 const publicLinks = [
   { title: "الرئيسية", path: "/", icon: faHouse },
   { title: "كيفية الاستخدام", path: "/how-it-works", icon: faCircleQuestion },
-  { title: "أسئلة المنتدى", path: "/questions/public", icon: faBolt },
+  { title: "أسئلة المنتدى", path: "/public-questions", icon: faBolt },
 ];
 
 export { privateLinks, publicLinks };

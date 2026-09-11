@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@/app/components/Icon";
 import { faShieldHalved } from "@fortawesome/free-solid-svg-icons/faShieldHalved";
@@ -7,6 +6,7 @@ import { faLinkedinIn } from "@fortawesome/free-brands-svg-icons/faLinkedinIn";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons/faInstagram";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons/faEnvelope";
+import { Link } from "@/i18n/navigation";
 
 const socialLinks = [
   {
@@ -37,11 +37,11 @@ const publicLinks = [
     title: "كيفية الاستخدام",
   },
   {
-    path: "/auth/signup",
+    path: "/signup",
     title: "إنشاء حساب",
   },
   {
-    path: "/auth/login",
+    path: "/login",
     title: "تسجيل الدخول",
   },
 ];

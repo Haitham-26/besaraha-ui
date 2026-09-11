@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { faEnvelopeOpenText } from "@fortawesome/free-solid-svg-icons/faEnvelopeOpenText";
-import Link from "next/link";
 
 import { Button } from "@/app/components/Button";
 import { NextClient } from "@/tools/NextClient";
@@ -15,6 +13,7 @@ import { Icon } from "@/app/components/Icon";
 import { SignUpVerifyTokenDto } from "@/model/auth/signup/SignUpVerifyTokenDto";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 import { signIn } from "next-auth/react";
+import { Link, useRouter } from "@/i18n/navigation";
 
 type SignUpTokenContentProps = {
   email: string;
@@ -119,7 +118,7 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
       </Button>
 
       <Link
-        href="/auth/signup"
+        href="/signup"
         className="mt-8 text-sm font-semibold text-text-muted hover:text-white transition-colors"
       >
         تغيير البريد الإلكتروني

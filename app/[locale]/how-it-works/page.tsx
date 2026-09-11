@@ -4,8 +4,8 @@ import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
 import { faUserSecret } from "@fortawesome/free-solid-svg-icons/faUserSecret";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
-import Link from "next/link";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons/faLightbulb";
+import { Link } from "@/i18n/navigation";
 
 export default function Page() {
   const userSteps = [
@@ -134,7 +134,7 @@ export default function Page() {
           </p>
           <div className="flex justify-center">
             <Link
-              href="/auth/signup"
+              href="/signup"
               target="_blank"
               className="px-16 py-4 bg-primary text-secondary rounded-2xl font-black text-base hover:bg-accent hover:scale-105 transition-all shadow-2xl shadow-primary/20"
             >

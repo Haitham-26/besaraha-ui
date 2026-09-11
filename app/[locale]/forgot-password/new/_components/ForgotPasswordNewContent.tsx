@@ -2,10 +2,11 @@
 
 import { AuthInput } from "@/app/components/AuthInput";
 import { Button } from "@/app/components/Button";
+import { useRouter } from "@/i18n/navigation";
 import { ForgotPasswordNewDto } from "@/model/auth/forgot-password/dto/ForgotPasswordNewDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -45,7 +46,7 @@ export const ForgotPasswordNewContent: React.FC = () => {
 
       Toast.success("تمت إعادة تعيين كلمة المرور بنجاح");
 
-      router.replace("/auth/login");
+      router.replace("/login");
     } catch (e) {
       console.log(e);
       Toast.apiError(e);
@@ -59,7 +60,7 @@ export const ForgotPasswordNewContent: React.FC = () => {
     const token = searchParams.get("token");
 
     if (!email || !token) {
-      router.replace("/auth/forgot-password/email");
+      router.replace("/forgot-password/email");
     }
   }, [reset, router, searchParams]);
 

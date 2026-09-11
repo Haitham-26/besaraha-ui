@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Icon } from "@/app/components/Icon";
 import { faMessage } from "@fortawesome/free-solid-svg-icons/faMessage";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
@@ -6,6 +5,7 @@ import { faAt } from "@fortawesome/free-solid-svg-icons/faAt";
 import { faQuoteRight } from "@fortawesome/free-solid-svg-icons/faQuoteRight";
 import { faReply } from "@fortawesome/free-solid-svg-icons/faReply";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
+import { Link } from "@/i18n/navigation";
 
 export default function Page() {
   return (
@@ -22,7 +22,7 @@ export default function Page() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
-                href="/auth/signup"
+                href="/signup"
                 className="h-16 px-10 bg-primary text-secondary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-accent transition-all shadow-xl shadow-primary/20"
               >
                 ابدأ الآن

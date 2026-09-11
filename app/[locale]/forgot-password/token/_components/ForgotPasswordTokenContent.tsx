@@ -3,11 +3,12 @@
 import { Button } from "@/app/components/Button";
 import { OTPInput } from "@/app/components/OTPInput";
 import { ResendTokenButton } from "@/app/components/ResendTokenButton";
+import { useRouter } from "@/i18n/navigation";
 import { ForgotPasswordTokenDto } from "@/model/auth/forgot-password/dto/ForgotPasswordTokenDto";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -68,7 +69,7 @@ export const ForgotPasswordTokenContent: React.FC = () => {
     const email = searchParams.get("email");
 
     if (!email) {
-      router.replace("/auth/forgot-password/email");
+      router.replace("/forgot-password/email");
     }
   }, [searchParams, router, reset]);
 

@@ -2,9 +2,10 @@
 
 import { privateLinks } from "@/tools/pages-links";
 import Link from "next/link";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import React from "react";
 import { Icon } from "./Icon";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { faGear } from "@fortawesome/free-solid-svg-icons/faGear";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 import Image from "next/image";
@@ -46,15 +47,31 @@ export const MobilePrivateBottomBar: React.FC = () => {
         )}
       </Link>
 
-      {privateLinks.map((link) => (
-        <Link
-          key={link.path}
-          href={link.path}
-          className={getNavLinkClass(pathname, link.path)}
-        >
-          <Icon icon={link.icon} size="lg" />
-        </Link>
-      ))}
+      {privateLinks.map((link) => {
+        const isPublicQuestions = link.path === "/public-questions";
+
+        if (isPublicQuestions) {
+          return (
+            <LocaleLink
+              key={link.path}
+              href={link.path}
+              className={getNavLinkClass(pathname, link.path)}
+            >
+              <Icon icon={link.icon} size="lg" />
+            </LocaleLink>
+          );
+        }
+
+        return (
+          <Link
+            key={link.path}
+            href={link.path}
+            className={getNavLinkClass(pathname, link.path)}
+          >
+            <Icon icon={link.icon} size="lg" />
+          </Link>
+        );
+      })}
 
       <Link
         href={"/settings"}

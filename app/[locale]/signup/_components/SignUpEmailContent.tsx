@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Fragment, useState } from "react";
-import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/app/components/Button";
 import { SignUpEmailDto } from "@/model/auth/signup/SignUpEmailDto";
@@ -11,8 +10,8 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
 import { Icon } from "@/app/components/Icon";
 import { NextClient } from "@/tools/NextClient";
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
-import { useRouter } from "next/navigation";
 import { AuthInput } from "../../../components/AuthInput";
+import { Link, useRouter } from "@/i18n/navigation";
 
 export const SignUpEmailContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -149,7 +148,7 @@ export const SignUpEmailContent: React.FC = () => {
         <GoogleLoginButton title="تسجيل باستخدام جوجل" />
 
         <Link
-          href="/auth/login"
+          href="/login"
           className="group text-center py-5 px-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500"
         >
           <span className="text-slate-400 font-medium">لديك حساب بالفعل؟ </span>

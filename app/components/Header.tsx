@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import React, { Fragment, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import { LogoutButton } from "./LogoutButton";
 import { Drawer } from "./Drawer";
 import { Button } from "./Button";
@@ -15,6 +13,8 @@ import { Icon } from "./Icon";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 import { faGear } from "@fortawesome/free-solid-svg-icons/faGear";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
+import { Link as LocaleLink, usePathname } from "@/i18n/navigation";
+import Link from "next/link";
 
 const popoverItemClass =
   "flex items-center gap-2 px-4 py-2 font-bold text-slate-300 cursor-pointer hover:text-white hover:bg-white/5";
@@ -35,7 +35,79 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
 
   const isOnAuthPage = pathname.startsWith("/auth/");
 
+  const links = token ? privateLinks : publicLinks;
+
+  const LinkToUse = token ? Link : LocaleLink;
+
+  const DesktopNavLinks = () => (
+    <Fragment>
+      {links.map((link) => {
+        const active = pathname === link.path;
+        const isPublicQuestions = link.path === "/public-questions";
+
+        if (isPublicQuestions) {
+          return (
+            <LocaleLink
+              key={link.path}
+              href={link.path}
+              className={`group relative flex items-center gap-2 px-4 py-2 font-bold transition-colors duration-200 ${
+                active ? "text-accent" : "text-slate-300 hover:text-white"
+              }`}
+            >
+              <span>{link.title}</span>
+              <span
+                className={`absolute inset-x-3 -bottom-1 h-[2px] rounded-full bg-accent transition-opacity duration-200 ${
+                  active ? "opacity-100" : "opacity-0 group-hover:opacity-40"
+                }`}
+              />
+            </LocaleLink>
+          );
+        }
+
+        return (
+          <LinkToUse
+            key={link.path}
+            href={link.path}
+            className={`group relative flex items-center gap-2 px-4 py-2 font-bold transition-colors duration-200 ${
+              active ? "text-accent" : "text-slate-300 hover:text-white"
+            }`}
+          >
+            <span>{link.title}</span>
+            <span
+              className={`absolute inset-x-3 -bottom-1 h-[2px] rounded-full bg-accent transition-opacity duration-200 ${
+                active ? "opacity-100" : "opacity-0 group-hover:opacity-40"
+              }`}
+            />
+          </LinkToUse>
+        );
+      })}
+    </Fragment>
+  );
+
+  const DrawerNavLinks = () => (
+    <Fragment>
+      {links.map((link) => (
+        <LinkToUse
+          key={link.path}
+          href={link.path}
+          onClick={() => setOpen(false)}
+          className={`flex items-center gap-3 w-full px-5 py-3 rounded-xl font-bold transition-colors ${
+            pathname === link.path
+              ? "bg-accent/15 text-accent"
+              : "text-slate-300 hover:text-white hover:bg-white/5"
+          }`}
+        >
+          <span>{link.title}</span>
+        </LinkToUse>
+      ))}
+    </Fragment>
+  );
+
   useEffect(() => {
+    if (isOnAuthPage || token) {
+      return;
+    }
+
     let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
@@ -58,52 +130,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
-
-  const links = token ? privateLinks : publicLinks;
-
-  const DesktopNavLinks = () => (
-    <Fragment>
-      {links.map((link) => {
-        const active = pathname === link.path;
-        return (
-          <Link
-            key={link.path}
-            href={link.path}
-            className={`group relative flex items-center gap-2 px-4 py-2 font-bold transition-colors duration-200 ${
-              active ? "text-accent" : "text-slate-300 hover:text-white"
-            }`}
-          >
-            <span>{link.title}</span>
-            <span
-              className={`absolute inset-x-3 -bottom-1 h-[2px] rounded-full bg-accent transition-opacity duration-200 ${
-                active ? "opacity-100" : "opacity-0 group-hover:opacity-40"
-              }`}
-            />
-          </Link>
-        );
-      })}
-    </Fragment>
-  );
-
-  const DrawerNavLinks = () => (
-    <Fragment>
-      {links.map((link) => (
-        <Link
-          key={link.path}
-          href={link.path}
-          onClick={() => setOpen(false)}
-          className={`flex items-center gap-3 w-full px-5 py-3 rounded-xl font-bold transition-colors ${
-            pathname === link.path
-              ? "bg-accent/15 text-accent"
-              : "text-slate-300 hover:text-white hover:bg-white/5"
-          }`}
-        >
-          <span>{link.title}</span>
-        </Link>
-      ))}
-    </Fragment>
-  );
+  }, [isOnAuthPage, token]);
 
   return (
     <header className="fixed top-0 w-full z-50 bg-[#0f172a]/95 backdrop-blur-md border-b border-white/10">
@@ -116,7 +143,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
           }`}
         >
           <div className="flex items-center justify-between h-20 gap-4">
-            <Link href="/" className="flex items-center shrink-0">
+            <LinkToUse href="/" className="flex items-center shrink-0">
               <Image
                 src="/images/logo.png"
                 alt="بصراحة"
@@ -125,7 +152,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                 quality={100}
                 className="brightness-110"
               />
-            </Link>
+            </LinkToUse>
 
             <nav className="hidden lg:flex items-center gap-1">
               <DesktopNavLinks />
@@ -185,18 +212,18 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                 </Fragment>
               ) : (
                 <div className="hidden lg:flex items-center gap-3">
-                  <Link
-                    href="/auth/login"
+                  <LocaleLink
+                    href="/login"
                     className="rounded-xl px-5 py-2.5 font-bold text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
                   >
                     تسجيل الدخول
-                  </Link>
-                  <Link
-                    href="/auth/signup"
+                  </LocaleLink>
+                  <LocaleLink
+                    href="/signup"
                     className="flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 font-bold text-white shadow-lg shadow-accent/20 transition-all hover:-translate-y-0.5 hover:bg-accent/90"
                   >
                     <span>إنشاء حساب</span>
-                  </Link>
+                  </LocaleLink>
                 </div>
               )}
 
@@ -215,18 +242,18 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
           <div
             className={`grid grid-cols-2 gap-2 pb-3 ${hideTopRow ? "pt-3" : ""} lg:hidden`}
           >
-            <Link
-              href="/auth/login"
+            <LocaleLink
+              href="/login"
               className="flex items-center justify-center rounded-xl px-4 py-2.5 text-center font-bold text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
             >
               تسجيل الدخول
-            </Link>
-            <Link
-              href="/auth/signup"
+            </LocaleLink>
+            <LocaleLink
+              href="/signup"
               className="flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-center font-bold text-white shadow-lg shadow-accent/20 transition-all hover:bg-accent/90"
             >
               إنشاء حساب
-            </Link>
+            </LocaleLink>
           </div>
         ) : null}
       </div>

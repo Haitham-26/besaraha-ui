@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
-import QuestionCard from "../../../../questions/_components/QuestionCard";
+import QuestionCard from "../../../questions/_components/QuestionCard";
 import { useQuery } from "@tanstack/react-query";
 import { NextClient } from "@/tools/NextClient";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
@@ -46,7 +46,7 @@ export default function PublicQuestionsPageContent({
               <QuestionCard
                 key={question._id}
                 question={question}
-                pathname="/questions/public"
+                pathname="/public-questions"
                 normalizedParams={normalizedParams}
               />
             ))
@@ -61,8 +61,9 @@ export default function PublicQuestionsPageContent({
 
       <Pagination
         meta={questions?.meta}
-        pathname={"/questions/public"}
+        pathname={"/public-questions"}
         searchParams={searchParams}
+        shouldUseLocalePrefix
       />
     </Fragment>
   );
