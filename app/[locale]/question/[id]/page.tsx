@@ -2,8 +2,8 @@ import { Question } from "@/model/question/Question";
 import getToken from "@/tools/getToken";
 import { notFound } from "next/navigation";
 import { AuthClient } from "@/tools/AuthClient";
-import QuestionCard from "../_components/QuestionCard";
 import { SignupRequiredModal } from "./_components/SignupRequiredModal";
+import QuestionCard from "@/app/questions/_components/QuestionCard";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -37,7 +37,7 @@ export default async function Page({ params }: Props) {
       <div className="md:max-w-2xl mx-auto">
         <QuestionCard
           question={question}
-          pathname={`/questions/${question._id}`}
+          pathname={`/question/${question._id}`}
           normalizedParams={null}
         />
 

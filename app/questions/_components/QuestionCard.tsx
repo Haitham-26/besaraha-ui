@@ -11,7 +11,7 @@ import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons/faEarthAmeric
 
 import { formattedDate } from "@/tools/Date";
 import QuestionReply from "./replies/QuestionReply";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Icon } from "@/app/components/Icon";
 import { QuestionActions } from "./QuestionActions";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
@@ -97,7 +97,7 @@ export default function QuestionCard({
 
       {isListView ? (
         <Link
-          href={`/questions/${question._id}`}
+          href={`/question/${question._id}`}
           className="group/title flex items-center justify-between gap-3"
         >
           <h2 className="text-lg font-bold text-text-primary leading-snug line-clamp-2 group-hover/title:text-accent transition-colors">
@@ -135,6 +135,7 @@ export default function QuestionCard({
                 meta={replies.meta}
                 pathname={pathname}
                 searchParams={searchParams}
+                shouldUseLocalePrefix
               />
             </div>
           ) : (

@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
+import { useLocale } from "next-intl";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
@@ -46,6 +47,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const locale = useLocale();
 
   const cachedQuestions = queryClient.getQueryData([
     "questions",
@@ -151,7 +153,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
 
   const onShare = () => {
     navigator.clipboard.writeText(
-      `${window.location.origin}/questions/${question._id}`,
+      `${window.location.origin}/${locale}/questions/${question._id}`,
     );
 
     Toast.success("تم نسخ الرابط بنجاح");

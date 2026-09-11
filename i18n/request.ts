@@ -6,6 +6,8 @@ import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 export default getRequestConfig(async ({ requestLocale }) => {
   const urlLocale = await requestLocale;
 
+  console.log("url locale ----------------", urlLocale);
+
   if (urlLocale && routing.locales.includes(urlLocale as AppLangs)) {
     return {
       locale: urlLocale,

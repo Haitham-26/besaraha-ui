@@ -10,6 +10,7 @@ import { Icon } from "@/app/components/Icon";
 import { Button } from "@/app/components/Button";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 type SignupRequiredModalProps = {
   question: Question;
@@ -20,9 +21,10 @@ export const SignupRequiredModal: React.FC<SignupRequiredModalProps> = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
 
   const navigaettWithRedirection = (path: string) => {
-    localStorage.setItem("redirect", `/questions/${question._id}`);
+    localStorage.setItem("redirect", `/${locale}/questions/${question._id}`);
     router.push(`/auth/${path}`);
   };
 
@@ -31,7 +33,7 @@ export const SignupRequiredModal: React.FC<SignupRequiredModalProps> = ({
       title="انضم إلينا"
       open={searchParams.get("showRegisterModal") === "true"}
       onClose={() =>
-        router.push(`/questions/${question._id}`, { scroll: false })
+        router.push(`/question/${question._id}`, { scroll: false })
       }
     >
       <div className="flex flex-col items-center text-center">
