@@ -9,7 +9,7 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { User } from "@/model/user/User";
 import Image from "next/image";
-import { redirect } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import { cookies } from "next/headers";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
@@ -54,6 +54,7 @@ export default async function Page({ params }: Props) {
         `/messages/${username}/profile`,
         { method: "GET" },
       );
+
     profile = data;
 
     if (status !== 200) {
@@ -94,6 +95,7 @@ export default async function Page({ params }: Props) {
                   )}
                 </div>
               </div>
+
               <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-accent rounded-3xl flex items-center justify-center shadow-xl shadow-accent/20 -rotate-12 border-4 border-[#0f172a]">
                 <Icon icon={faBolt} className="text-xl" />
               </div>
@@ -104,12 +106,14 @@ export default async function Page({ params }: Props) {
                 <Icon icon={faLock} className="text-[10px]" />
                 مساحة آمنة
               </div>
+
               <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-tight">
                 أرسل مصارحة لـ <br />
                 <span className="text-accent underline decoration-white/10 underline-offset-8 italic">
                   {profile?.name}
                 </span>
               </h1>
+
               <p className="text-slate-400 text-xl font-medium leading-relaxed">
                 قل ما يدور في ذهنك بصدق. التشفير يحمي هويتك تماماً.
               </p>
@@ -127,17 +131,46 @@ export default async function Page({ params }: Props) {
                   <div className="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center text-accent">
                     <Icon icon={faShieldHeart} />
                   </div>
+
                   <span className="text-sm font-bold text-slate-300">
                     مجهول 100%
                   </span>
                 </div>
+
                 <div className="p-6 bg-white/5 border border-white/10 rounded-[2.5rem] flex items-center gap-4 group hover:bg-white/[0.08] transition-all">
                   <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-slate-400">
                     <Icon icon={faBolt} />
                   </div>
+
                   <span className="text-sm font-bold text-slate-300">
                     وصول فوري
                   </span>
+                </div>
+              </div>
+
+              {/* Get your own confession link */}
+              <div className="mt-8 p-8 bg-accent/[0.08] border border-accent/20 rounded-[2.5rem] text-center relative overflow-hidden">
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-accent/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-accent/10 rounded-full blur-2xl" />
+
+                <div className="relative space-y-3">
+                  <h2 className="text-2xl font-black tracking-tight">
+                    دورك الآن 👀
+                  </h2>
+
+                  <p className="text-slate-400 font-medium leading-relaxed max-w-md mx-auto">
+                    احصل على رابطك الخاص
+                    <span className="text-accent font-bold"> مجاناً </span>
+                    وابدأ باستقبال المصارحات الآن!.
+                  </p>
+
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center justify-center gap-2 mt-3 px-7 py-3.5 bg-accent text-white font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20"
+                  >
+                    احصل على رابطك الآن
+                    <Icon icon={faBolt} className="text-sm" />
+                  </Link>
                 </div>
               </div>
             </div>
