@@ -19,6 +19,8 @@ import { QuestionReplyForm } from "./replies/QuestionReplyForm";
 import { Pagination } from "@/app/components/Pagination";
 import { NextClient } from "@/tools/NextClient";
 import { useSearchParams } from "next/navigation";
+import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type QuestionCardProps = {
   question: Question;
@@ -45,6 +47,10 @@ export default function QuestionCard({
 
   const userId = session?.user?._id;
   const isOwner = question.userId === userId;
+
+  const lang = getClientLocaleCookies();
+
+  const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
 
   const repliesPage = Number(searchParams.get("page") || 1) || 1;
 
@@ -97,7 +103,7 @@ export default function QuestionCard({
 
       {isListView ? (
         <Link
-          href={`/question/${question._id}`}
+          href={`${prefix}/question/${question._id}`}
           className="group/title flex items-center justify-between gap-3"
         >
           <h2 className="text-lg font-bold text-text-primary leading-snug line-clamp-2 group-hover/title:text-accent transition-colors">

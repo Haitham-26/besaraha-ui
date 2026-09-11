@@ -12,9 +12,11 @@ import { Icon } from "../components/Icon";
 import { CopyButton } from "../components/CopyButton";
 import Image from "next/image";
 import { ProfileUpdateModalAndButton } from "./_components/ProfileUpdateModalAndButton";
+import { cookies } from "next/headers";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 export default async function Page() {
-  const token = await getToken();
+  const [token, _cookies] = await Promise.all([getToken(), cookies()]);
 
   const { data: user } = await AuthClient<User>(
     `/user`,
@@ -22,7 +24,11 @@ export default async function Page() {
     token,
   );
 
-  const profileUrl = `besaraha.vercel.app/${user.username || user._id}/message`;
+  const cookieLang = _cookies.get("locale")?.value;
+
+  const langPrefix = cookieLang !== AppLangs.EN ? `/${cookieLang}` : "";
+
+  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${langPrefix}/${user.username || user._id}/message`;
 
   const infoRows = [
     {
