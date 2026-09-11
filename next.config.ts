@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
@@ -15,7 +19,7 @@ const nextConfig: NextConfig = {
         destination: "/profile",
       },
       {
-        source: "/auth/login",
+        source: "/login",
         has: [
           {
             type: "cookie",
@@ -26,7 +30,51 @@ const nextConfig: NextConfig = {
         destination: "/profile",
       },
       {
-        source: "/auth/signup",
+        source: "/signup",
+        has: [
+          {
+            type: "cookie",
+            key: "token",
+          },
+        ],
+        permanent: false,
+        destination: "/profile",
+      },
+      {
+        source: "/signup/token",
+        has: [
+          {
+            type: "cookie",
+            key: "token",
+          },
+        ],
+        permanent: false,
+        destination: "/profile",
+      },
+      {
+        source: "/forgot-password/email",
+        has: [
+          {
+            type: "cookie",
+            key: "token",
+          },
+        ],
+        permanent: false,
+        destination: "/profile",
+      },
+      {
+        source: "/forgot-password/new",
+        has: [
+          {
+            type: "cookie",
+            key: "token",
+          },
+        ],
+        permanent: false,
+        destination: "/profile",
+      },
+      {
+        source: "/forgot-password/token",
         has: [
           {
             type: "cookie",
@@ -81,6 +129,28 @@ const nextConfig: NextConfig = {
         permanent: false,
         destination: "/",
       },
+      {
+        source: "/settings",
+        missing: [
+          {
+            type: "cookie",
+            key: "token",
+          },
+        ],
+        permanent: false,
+        destination: "/",
+      },
+      {
+        source: "/settings/security",
+        missing: [
+          {
+            type: "cookie",
+            key: "token",
+          },
+        ],
+        permanent: false,
+        destination: "/",
+      },
     ];
   },
   images: {
@@ -92,4 +162,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

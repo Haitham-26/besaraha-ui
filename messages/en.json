@@ -1,0 +1,14 @@
+{
+  "settings": {
+    "general": {
+      "language": {
+        "title": "Display Language",
+        "description": "This change will be applied to the entire application interface, as well as the language of the emails you receive from us."
+      },
+      "success": "Settings updated successfully."
+    }
+  },
+  "common": {
+    "saving": "Saving..."
+  }
+}
