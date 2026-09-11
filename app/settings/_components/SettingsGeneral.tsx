@@ -35,8 +35,6 @@ export default function SettingsGeneral() {
       });
     },
     onSuccess: async (_, lang) => {
-      console.log("lang", lang);
-
       document.cookie = `locale=${lang}; path=/; max-age=31536000; SameSite=Lax`;
 
       await queryClient.invalidateQueries({ queryKey: ["settings"] });

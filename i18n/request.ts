@@ -6,7 +6,7 @@ import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 export default getRequestConfig(async ({ requestLocale }) => {
   const urlLocale = await requestLocale;
 
-  console.log("url locale ----------------", urlLocale);
+  console.log(urlLocale);
 
   if (urlLocale && routing.locales.includes(urlLocale as AppLangs)) {
     return {
@@ -15,14 +15,18 @@ export default getRequestConfig(async ({ requestLocale }) => {
     };
   }
 
-  const cookieStore = await cookies();
-  const locale =
-    cookieStore.get("locale")?.value === AppLangs.EN
-      ? AppLangs.EN
-      : AppLangs.AR;
+  const cookieLocale = (await cookies()).get("locale")?.value;
+
+  if (cookieLocale && routing.locales.includes(cookieLocale as AppLangs)) {
+    return {
+      locale: cookieLocale,
+      messages: (await import(`../messages/${cookieLocale}.json`)).default,
+    };
+  }
 
   return {
-    locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    locale: routing.defaultLocale,
+    messages: (await import(`../messages/${routing.defaultLocale}.json`))
+      .default,
   };
 });

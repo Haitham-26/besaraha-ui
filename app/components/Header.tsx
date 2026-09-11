@@ -15,6 +15,7 @@ import { faGear } from "@fortawesome/free-solid-svg-icons/faGear";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { Link as LocaleLink, usePathname } from "@/i18n/navigation";
 import Link from "next/link";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const popoverItemClass =
   "flex items-center gap-2 px-4 py-2 font-bold text-slate-300 cursor-pointer hover:text-white hover:bg-white/5";
@@ -224,15 +225,23 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                   >
                     <span>إنشاء حساب</span>
                   </LocaleLink>
+
+                  <LanguageSwitcher />
                 </div>
               )}
 
               {!token ? (
-                <Button
-                  onClick={() => setOpen(true)}
-                  icon={faBarsStaggered}
-                  className="lg:hidden w-10 h-10 shrink-0 !p-5 rounded-xl !bg-white/5 !text-white border !border-white/10 shadow-none hover:!bg-white/10"
-                />
+                <div className="flex items-center gap-3">
+                  <div className="lg:hidden">
+                    <LanguageSwitcher />
+                  </div>
+
+                  <Button
+                    onClick={() => setOpen(true)}
+                    icon={faBarsStaggered}
+                    className="lg:hidden w-10 h-10 shrink-0 !p-5 rounded-xl !bg-white/5 !text-white border !border-white/10 shadow-none hover:!bg-white/10"
+                  />
+                </div>
               ) : null}
             </div>
           </div>

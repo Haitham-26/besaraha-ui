@@ -6,6 +6,8 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons/faRightFro
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { signOut } from "next-auth/react";
+import { useLocale } from "next-intl";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type LogoutButtonProps = {
   className?: string;
@@ -14,13 +16,17 @@ type LogoutButtonProps = {
 export const LogoutButton: React.FC<LogoutButtonProps> = ({
   className = "",
 }) => {
+  const locale = useLocale();
+
+  const prefix = locale !== AppLangs.EN ? `/${locale}` : "";
+
   const logout = async () => {
     try {
       await NextClient("/auth/logout", {
         method: "POST",
       });
 
-      signOut({ callbackUrl: "/", redirect: true });
+      signOut({ callbackUrl: `${prefix}/`, redirect: true });
     } catch (e) {
       console.log(e);
       Toast.apiError(e);
