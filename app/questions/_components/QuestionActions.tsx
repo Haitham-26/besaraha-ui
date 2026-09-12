@@ -17,6 +17,8 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
+import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
@@ -59,6 +61,10 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
     pathname.replace("/questions", "").length,
   );
   const isOwner = userId && userId === question.userId;
+
+  const lang = getClientLocaleCookies();
+
+  const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
 
   const dropdownItems: DropdownItem[] = [
     {
@@ -151,7 +157,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
 
   const onShare = () => {
     navigator.clipboard.writeText(
-      `${window.location.origin}/questions/${question._id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}${prefix}/questions/${question._id}`,
     );
 
     Toast.success("تم نسخ الرابط بنجاح");

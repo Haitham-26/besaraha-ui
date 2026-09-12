@@ -105,6 +105,7 @@ export function QuestionsPageContent({
                     meta={questions?.meta}
                     pathname={PATHNAME}
                     searchParams={searchParams}
+                    shouldUseLocalePrefix
                   />
                 </Fragment>
               ) : null}

@@ -11,7 +11,7 @@ import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons/faEarthAmeric
 
 import { formattedDate } from "@/tools/Date";
 import QuestionReply from "./replies/QuestionReply";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Icon } from "@/app/components/Icon";
 import { QuestionActions } from "./QuestionActions";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
@@ -19,6 +19,8 @@ import { QuestionReplyForm } from "./replies/QuestionReplyForm";
 import { Pagination } from "@/app/components/Pagination";
 import { NextClient } from "@/tools/NextClient";
 import { useSearchParams } from "next/navigation";
+import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type QuestionCardProps = {
   question: Question;
@@ -41,10 +43,14 @@ export default function QuestionCard({
   const searchParams = useSearchParams();
 
   const isOnProfilePage = pathname === "/questions";
-  const isListView = isOnProfilePage || pathname === "/questions/public";
+  const isListView = isOnProfilePage || pathname === "/public-questions";
 
   const userId = session?.user?._id;
   const isOwner = question.userId === userId;
+
+  const lang = getClientLocaleCookies();
+
+  const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
 
   const repliesPage = Number(searchParams.get("page") || 1) || 1;
 
@@ -97,7 +103,7 @@ export default function QuestionCard({
 
       {isListView ? (
         <Link
-          href={`/questions/${question._id}`}
+          href={`${prefix}/question/${question._id}`}
           className="group/title flex items-center justify-between gap-3"
         >
           <h2 className="text-lg font-bold text-text-primary leading-snug line-clamp-2 group-hover/title:text-accent transition-colors">
@@ -135,6 +141,7 @@ export default function QuestionCard({
                 meta={replies.meta}
                 pathname={pathname}
                 searchParams={searchParams}
+                shouldUseLocalePrefix
               />
             </div>
           ) : (

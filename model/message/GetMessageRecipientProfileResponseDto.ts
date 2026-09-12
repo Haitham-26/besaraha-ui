@@ -1,4 +1,4 @@
-import { User } from "../user/User";
+import { User } from "../user/types/User";
 
 export interface GetMessageRecipientProfileResponseDto {
   name: User["name"];

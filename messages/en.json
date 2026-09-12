@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "general": {
+      "language": {
+        "title": "Display Language",
+        "description": "This change will be applied to the entire application interface, as well as the language of the emails you receive from us."
+      }
+    },
+    "security": {
+      "password": {
+        "title": "Change Password",
+        "description": "Ensure your account is using a long, random password to stay secure",
+        "current": "Current Password",
+        "new": "New Password",
+        "confirm": "Confirm New Password",
+        "validation": {
+          "mismatch": "Passwords do not match."
+        }
+      }
+    },
+    "success": "Settings updated successfully."
+  },
+  "errors": {
+    "fieldRequired": "This field is required.",
+    "minLength": "This field must be at least {length} characters.",
+    "maxLength": "This field must be at most {length} characters."
+  },
+  "common": {
+    "saving": "Saving...",
+    "saveChanges": "Save Changes"
+  }
+}

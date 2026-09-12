@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { Link as LocaleLink } from "@/i18n/navigation";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons/faAngleLeft";
 import { Icon } from "./Icon";
@@ -20,13 +21,17 @@ type PaginationProps = {
   meta?: PageMeta;
   pathname: string;
   searchParams: URLSearchParams;
+  shouldUseLocalePrefix?: boolean;
 };
 
 export const Pagination: React.FC<PaginationProps> = ({
   meta,
   pathname,
   searchParams,
+  shouldUseLocalePrefix = false,
 }) => {
+  const LinkToUse = shouldUseLocalePrefix ? LocaleLink : Link;
+
   if (!meta || meta.total <= meta.limit) {
     return null;
   }
@@ -42,13 +47,13 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex items-center justify-center gap-2 mt-8 pb-12">
       {meta.page > 1 ? (
-        <Link
+        <LinkToUse
           href={getPageUrl(meta.page - 1)}
           className={getLinkStyles()}
           aria-label="الصفحة السابقة"
         >
           <Icon icon={faAngleRight} />
-        </Link>
+        </LinkToUse>
       ) : (
         <span className={`${getLinkStyles()} opacity-40 cursor-not-allowed`}>
           <Icon icon={faAngleRight} />
@@ -60,25 +65,25 @@ export const Pagination: React.FC<PaginationProps> = ({
           { length: Math.ceil(meta.total / meta.limit) },
           (_, i) => i + 1,
         ).map((page) => (
-          <Link
+          <LinkToUse
             key={page}
             href={getPageUrl(page)}
             className={getLinkStyles(page === meta.page)}
             aria-current={page === meta.page ? "page" : undefined}
           >
             <span className="text-xs font-black">{page}</span>
-          </Link>
+          </LinkToUse>
         ))}
       </div>
 
       {meta.hasNext ? (
-        <Link
+        <LinkToUse
           href={getPageUrl(meta.page + 1)}
           className={getLinkStyles()}
           aria-label="الصفحة التالية"
         >
           <Icon icon={faAngleLeft} />
-        </Link>
+        </LinkToUse>
       ) : (
         <span className={`${getLinkStyles()} opacity-40 cursor-not-allowed`}>
           <Icon icon={faAngleLeft} />

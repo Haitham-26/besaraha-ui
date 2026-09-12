@@ -6,15 +6,27 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons/faRightFro
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { signOut } from "next-auth/react";
+import { useLocale } from "next-intl";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
-export const LogoutButton: React.FC = () => {
+type LogoutButtonProps = {
+  className?: string;
+};
+
+export const LogoutButton: React.FC<LogoutButtonProps> = ({
+  className = "",
+}) => {
+  const locale = useLocale();
+
+  const prefix = locale !== AppLangs.EN ? `/${locale}` : "";
+
   const logout = async () => {
     try {
       await NextClient("/auth/logout", {
         method: "POST",
       });
 
-      signOut({ callbackUrl: "/", redirect: true });
+      signOut({ callbackUrl: `${prefix}/`, redirect: true });
     } catch (e) {
       console.log(e);
       Toast.apiError(e);
@@ -25,7 +37,7 @@ export const LogoutButton: React.FC = () => {
     <Button
       onClick={logout}
       icon={faRightFromBracket}
-      className="!bg-danger !p-5 w-10 h-10 md:w-auto md:h-12 text-secondary hover:!bg-danger/90 shadow-none"
+      className={`!bg-danger !p-5 w-10 h-10 md:w-auto md:h-12 text-secondary hover:!bg-danger/90 shadow-none ${className}`}
     >
       <span className="hidden md:inline">تسجيل الخروج</span>
     </Button>
