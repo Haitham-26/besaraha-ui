@@ -9,25 +9,27 @@ import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 
 export default async function Page() {
-  const t = await getTranslations("app");
+  const t = await getTranslations();
 
   return (
     <main className="w-full bg-background text-text-primary selection:bg-accent/20">
       <section className="relative pt-24 pb-20 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          <div className="lg:col-span-7 space-y-8 text-right">
+          <div className="lg:col-span-7 space-y-8">
             <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-primary">
-              رسائل <span className="text-accent">سرية</span> وأسئلة تفاعلية.
+              {t.rich("home.hero.title", {
+                span: (chunk) => <span className="text-accent">{chunk}</span>,
+              })}
             </h1>
             <p className="text-xl text-text-muted max-w-xl font-medium leading-relaxed">
-              {t("description")}
+              {t("app.description")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
                 href="/signup"
                 className="h-16 px-10 bg-primary text-secondary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-accent transition-all shadow-xl shadow-primary/20"
               >
-                ابدأ الآن
+                {t("home.hero.actions.main")}
                 <Icon icon={faArrowLeft} />
               </Link>
               <Link
@@ -35,7 +37,7 @@ export default async function Page() {
                 className="h-16 px-10 bg-surface border border-border text-primary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-surface-muted transition-all"
               >
                 <Icon icon={faCircleQuestion} className="text-accent" />
-                كيف أستخدمه؟
+                {t("home.hero.actions.secondary")}
               </Link>
             </div>
           </div>
@@ -47,10 +49,12 @@ export default async function Page() {
                   <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
                     <Icon icon={faQuoteRight} />
                   </div>
-                  <span className="text-xs font-black">رسالة مجهولة جديدة</span>
+                  <span className="text-xs font-black">
+                    {t("home.hero.cards.0.header")}
+                  </span>
                 </div>
                 <p className="font-bold text-primary italic">
-                  &quot;أحب طريقتك في التفكير، كيف تطور مهاراتك دائماً؟&quot;
+                  {t("home.hero.cards.0.body")}
                 </p>
               </div>
               <div className="bg-primary p-6 rounded-[2rem] text-secondary shadow-xl translate-x-4">
@@ -58,11 +62,11 @@ export default async function Page() {
                   <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-accent">
                     <Icon icon={faReply} />
                   </div>
-                  <span className="text-xs font-black">رد جديد على سؤالك</span>
+                  <span className="text-xs font-black">
+                    {t("home.hero.cards.1.header")}
+                  </span>
                 </div>
-                <p className="font-bold">
-                  &quot;أعتقد أن الاستمرارية هي السر الحقيقي...&quot;
-                </p>
+                <p className="font-bold">{t("home.hero.cards.1.body")}</p>
               </div>
             </div>
           </div>
@@ -77,21 +81,21 @@ export default async function Page() {
                 <Icon icon={faMessage} className="text-2xl" />
               </div>
               <h3 className="text-3xl font-black text-primary">
-                صندوق المصارحة
+                {t("home.sections.0.cards.0.title")}
               </h3>
               <p className="text-text-muted font-medium leading-relaxed">
-                استقبل رسائل خاصة لا يراها أحد غيرك. يتم تشفير هويتك وهوية
-                المرسل تماماً لضمان صراحة لا تتوفر في أي مكان آخر.
+                {t("home.sections.0.cards.0.description")}
               </p>
             </div>
             <div className="bg-surface border border-border p-10 rounded-[3rem] space-y-6">
               <div className="w-14 h-14 bg-primary text-secondary rounded-2xl flex items-center justify-center">
                 <Icon icon={faAt} className="text-2xl" />
               </div>
-              <h3 className="text-3xl font-black text-primary">ساحة النقاش</h3>
+              <h3 className="text-3xl font-black text-primary">
+                {t("home.sections.0.cards.1.title")}
+              </h3>
               <p className="text-text-muted font-medium leading-relaxed">
-                اطرح أسئلة عامة وشاركها عبر رابطك. يمكن للجميع الرد (بأسمائهم أو
-                مجهولين) لبناء سلسلة نقاش تفاعلية تظهر للعلن.
+                {t("home.sections.0.cards.1.description")}
               </p>
             </div>
           </div>

@@ -21,6 +21,40 @@
       }
     }
   },
+
+  "home": {
+    "hero": {
+      "title": "<span>Secret Messages</span> and Interactive Questions",
+      "actions": {
+        "main": "Get Started",
+        "secondary": "How It Works"
+      },
+      "cards": [
+        {
+          "header": "New Anonymous Message",
+          "body": "\"I love the way you think, how do you always develop your skills?\""
+        },
+        {
+          "header": "New Reply to Your Question",
+          "body": "\"I think consistency is the real secret...\""
+        }
+      ]
+    },
+    "sections": [
+      {
+        "cards": [
+          {
+            "title": "Confession Inbox",
+            "description": "Receive private messages that no one else can see. Your identity and the sender's identity are fully encrypted to guarantee absolute honesty like nowhere else."
+          },
+          {
+            "title": "Discussion Arena",
+            "description": "Ask general questions and share them via your link. Everyone can reply (with their names or anonymously) to build an interactive discussion thread visible to the public."
+          }
+        ]
+      }
+    ]
+  },
   "footer": {
     "platoform": {
       "title": "Platform"
