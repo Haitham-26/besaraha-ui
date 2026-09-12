@@ -7,7 +7,7 @@ import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 import { faShieldHeart } from "@fortawesome/free-solid-svg-icons/faShieldHeart";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
-import { User } from "@/model/user/User";
+import { User } from "@/model/user/types/User";
 import Image from "next/image";
 import { Link, redirect } from "@/i18n/navigation";
 import { cookies } from "next/headers";

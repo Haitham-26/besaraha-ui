@@ -4,7 +4,8 @@ import { Button } from "./Button";
 import Image from "next/image";
 import { Toast } from "@/tools/Toast";
 import { useSearchParams } from "next/navigation";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter as useLocaleRouter } from "@/i18n/navigation";
+import { useRouter } from "next/navigation";
 
 type Props = {
   title: string;
@@ -15,6 +16,7 @@ export const GoogleLoginButton: React.FC<Props> = ({ title }) => {
 
   const searchParams = useSearchParams();
   const currentPathname = usePathname();
+  const localeRouter = useLocaleRouter();
   const router = useRouter();
 
   const onLoginWithGoogle = async () => {
@@ -39,9 +41,9 @@ export const GoogleLoginButton: React.FC<Props> = ({ title }) => {
 
     if (errorMessage) {
       Toast.error(errorMessage);
-      router.replace(currentPathname);
+      localeRouter.replace(currentPathname);
     }
-  }, [searchParams, currentPathname, router]);
+  }, [searchParams, currentPathname, localeRouter]);
 
   return (
     <Button

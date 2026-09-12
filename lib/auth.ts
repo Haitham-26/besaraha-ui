@@ -1,7 +1,7 @@
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
-import { User } from "@/model/user/User";
+import { User } from "@/model/user/types/User";
 import { AuthOptions } from "next-auth";
 
 export const authOptions: AuthOptions = {

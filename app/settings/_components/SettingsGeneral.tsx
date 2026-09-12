@@ -41,7 +41,7 @@ export default function SettingsGeneral() {
 
       router.refresh();
 
-      Toast.success(t("settings.general.success", { language: lang }));
+      Toast.success(t("settings.success", { language: lang }));
     },
     onError: (e) => {
       Toast.apiError(e);

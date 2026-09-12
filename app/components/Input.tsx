@@ -101,7 +101,9 @@ export const Input: React.FC<InputProps> = ({
         />
 
         {!valid ? (
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-danger">
+          <div
+            className={`absolute inset-y-0 ${initialType === "password" ? "right-4" : "end-4"} left-4 flex items-center pointer-events-none text-danger`}
+          >
             <Icon icon={faCircleExclamation} />
           </div>
         ) : null}

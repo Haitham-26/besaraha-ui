@@ -5,7 +5,7 @@ import { Info } from "@/app/components/Info";
 import { Input } from "@/app/components/Input";
 import { Modal } from "@/app/components/Modal";
 import { UpdateProfileDto } from "@/model/user/dto/UpdateProfileDto";
-import { User } from "@/model/user/User";
+import { User } from "@/model/user/types/User";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";

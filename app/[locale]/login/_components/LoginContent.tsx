@@ -9,7 +9,8 @@ import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons/faArrow
 import { GoogleLoginButton } from "@/app/components/GoogleLoginButton";
 import { AuthInput } from "../../../components/AuthInput";
 import { signIn } from "next-auth/react";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import { useRouter } from "next/navigation";
 
 export const LoginContent: React.FC = () => {
   const [loading, setLoading] = useState(false);

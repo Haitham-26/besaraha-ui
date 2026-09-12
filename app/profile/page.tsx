@@ -1,4 +1,4 @@
-import { User } from "@/model/user/User";
+import { User } from "@/model/user/types/User";
 import { AuthClient } from "@/tools/AuthClient";
 import { formattedDate } from "@/tools/Date";
 import getToken from "@/tools/getToken";

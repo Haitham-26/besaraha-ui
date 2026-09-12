@@ -13,7 +13,8 @@ import { Icon } from "@/app/components/Icon";
 import { SignUpVerifyTokenDto } from "@/model/auth/signup/SignUpVerifyTokenDto";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 import { signIn } from "next-auth/react";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
+import { useRouter } from "next/navigation";
 
 type SignUpTokenContentProps = {
   email: string;
