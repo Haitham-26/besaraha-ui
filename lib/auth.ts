@@ -165,14 +165,17 @@ export const authOptions: AuthOptions = {
 
       return true;
     },
-
-    async jwt({ token, account, user }) {
+    async jwt({ token, account, user, trigger, session }) {
       if (account?.id_token) {
         token.idToken = account.id_token;
       }
 
       if (user) {
         token.user = (user as any).user as User;
+      }
+
+      if (trigger === "update" && session?.user) {
+        token.user = { ...token.user, ...session.user };
       }
 
       return token;

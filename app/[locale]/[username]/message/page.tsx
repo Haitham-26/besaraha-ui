@@ -1,27 +1,27 @@
 import { GetMessageRecipientProfileResponseDto } from "@/model/message/GetMessageRecipientProfileResponseDto";
 import { AuthClient } from "@/tools/AuthClient";
-import getToken from "@/tools/getToken";
 import { SendMessageForm } from "../_components/SendMessageForm";
 import { Icon } from "@/app/components/Icon";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 import { faShieldHeart } from "@fortawesome/free-solid-svg-icons/faShieldHeart";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
-import { User } from "@/model/user/types/User";
 import Image from "next/image";
 import { Link, redirect } from "@/i18n/navigation";
 import { cookies } from "next/headers";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 type Props = {
   params: Promise<{ username: string }>;
 };
 
 export default async function Page({ params }: Props) {
-  const [{ username }, token, _cookies] = await Promise.all([
+  const [{ username }, _cookies, session] = await Promise.all([
     params,
-    getToken(),
     cookies(),
+    getServerSession(authOptions),
   ]);
 
   const goHome = () =>
@@ -34,17 +34,9 @@ export default async function Page({ params }: Props) {
     goHome();
   }
 
-  let user: User | null = null;
   let profile: GetMessageRecipientProfileResponseDto | null = null;
 
-  try {
-    const { data } = await AuthClient<User>(`/user`, { method: "POST" }, token);
-    user = data;
-  } catch (e) {
-    console.log(e);
-  }
-
-  if (user?.username === username) {
+  if (session?.user?.username === username) {
     goHome();
   }
 

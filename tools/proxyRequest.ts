@@ -5,7 +5,7 @@ import getToken from "./getToken";
 
 export async function proxyRequest(
   url: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<Response> {
   const token = await getToken();
 
@@ -14,7 +14,7 @@ export async function proxyRequest(
 
     return NextResponse.json(data);
   } catch (error: any) {
-    return NextResponse.json(error?.response?.data || "حدث خطأ في الخادم", {
+    return NextResponse.json(error?.response?.data || "Internal Server Error", {
       status: error?.response?.status || 500,
     });
   }
