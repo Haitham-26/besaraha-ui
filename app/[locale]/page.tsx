@@ -6,8 +6,11 @@ import { faQuoteRight } from "@fortawesome/free-solid-svg-icons/faQuoteRight";
 import { faReply } from "@fortawesome/free-solid-svg-icons/faReply";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
-export default function Page() {
+export default async function Page() {
+  const t = await getTranslations("app");
+
   return (
     <main className="w-full bg-background text-text-primary selection:bg-accent/20">
       <section className="relative pt-24 pb-20 overflow-hidden">
@@ -17,8 +20,7 @@ export default function Page() {
               رسائل <span className="text-accent">سرية</span> وأسئلة تفاعلية.
             </h1>
             <p className="text-xl text-text-muted max-w-xl font-medium leading-relaxed">
-              منصتك المتكاملة لاستقبال المصارحات الخاصة في صندوق الوارد، أو طرح
-              تساؤلات عامة للنقاش مع متابعيك عبر رابطك الشخصي الفريد.
+              {t("description")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link

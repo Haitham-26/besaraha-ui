@@ -1,20 +1,57 @@
 {
+  "app": {
+    "name": "BeSaraha",
+    "description": "Your integrated platform for receiving private honest messages in your inbox, or posing general questions for discussion with your followers via your unique personal link.",
+    "developer": "Haitham",
+    "links": {
+      "public": {
+        "communityQuestions": "Community Questions",
+        "home": "Home",
+        "howItWorks": "How It Works",
+        "login": "Login",
+        "signUp": "Sign Up",
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy"
+      },
+      "private": {
+        "messages": "Inbox",
+        "questions": "Questions",
+        "profile": "Profile",
+        "settings": "Settings"
+      }
+    }
+  },
+  "footer": {
+    "platoform": {
+      "title": "Platform"
+    },
+    "legal": {
+      "title": "Legal"
+    },
+    "systemStatus": {
+      "title": "System Status",
+      "subtitle": "All services are running efficiently",
+      "description": "Systems are updated regularly to ensure 100% encryption of your data via advanced protection protocols."
+    },
+    "developedBy": "Developed by {name}",
+    "copyright": "All rights reserved © {year}"
+  },
   "settings": {
     "general": {
       "language": {
         "title": "Display Language",
-        "description": "This change will be applied to the entire application interface, as well as the language of the emails you receive from us."
+        "description": "This change will apply to the entire application interface, as well as the language of the emails you receive from us."
       }
     },
     "security": {
       "password": {
         "title": "Change Password",
-        "description": "Ensure your account is using a long, random password to stay secure",
+        "description": "Make sure to use a long, random password to keep your account secure",
         "current": "Current Password",
         "new": "New Password",
         "confirm": "Confirm New Password",
         "validation": {
-          "mismatch": "Passwords do not match."
+          "mismatch": "The passwords do not match."
         }
       }
     },
@@ -22,12 +59,13 @@
   },
   "errors": {
     "fieldRequired": "This field is required.",
-    "minLength": "This field must be at least {length} characters.",
-    "maxLength": "This field must be at most {length} characters."
+    "minLength": "This field must contain at least {length} characters.",
+    "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
     "save": "Save",
     "saving": "Saving...",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "logout": "Log Out"
   }
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { privateLinks } from "@/tools/pages-links";
 import Link from "next/link";
 import { Link as LocaleLink } from "@/i18n/navigation";
 import React from "react";
@@ -10,6 +9,28 @@ import { faGear } from "@fortawesome/free-solid-svg-icons/faGear";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { faMessage } from "@fortawesome/free-solid-svg-icons/faMessage";
+import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
+import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+
+const mainPrivateNavLinks = [
+  {
+    path: "/messages",
+    icon: faMessage,
+  },
+  {
+    path: "/questions",
+    icon: faComments,
+  },
+  {
+    path: "/public-questions",
+    icon: faBolt,
+  },
+  {
+    path: "/settings",
+    icon: faGear,
+  },
+];
 
 const getNavLinkClass = (currentPathname: string, path: string) => `
   flex-[1]  relative font-bold transition-all duration-300 flex flex-col justify-center items-center gap-1 w-full md:w-auto
@@ -49,7 +70,7 @@ export const MobilePrivateBottomBar: React.FC = () => {
         )}
       </Link>
 
-      {privateLinks.map((link) => {
+      {mainPrivateNavLinks.map((link) => {
         const isPublicQuestions = link.path === "/public-questions";
 
         if (isPublicQuestions) {
@@ -74,13 +95,6 @@ export const MobilePrivateBottomBar: React.FC = () => {
           </Link>
         );
       })}
-
-      <Link
-        href={"/settings"}
-        className={getNavLinkClass(pathname, "/settings")}
-      >
-        <Icon icon={faGear} size="lg" />
-      </Link>
     </div>
   );
 };
