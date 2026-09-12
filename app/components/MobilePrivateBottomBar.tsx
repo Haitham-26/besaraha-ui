@@ -30,19 +30,21 @@ export const MobilePrivateBottomBar: React.FC = () => {
     <div className="fixed lg:hidden bottom-0 w-full flex items-center px-4 py-2 max-h-12 bg-[#0f172a]/95 backdrop-blur-md border-b border-white/10 z-10">
       <Link
         href="/profile"
-        className="max-h-8 aspect-square flex-[1] rounded-full block"
+        className={`max-h-8 aspect-square rounded-full block overflow-hidden ring-2 ${pathname === "/profile" ? "ring-white/80" : "ring-white/30"}`}
       >
         {user?.avatar ? (
           <Image
             src={user.avatar}
             alt={user.name}
+            width={50}
+            height={50}
             quality={100}
             className="w-full h-full object-cover"
           />
         ) : (
           <Icon
             icon={faUserCircle}
-            className={`bg-background text-accent aspect-square !h-8 !w-8 mx-auto !block ring-2 ${pathname === "/profile" ? "ring-white/80" : "ring-white/30"} rounded-full`}
+            className={`bg-background text-accent !h-8 !w-8 mx-auto !block rounded-[inherit]`}
           />
         )}
       </Link>

@@ -26,6 +26,7 @@
     "maxLength": "This field must be at most {length} characters."
   },
   "common": {
+    "save": "Save",
     "saving": "Saving...",
     "saveChanges": "Save Changes"
   }
