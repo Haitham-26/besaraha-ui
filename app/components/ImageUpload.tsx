@@ -1,11 +1,12 @@
 "use client";
 
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen";
-import { faTrash } from "@fortawesome/free-solid-svg-icons/faTrash";
 import { faImage } from "@fortawesome/free-solid-svg-icons/faImage";
 import { ImageCropModal } from "./ImageCropModal";
+import { Popover } from "./Popover";
+import Image from "next/image";
 import { Button } from "./Button";
 
 type ImageUploadProps = {
@@ -72,8 +73,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     closeCropModal();
   };
 
-  const handleRemove = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleRemove = () => {
     onChange("null");
   };
 
@@ -81,6 +81,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     if (value instanceof File) {
       const url = URL.createObjectURL(value);
       setPreviewUrl(url);
+
       return () => URL.revokeObjectURL(url);
     }
 
@@ -93,46 +94,62 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         <span className="text-sm font-bold text-slate-600">{label}</span>
       ) : null}
 
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={handlePick}
-        onKeyDown={(event) => event.key === "Enter" && handlePick()}
-        className="image-wrapper group relative h-32 w-32 shrink-0 cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-slate-50"
-      >
-        {src ? (
-          <Fragment>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+      <div className="relative h-32 w-32 shrink-0">
+        <div
+          role={!src ? "button" : undefined}
+          tabIndex={!src ? 0 : undefined}
+          onClick={!src ? handlePick : undefined}
+          onKeyDown={
+            !src ? (event) => event.key === "Enter" && handlePick() : undefined
+          }
+          className={`h-full w-full overflow-hidden rounded-full border border-slate-600 bg-slate-50 ${
+            !src ? "cursor-pointer" : ""
+          }`}
+        >
+          {src ? (
+            <Image
               src={src}
               alt={label ?? "الصورة"}
-              className="h-full w-full object-cover"
+              fill
+              className="h-full w-full object-cover rounded-full"
             />
-
-            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-              <Button
-                onClick={handlePick}
-                aria-label="تغيير الصورة"
-                className="!p-0 flex h-8 w-8 items-center justify-center rounded-full !bg-white/90 !text-slate-700 hover:!bg-white"
-              >
-                <Icon icon={faPen} className="text-xs" />
-              </Button>
-              <Button
-                type="button"
-                onClick={handleRemove}
-                aria-label="إزالة الصورة"
-                className="!p-0 flex h-8 w-8 items-center justify-center rounded-full !bg-white/90 !text-red-500 hover:!bg-white"
-              >
-                <Icon icon={faTrash} className="text-xs" />
-              </Button>
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-slate-400">
+              <Icon icon={faImage} className="text-xl" />
+              <span className="text-xs font-bold">إضافة صورة</span>
             </div>
-          </Fragment>
-        ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-slate-400">
-            <Icon icon={faImage} className="text-xl" />
-            <span className="text-xs font-bold">إضافة صورة</span>
-          </div>
-        )}
+          )}
+        </div>
+
+        {src ? (
+          <Popover
+            align="end"
+            trigger={({ open, toggle }) => (
+              <Button
+                onClick={toggle}
+                aria-haspopup="menu"
+                aria-expanded={open}
+                aria-label="خيارات الصورة"
+                className="!p-0 !absolute -bottom-1 -end-1 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-accent text-white shadow-lg transition-transform hover:scale-105"
+              >
+                <Icon icon={faPen} className="text-sm" />
+              </Button>
+            )}
+          >
+            <Button
+              onClick={handlePick}
+              className="!bg-transparent rounded-none shadow-none w-full text-sm !text-slate-300 hover:!bg-white/5 hover:!text-white"
+            >
+              تغيير الصورة
+            </Button>
+            <Button
+              onClick={handleRemove}
+              className="!bg-transparent rounded-none shadow-none w-full text-sm !text-red-400 hover:!bg-red-500/10 hover:!text-red-300"
+            >
+              إزالة الصورة
+            </Button>
+          </Popover>
+        ) : null}
       </div>
 
       <input

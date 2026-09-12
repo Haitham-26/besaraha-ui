@@ -108,7 +108,7 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
             value={value || null}
             onChange={onChange}
             label="صورة الملف الشخصي"
-            className="items-center [&>.image-wrapper]:!rounded-full"
+            className="items-center"
           />
         )}
       />
