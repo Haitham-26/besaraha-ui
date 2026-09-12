@@ -41,7 +41,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <Providers>
           <NextIntlClientProvider messages={messages}>
             <Header token={token} />
-            <main className={`pt-16 ${token ? "pb-10" : ""} flex-grow flex`}>
+            <main
+              className={`pt-16 ${token ? "pb-10 lg:pb-0" : ""} flex-grow flex`}
+            >
               {children}
             </main>
             {token ? <MobilePrivateBottomBar /> : <Footer />}
