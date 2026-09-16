@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "BeSaraha",
-    "description": "Your integrated platform for receiving private honest messages in your inbox, or posing general questions for discussion with your followers via your unique personal link.",
+    "description": "Your space for secret messages and open discussions.",
     "developer": "Haitham",
     "links": {
       "public": {
@@ -24,19 +24,21 @@
 
   "home": {
     "hero": {
-      "title": "<span>Secret Messages</span> and Interactive Questions",
+      "title": "<primary>Be</primary><accent>Saraha</accent>",
+      "subtitle": "Discover what others<br></br>think about you",
+      "description": "Your all-in-one platform to receive secret messages through your unique link or start discussions with friends and followers on social media in complete privacy.",
       "actions": {
         "main": "Get Started",
         "secondary": "How It Works"
       },
       "cards": [
         {
-          "header": "New Anonymous Message",
-          "body": "\"I love the way you think, how do you always develop your skills?\""
+          "header": "New anonymous message",
+          "body": "\"Honestly, I think you're a bit weird, but you're still awesome to me🙃\""
         },
         {
-          "header": "New Reply to Your Question",
-          "body": "\"I think consistency is the real secret...\""
+          "header": "New reply to your question",
+          "body": "\"If my identity weren't encrypted, I wouldn't have been able to answer your question with my real identity☠️ Truth is, I am...\""
         }
       ]
     },

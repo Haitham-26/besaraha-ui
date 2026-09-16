@@ -40,9 +40,6 @@ export default function Page() {
     <div className="w-full bg-surface-muted">
       <header className="pt-24 pb-16 px-6 text-center bg-white border-b border-border/50">
         <div className="max-w-3xl mx-auto space-y-4">
-          <h2 className="text-accent font-black tracking-widest uppercase text-xs">
-            دليل المستخدم
-          </h2>
           <h1 className="text-4xl md:text-6xl font-black text-primary tracking-tight">
             كيف تستخدم <span className="text-accent">بصراحة</span>
           </h1>

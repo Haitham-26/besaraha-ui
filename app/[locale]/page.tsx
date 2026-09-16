@@ -1,12 +1,12 @@
 import { Icon } from "@/app/components/Icon";
 import { faMessage } from "@fortawesome/free-solid-svg-icons/faMessage";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 import { faAt } from "@fortawesome/free-solid-svg-icons/faAt";
 import { faQuoteRight } from "@fortawesome/free-solid-svg-icons/faQuoteRight";
 import { faReply } from "@fortawesome/free-solid-svg-icons/faReply";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
+import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 
 export default async function Page() {
   const t = await getTranslations();
@@ -16,21 +16,29 @@ export default async function Page() {
       <section className="relative pt-24 pb-20 overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           <div className="lg:col-span-7 space-y-8">
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight text-primary">
+            <h1 className="text-4xl font-black tracking-tighter text-primary mb-4">
               {t.rich("home.hero.title", {
-                span: (chunk) => <span className="text-accent">{chunk}</span>,
+                primary: (chunk) => (
+                  <span className="text-accent tracking-wide">{chunk}</span>
+                ),
+                accent: (chunk) => (
+                  <span className="text-primary tracking-wide">{chunk}</span>
+                ),
               })}
             </h1>
-            <p className="text-xl text-text-muted max-w-xl font-medium leading-relaxed">
+            <h2 className="text-2xl font-black tracking-tighter leading-8 text-primary mb-4">
               {t("app.description")}
+            </h2>
+            <p className="text-xl text-text-muted max-w-xl leading-9 font-medium">
+              {t.rich("home.hero.description")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Link
                 href="/signup"
-                className="h-16 px-10 bg-primary text-secondary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-accent transition-all shadow-xl shadow-primary/20"
+                className="h-16 px-10 bg-accent text-secondary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-accent/90 transition-all shadow-xl shadow-primary/20"
               >
                 {t("home.hero.actions.main")}
-                <Icon icon={faArrowLeft} />
+                <Icon icon={faBolt} className="ltr:rotate-180" />
               </Link>
               <Link
                 href="/how-it-works"
