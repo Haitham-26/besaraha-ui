@@ -72,11 +72,11 @@ export default async function Footer() {
       <div className="max-w-6xl mx-auto p-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
           <div className="md:col-span-4 space-y-8">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-block mb-4">
               <Image
                 src="/images/logo.png"
                 alt={t("app.name")}
-                width={140}
+                width={200}
                 height={30}
                 className="brightness-110"
               />

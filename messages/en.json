@@ -42,20 +42,73 @@
         }
       ]
     },
-    "sections": [
-      {
-        "cards": [
-          {
-            "title": "Confession Inbox",
-            "description": "Receive private messages that no one else can see. Your identity and the sender's identity are fully encrypted to guarantee absolute honesty like nowhere else."
-          },
-          {
-            "title": "Discussion Arena",
-            "description": "Ask general questions and share them via your link. Everyone can reply (with their names or anonymously) to build an interactive discussion thread visible to the public."
-          }
-        ]
+    "features": {
+      "title": "Everything you need for engaging conversations",
+      "subtitle": "Your platform to receive secret messages and start open discussions with total freedom.",
+      "items": {
+        "link": {
+          "title": "Your Unique Link",
+          "description": "Add your personal link to your social media bio and start receiving secret messages and feedback effortlessly."
+        },
+        "forum": {
+          "title": "Questions & Open Forum",
+          "description": "Post questions for your followers or share them in the public forum. Anyone can reply publicly, using an alias, or anonymously."
+        },
+        "privacy": {
+          "title": "Total Anonymity & Freedom",
+          "description": "Complete privacy for senders. Express yourself completely anonymously or use any custom nickname."
+        }
       }
-    ]
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Three simple steps to start receiving messages and hosting discussions",
+      "steps": [
+        {
+          "title": "Get your unique link",
+          "description": "Sign up for free and instantly claim your unique link."
+        },
+        {
+          "title": "Add to Your Bio",
+          "description": "Place your link in your social media bio and start receiving secret messages."
+        },
+        {
+          "title": "Ask & Discuss",
+          "description": "Post questions and share their links, or set them public for the \"BeSaraha Forum\" and receive replies."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about using the platform and privacy",
+      "items": [
+        {
+          "q": "Is the platform free to use?",
+          "a": "Yes, the platform is 100% free for everyone. You can create your account, claim your custom link, receive messages, and ask questions at no cost. In the future, optional premium customization and advanced analytics features may be introduced."
+        },
+        {
+          "q": "Are messages and replies really anonymous?",
+          "a": "Yes, we guarantee total sender anonymity with zero identity tracking, giving you and your friends complete freedom to express yourselves."
+        },
+        {
+          "q": "Does a sender need an account to message me?",
+          "a": "No, anyone with your personal link can send you a secret message or reply to your questions directly without creating an account."
+        },
+        {
+          "q": "What is the \"Honestly Forum\" and how does it work?",
+          "a": "When posting a question, you can choose to display it on the public \"Honestly Forum\", allowing all platform visitors to view, interact, and respond to it."
+        },
+        {
+          "q": "Can I send messages or reply using a nickname?",
+          "a": "Absolutely. Senders have full flexibility to choose between complete anonymity or using a custom nickname."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to receive your first message?",
+      "description": "Create your free account today, claim your unique link, and start engaging with your friends and followers.",
+      "button": "Create Your Link Now"
+    }
   },
   "footer": {
     "platoform": {

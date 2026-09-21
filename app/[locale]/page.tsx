@@ -1,15 +1,84 @@
 import { Icon } from "@/app/components/Icon";
-import { faMessage } from "@fortawesome/free-solid-svg-icons/faMessage";
-import { faAt } from "@fortawesome/free-solid-svg-icons/faAt";
 import { faQuoteRight } from "@fortawesome/free-solid-svg-icons/faQuoteRight";
 import { faReply } from "@fortawesome/free-solid-svg-icons/faReply";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+import { _Translator } from "next-intl";
+import { faLink } from "@fortawesome/free-solid-svg-icons/faLink";
+import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
+
+import { faUserSecret } from "@fortawesome/free-solid-svg-icons/faUserSecret";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons/faUserPlus";
+import { Collapse } from "../components/Collapse";
+import Image from "next/image";
+
+const getFeatures = (t: _Translator) => [
+  {
+    icon: faLink,
+    title: t("home.features.items.link.title"),
+    description: t("home.features.items.link.description"),
+  },
+  {
+    icon: faComments,
+    title: t("home.features.items.forum.title"),
+    description: t("home.features.items.forum.description"),
+  },
+  {
+    icon: faUserSecret,
+    title: t("home.features.items.privacy.title"),
+    description: t("home.features.items.privacy.description"),
+  },
+];
+
+const getHowItWorksSteps = (t: _Translator) => [
+  {
+    icon: faUserPlus,
+    title: t("home.howItWorks.steps.0.title"),
+    description: t("home.howItWorks.steps.0.description"),
+  },
+  {
+    icon: faLink,
+    title: t("home.howItWorks.steps.1.title"),
+    description: t("home.howItWorks.steps.1.description"),
+  },
+  {
+    icon: faComments,
+    title: t("home.howItWorks.steps.2.title"),
+    description: t("home.howItWorks.steps.2.description"),
+  },
+];
+
+const getFaqItems = (t: _Translator) => [
+  {
+    title: t("home.faq.items.0.q"),
+    description: t("home.faq.items.0.a"),
+  },
+  {
+    title: t("home.faq.items.1.q"),
+    description: t("home.faq.items.1.a"),
+  },
+  {
+    title: t("home.faq.items.2.q"),
+    description: t("home.faq.items.2.a"),
+  },
+  {
+    title: t("home.faq.items.3.q"),
+    description: t("home.faq.items.3.a"),
+  },
+  {
+    title: t("home.faq.items.4.q"),
+    description: t("home.faq.items.4.a"),
+  },
+];
 
 export default async function Page() {
   const t = await getTranslations();
+
+  const features = getFeatures(t);
+  const howItWorksSteps = getHowItWorksSteps(t);
+  const faqItems = getFaqItems(t);
 
   return (
     <main className="w-full bg-background text-text-primary selection:bg-accent/20">
@@ -83,28 +152,131 @@ export default async function Page() {
 
       <section className="py-24 bg-surface-muted/50 border-y border-border/50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-surface border border-border p-10 rounded-[3rem] space-y-6">
-              <div className="w-14 h-14 bg-accent/10 text-accent rounded-2xl flex items-center justify-center">
-                <Icon icon={faMessage} className="text-2xl" />
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <h2 className="text-3xl font-black text-primary tracking-tight">
+              {t("home.features.title")}
+            </h2>
+            <p className="text-lg text-text-muted font-medium">
+              {t("home.features.subtitle")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-surface border border-border p-8 rounded-2xl shadow-sm flex flex-col justify-between group"
+              >
+                <div className="space-y-6">
+                  <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent text-xl">
+                    <Icon icon={feature.icon} />
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-black text-primary">
+                      {feature.title}
+                    </h3>
+                    <p className="text-text-muted leading-7 font-medium">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-3xl font-black text-primary">
-                {t("home.sections.0.cards.0.title")}
-              </h3>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-background relative overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+            <h2 className="text-3xl font-black text-primary tracking-tight">
+              {t("home.howItWorks.title")}
+            </h2>
+            <p className="text-lg text-text-muted font-medium">
+              {t("home.howItWorks.subtitle")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {howItWorksSteps.map((step, index) => (
+              <div
+                key={index}
+                className="bg-surface border border-border p-8 rounded-[2rem] shadow-sm relative flex flex-col justify-between"
+              >
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent text-xl">
+                      <Icon icon={step.icon} />
+                    </div>
+                    <span className="text-4xl font-black text-accent/50">
+                      {index + 1}
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="text-xl font-black text-primary">
+                      {step.title}
+                    </h3>
+                    <p className="text-text-muted leading-7 font-medium">
+                      {step.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-surface-muted/50 border-y border-border/50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+            <h2 className="text-3xl font-black text-primary tracking-tight">
+              {t("home.faq.title")}
+            </h2>
+            <p className="text-lg text-text-muted font-medium">
+              {t("home.faq.subtitle")}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-5 hidden lg:block relative w-full aspect-square">
+              <Image
+                src="/images/faqs.png"
+                alt={t("home.faq.title")}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+
+            <div className="lg:col-span-7">
+              <Collapse items={faqItems} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-surface">
+        <div className="mx-auto px-6 py-10">
+          <div className="text-center space-y-8 max-w-4xl mx-auto">
+            <div className="space-y-4 mx-auto">
+              <h2 className="text-2xl md:text-3xl font-black text-primary tracking-tight">
+                {t("home.cta.title")}
+              </h2>
               <p className="text-text-muted font-medium leading-relaxed">
-                {t("home.sections.0.cards.0.description")}
+                {t("home.cta.description")}
               </p>
             </div>
-            <div className="bg-surface border border-border p-10 rounded-[3rem] space-y-6">
-              <div className="w-14 h-14 bg-primary text-secondary rounded-2xl flex items-center justify-center">
-                <Icon icon={faAt} className="text-2xl" />
-              </div>
-              <h3 className="text-3xl font-black text-primary">
-                {t("home.sections.0.cards.1.title")}
-              </h3>
-              <p className="text-text-muted font-medium leading-relaxed">
-                {t("home.sections.0.cards.1.description")}
-              </p>
+
+            <div className="flex justify-center">
+              <Link
+                href="/signup"
+                className="h-16 px-10 bg-accent text-secondary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-accent/90 transition-all"
+              >
+                {t("home.cta.button")}
+                <Icon icon={faBolt} className="ltr:rotate-180" />
+              </Link>
             </div>
           </div>
         </div>
