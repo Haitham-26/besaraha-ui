@@ -38,6 +38,28 @@
     "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms & Conditions</termsLink> and <privacyLink>Privacy Policy</privacyLink>.",
     "success": "Signed in successfully!"
   },
+  "signup": {
+    "title": "Welcome to <span>Be</span>Saraha",
+    "subtitle": "Create Account",
+    "username": {
+      "title": "Username",
+      "placeholder": "e.g. haitham_waki"
+    },
+    "name": {
+      "title": "Full Name",
+      "placeholder": "e.g. Haitham Waki"
+    },
+    "email": {
+      "title": "Email"
+    },
+    "password": {
+      "title": "Password"
+    },
+    "button": "Create Account",
+    "divider": "Or continue with",
+    "alreadyHaveAccount": "<text>Already have an account?</text> <link>Sign In</link>",
+    "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms of Use</termsLink> and <privacyLink>Privacy Policy</privacyLink>."
+  },
   "home": {
     "hero": {
       "title": "<primary>Be</primary><accent>Saraha</accent>",

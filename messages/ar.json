@@ -38,6 +38,29 @@
     "disclaimer": "من خلال الاستمرار، أنت توافق على <br></br> <termsLink>شروط الاستخدام</termsLink> و <privacyLink>سياسة الخصوصية</privacyLink>.",
     "success": "تم تسجيل دخولك بنجاح"
   },
+  "signup": {
+    "title": "مرحبًا بك في <span>بـ</span>صراحة",
+    "subtitle": "إنشاء حساب",
+    "username": {
+      "title": "اسم المستخدم",
+      "placeholder": "haitham_waki: مثال"
+    },
+    "name": {
+      "title": "الاسم الكامل",
+      "placeholder": "مثال: هيثم واكي"
+    },
+    "email": {
+      "title": "البريد الإلكتروني"
+    },
+    "password": {
+      "title": "كلمة المرور"
+    },
+    "button": "إنشاء الحساب",
+    "divider": "أو المتابعة عبر",
+    "googleButton": "التسجيل بواسطة جوجل",
+    "alreadyHaveAccount": "<text>لديك حساب بالفعل؟</text> <link>تسجيل دخول</link>",
+    "disclaimer": "من خلال الاستمرار، أنت توافق على <br></br> <termsLink>شروط الاستخدام</termsLink> و <privacyLink>سياسة الخصوصية</privacyLink>."
+  },
   "home": {
     "hero": {
       "title": "<primary>ب</primary><accent>صراحة</accent>",

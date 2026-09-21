@@ -54,6 +54,7 @@ export const LoginContent: React.FC = () => {
         <Controller
           control={control}
           name="identifier"
+          rules={{ required: t("errors.fieldRequired") }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AuthInput
               title={t("login.identifier.title")}
@@ -74,6 +75,7 @@ export const LoginContent: React.FC = () => {
           <Controller
             control={control}
             name="password"
+            rules={{ required: t("errors.fieldRequired") }}
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <AuthInput
                 title={t("login.password.title")}
@@ -101,7 +103,6 @@ export const LoginContent: React.FC = () => {
         <Button
           loading={loading}
           onClick={handleSubmit(onSubmit)}
-          className="w-full h-14 rounded-2xl bg-accent text-white font-bold text-lg shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
           icon={faArrowRightToBracket}
         >
           {t("login.button")}
