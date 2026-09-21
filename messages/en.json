@@ -61,6 +61,17 @@
     "alreadyHaveAccount": "<text>Already have an account?</text> <link>Sign In</link>",
     "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms of Use</termsLink> and <privacyLink>Privacy Policy</privacyLink>."
   },
+  "signupToken": {
+    "title": "<span>Be</span>Saraha",
+    "subtitle": "Verify Your Email",
+    "description": "A {tokenLength}-digit verification code has been sent to <span>{email}</span>. Please check your inbox or spam folder.",
+    "token": {
+      "error": "Please enter the full {tokenLength}-digit verification code"
+    },
+    "button": "Activate Account",
+    "changeEmail": "Change Email",
+    "success": "Your account has been activated successfully!"
+  },
   "home": {
     "hero": {
       "title": "<primary>Be</primary><accent>Saraha</accent>",
@@ -191,6 +202,11 @@
     "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "resendToken": {
+      "button": "Resend Verification Code",
+      "countdownText": "You can request a new code in: <countdown></countdown>",
+      "success": "Verification code sent successfully. Please check your inbox or spam folder."
+    },
     "save": "Save",
     "saving": "Saving...",
     "saveChanges": "Save Changes",

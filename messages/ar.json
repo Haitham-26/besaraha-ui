@@ -61,6 +61,17 @@
     "alreadyHaveAccount": "<text>لديك حساب بالفعل؟</text> <link>تسجيل دخول</link>",
     "disclaimer": "من خلال الاستمرار، أنت توافق على <br></br> <termsLink>شروط الاستخدام</termsLink> و <privacyLink>سياسة الخصوصية</privacyLink>."
   },
+  "signupToken": {
+    "title": "<span>بـ</span>صراحة",
+    "subtitle": "تحقق من بريدك الإلكتروني",
+    "description": "تم إرسال رمز تحقق مكوّن من {tokenLength} خانات إلى <span>{email}</span>. يرجى التحقق من صندوق الوارد أو مجلد البريد العشوائي (Spam).",
+    "token": {
+      "error": "يرجى إدخال رمز التحقق المكون من {tokenLength} خانات كاملًا"
+    },
+    "button": "تفعيل الحساب",
+    "changeEmail": "تغيير البريد الإلكتروني",
+    "success": "تم تفعيل حسابك بنجاح"
+  },
   "home": {
     "hero": {
       "title": "<primary>ب</primary><accent>صراحة</accent>",
@@ -191,6 +202,11 @@
     "maxLength": "يجب ألا يزيد هذا الحقل على {length} حرفًا."
   },
   "common": {
+    "resendToken": {
+      "button": "إعادة إرسال رمز التحقق",
+      "countdownText": "يمكنك طلب رمز التحقق مرة أخرى بعد: <countdown></countdown>",
+      "success": "تم إرسال رمز التحقق بنجاح. قم بالتحقق من صندوق الوارد أو مجلد البريد العشوائي (spam)."
+    },
     "save": "حفظ",
     "saving": "جارٍ الحفظ...",
     "saveChanges": "حفظ التغييرات",
