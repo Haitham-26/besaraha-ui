@@ -65,9 +65,6 @@
     "title": "<span>Be</span>Saraha",
     "subtitle": "Verify Your Email",
     "description": "A {tokenLength}-digit verification code has been sent to <span>{email}</span>. Please check your inbox or spam folder.",
-    "token": {
-      "error": "Please enter the full {tokenLength}-digit verification code"
-    },
     "button": "Activate Account",
     "changeEmail": "Change Email",
     "success": "Your account has been activated successfully!"
@@ -77,6 +74,13 @@
     "subtitle": "Email Verification",
     "description": "Enter the email associated with your account and we will send you a verification code to reset your password.",
     "email": "Email Address"
+  },
+  "forgotPasswordToken": {
+    "title": "Reset Password",
+    "subtitle": "Email Verification",
+    "description": "We sent a verification code to your email <span>{email}</span>. Please check your inbox or spam folder and enter it below to set a new password.",
+    "button": "Verify & Continue",
+    "success": "Email verified successfully. Set and confirm your new password."
   },
   "forgotPasswordNew": {
     "title": "Reset Password",
@@ -211,6 +215,8 @@
     "success": "Settings updated successfully."
   },
   "errors": {
+    "token": "Please enter the full {tokenLength}-digit verification code",
+    "generic": "Something went wrong. Please try again or contact support.",
     "fieldRequired": "This field is required.",
     "minLength": "This field must contain at least {length} characters.",
     "maxLength": "This field must not exceed {length} characters."

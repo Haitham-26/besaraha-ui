@@ -5,18 +5,22 @@ import { OTPInput } from "@/app/components/OTPInput";
 import { ResendTokenButton } from "@/app/components/ResendTokenButton";
 import { useRouter } from "@/i18n/navigation";
 import { ForgotPasswordTokenDto } from "@/model/auth/forgot-password/dto/ForgotPasswordTokenDto";
-import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 const RESEND_LOCALSTORAGE_KEY = "resend-forgot-password-token-last-sent";
 
+const TOKEN_LENGTH = 6;
+
 export const ForgotPasswordTokenContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
+  const t = useTranslations();
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { control, getValues, handleSubmit, reset, watch } =
@@ -32,6 +36,7 @@ export const ForgotPasswordTokenContent: React.FC = () => {
   const onSubmit = async () => {
     try {
       setLoading(true);
+
       const dto = getValues();
 
       await NextClient("/auth/forgot-password/token", {
@@ -39,9 +44,7 @@ export const ForgotPasswordTokenContent: React.FC = () => {
         data: dto,
       });
 
-      Toast.success(
-        "تم التحقق من البريد الإلكتروني بنجاح. قم بتعيين كلمة مرور جديدة وتأكيدها.",
-      );
+      Toast.success(t("forgotPasswordToken.success"));
 
       router.replace(
         `/auth/forgot-password/new?email=${searchParams.get("email")}&token=${dto.token}`,
@@ -60,7 +63,7 @@ export const ForgotPasswordTokenContent: React.FC = () => {
       method: "POST",
       data: {
         email,
-        lang: document.documentElement.lang as AppLangs,
+        lang: locale,
       },
     });
   };
@@ -80,12 +83,29 @@ export const ForgotPasswordTokenContent: React.FC = () => {
           control={control}
           name="token"
           rules={{
-            required: "رمز التحقق مطلوب",
-            minLength: { value: 6, message: "رمز التحقق يجب ان يكون 6 خانات" },
-            maxLength: { value: 6, message: "رمز التحقق يجب ان يكون 6 خانات" },
+            required: t("errors.token", {
+              tokenLength: TOKEN_LENGTH,
+            }),
+            minLength: {
+              value: TOKEN_LENGTH,
+              message: t("errors.token", {
+                tokenLength: TOKEN_LENGTH,
+              }),
+            },
+            maxLength: {
+              value: TOKEN_LENGTH,
+              message: t("errors.token", {
+                tokenLength: TOKEN_LENGTH,
+              }),
+            },
           }}
-          render={({ field: { value, onChange } }) => (
-            <OTPInput value={value} onChange={onChange} length={6} />
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <OTPInput
+              value={value}
+              onChange={onChange}
+              length={TOKEN_LENGTH}
+              errorMessage={error?.message}
+            />
           )}
         />
 
@@ -98,10 +118,9 @@ export const ForgotPasswordTokenContent: React.FC = () => {
       <Button
         loading={loading}
         onClick={handleSubmit(onSubmit)}
-        disabled={token?.length !== 6}
-        className="mt-6"
+        disabled={!token || token.length !== TOKEN_LENGTH}
       >
-        تحقق واستمرار
+        {t("forgotPasswordToken.button")}
       </Button>
     </Fragment>
   );

@@ -32,7 +32,7 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
   const [loading, setLoading] = useState(false);
 
-  const { control, handleSubmit, getValues, reset } =
+  const { control, handleSubmit, getValues, reset, watch } =
     useForm<SignUpVerifyTokenDto>({
       defaultValues: {
         token: "",
@@ -40,6 +40,8 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
         lang: locale as AppLangs,
       },
     });
+
+  const token = watch("token");
 
   const LOCAL_STORAGE_RESEND_KEY = `signup-verification-${email}`;
 
@@ -109,18 +111,18 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
           control={control}
           name="token"
           rules={{
-            required: t("signupToken.token.error", {
+            required: t("errors.token", {
               tokenLength: TOKEN_LENGTH,
             }),
             minLength: {
               value: TOKEN_LENGTH,
-              message: t("signupToken.token.error", {
+              message: t("errors.token", {
                 tokenLength: TOKEN_LENGTH,
               }),
             },
             maxLength: {
               value: TOKEN_LENGTH,
-              message: t("signupToken.token.error", {
+              message: t("errors.token", {
                 tokenLength: TOKEN_LENGTH,
               }),
             },
@@ -143,6 +145,7 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
       <Button
         loading={loading}
+        disabled={!token || token.length !== TOKEN_LENGTH}
         onClick={handleSubmit(onSubmit)}
         className="mt-6 w-full"
       >
