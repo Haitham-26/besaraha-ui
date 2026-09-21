@@ -21,6 +21,23 @@
       }
     }
   },
+  "login": {
+    "title": "مرحبًا بك في <span>بـ</span>صراحة",
+    "subtitle": "تسجيل الدخول",
+    "identifier": {
+      "title": "البريد الإلكتروني أو اسم المستخدم"
+    },
+    "password": {
+      "title": "كلمة المرور"
+    },
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "button": "تسجيل الدخول",
+    "divider": "أو المتابعة عبر",
+    "googleButton": "تسجيل الدخول بواسطة جوجل",
+    "haveNoAccount": "<text>ليس لديك حساب؟</text> <link>أنشئ حسابًا الآن</link>",
+    "disclaimer": "من خلال الاستمرار، أنت توافق على <br></br> <termsLink>شروط الاستخدام</termsLink> و <privacyLink>سياسة الخصوصية</privacyLink>.",
+    "success": "تم تسجيل دخولك بنجاح"
+  },
   "home": {
     "hero": {
       "title": "<primary>ب</primary><accent>صراحة</accent>",
@@ -145,6 +162,7 @@
     "success": "تم تحديث الإعدادات بنجاح."
   },
   "errors": {
+    "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى أو التواصل مع فريق الدعم.",
     "fieldRequired": "هذا الحقل مطلوب.",
     "minLength": "يجب أن يحتوي هذا الحقل على {length} أحرف على الأقل.",
     "maxLength": "يجب ألا يزيد هذا الحقل على {length} حرفًا."

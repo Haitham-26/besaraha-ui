@@ -21,7 +21,23 @@
       }
     }
   },
-
+  "login": {
+    "title": "Welcome to <span>Be</span>Saraha",
+    "subtitle": "Sign In",
+    "identifier": {
+      "title": "Email or Username"
+    },
+    "password": {
+      "title": "Password"
+    },
+    "forgotPassword": "Forgot password?",
+    "button": "Sign In",
+    "divider": "Or continue with",
+    "googleButton": "Sign in with Google",
+    "haveNoAccount": "<text>Don't have an account?</text> <link>Create one now</link>",
+    "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms & Conditions</termsLink> and <privacyLink>Privacy Policy</privacyLink>.",
+    "success": "Signed in successfully!"
+  },
   "home": {
     "hero": {
       "title": "<primary>Be</primary><accent>Saraha</accent>",

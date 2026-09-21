@@ -11,10 +11,12 @@ import { AuthInput } from "../../../components/AuthInput";
 import { signIn } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export const LoginContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
+  const t = useTranslations();
   const router = useRouter();
   const { control, handleSubmit, getValues } = useForm<LoginDto>({
     defaultValues: { identifier: "", password: "" },
@@ -32,9 +34,9 @@ export const LoginContent: React.FC = () => {
       });
 
       if (!res?.ok) {
-        Toast.error(res?.error || "حدث خطأ ما");
+        Toast.error(res?.error || t("errors.generic"));
       } else {
-        Toast.success("تم تسجيل دخولك بنجاح");
+        Toast.success("login.success");
         router.push("/profile");
         router.refresh();
       }
@@ -54,7 +56,7 @@ export const LoginContent: React.FC = () => {
           name="identifier"
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <AuthInput
-              title="البريد الإلكتروني أو اسم المستخدم"
+              title={t("login.identifier.title")}
               placeholder="name@example.com / abc123"
               value={value}
               onChange={(e) => {
@@ -74,7 +76,7 @@ export const LoginContent: React.FC = () => {
             name="password"
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <AuthInput
-                title="كلمة المرور"
+                title={t("login.password.title")}
                 placeholder="••••••••"
                 value={value}
                 onChange={onChange}
@@ -90,7 +92,7 @@ export const LoginContent: React.FC = () => {
             href={"/forgot-password/email"}
             className="text-accent font-bold text-xs ms-auto mt-2 inline-block"
           >
-            نسيت كلمة السر؟
+            {t("login.forgotPassword")}
           </Link>
         </div>
       </div>
@@ -102,27 +104,33 @@ export const LoginContent: React.FC = () => {
           className="w-full h-14 rounded-2xl bg-accent text-white font-bold text-lg shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
           icon={faArrowRightToBracket}
         >
-          تسجيل الدخول
+          {t("login.button")}
         </Button>
 
         <div className="relative flex items-center py-4">
           <div className="flex-grow border-t border-white/10"></div>
           <span className="flex-shrink mx-4 text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">
-            أو المتابعة عبر
+            {t("login.divider")}
           </span>
           <div className="flex-grow border-t border-white/10"></div>
         </div>
 
-        <GoogleLoginButton title="تسجيل دخول باستخدام جوجل" />
+        <GoogleLoginButton title={t("login.googleButton")} />
 
         <Link
           href="/signup"
           className="group text-center py-5 px-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500"
         >
-          <span className="text-slate-400 font-medium">ليس لديك حساب؟ </span>
-          <span className="text-accent font-black group-hover:underline decoration-accent decoration-2 underline-offset-4">
-            أنشئ حساباً الآن
-          </span>
+          {t.rich("login.haveNoAccount", {
+            text: (chunks) => (
+              <span className="text-slate-400 font-medium">{chunks}</span>
+            ),
+            link: (chunks) => (
+              <span className="text-accent font-black group-hover:underline decoration-accent decoration-2 underline-offset-4">
+                {chunks}
+              </span>
+            ),
+          })}
         </Link>
       </div>
     </Fragment>

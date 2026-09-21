@@ -208,7 +208,7 @@ export default async function Page() {
                     <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent text-xl">
                       <Icon icon={step.icon} />
                     </div>
-                    <span className="text-4xl font-black text-accent/50">
+                    <span className="text-4xl font-black text-accent/50 select-none">
                       {index + 1}
                     </span>
                   </div>
