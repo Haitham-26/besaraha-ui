@@ -150,9 +150,9 @@ export default async function Page() {
         </div>
       </section>
 
-      <section className="py-24 bg-surface-muted/50 border-y border-border/50">
+      <section className="py-12 bg-surface-muted/50 border-y border-border/50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <div className="text-center max-w-2xl mx-auto mb-8 space-y-4">
             <h2 className="text-3xl font-black text-primary tracking-tight">
               {t("home.features.title")}
             </h2>
@@ -186,9 +186,9 @@ export default async function Page() {
         </div>
       </section>
 
-      <section className="py-24 bg-background relative overflow-hidden">
+      <section className="py-12 bg-background relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-20 space-y-4">
+          <div className="text-center max-w-2xl mx-auto mb-8 space-y-4">
             <h2 className="text-3xl font-black text-primary tracking-tight">
               {t("home.howItWorks.title")}
             </h2>
@@ -228,9 +228,9 @@ export default async function Page() {
         </div>
       </section>
 
-      <section className="py-24 bg-surface-muted/50 border-y border-border/50">
+      <section className="py-12 bg-surface-muted/50 border-y border-border/50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <div className="text-center max-w-2xl mx-auto mb-8 space-y-4">
             <h2 className="text-3xl font-black text-primary tracking-tight">
               {t("home.faq.title")}
             </h2>
