@@ -72,6 +72,14 @@
     "changeEmail": "تغيير البريد الإلكتروني",
     "success": "تم تفعيل حسابك بنجاح"
   },
+  "forgotPasswordNew": {
+    "title": "استرجاع كلمة السر",
+    "subtitle": "تعيين كلمة سر جديدة",
+    "description": "قم بإدخال كلمة مرور جديدة وتأكيدها، سيتم تغيير كلمة المرور الخاصة بحسابك ويمكنك بعدها تسجيل الدخول باستخدامها.",
+    "newPassword": "كلمة السر الجديدة",
+    "confirmNewPassword": "تأكيد كلمة السر الجديدة",
+    "success": "تمت إعادة تعيين كلمة المرور بنجاح"
+  },
   "home": {
     "hero": {
       "title": "<primary>ب</primary><accent>صراحة</accent>",
@@ -202,6 +210,7 @@
     "maxLength": "يجب ألا يزيد هذا الحقل على {length} حرفًا."
   },
   "common": {
+    "continue": "متابعة",
     "resendToken": {
       "button": "إعادة إرسال رمز التحقق",
       "countdownText": "يمكنك طلب رمز التحقق مرة أخرى بعد: <countdown></countdown>",

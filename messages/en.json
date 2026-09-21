@@ -72,6 +72,14 @@
     "changeEmail": "Change Email",
     "success": "Your account has been activated successfully!"
   },
+  "forgotPasswordNew": {
+    "title": "Reset Password",
+    "subtitle": "Set New Password",
+    "description": "Enter and confirm your new password. Your account password will be updated, and you can then use it to sign in.",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "success": "Password has been reset successfully"
+  },
   "home": {
     "hero": {
       "title": "<primary>Be</primary><accent>Saraha</accent>",
@@ -202,6 +210,7 @@
     "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "continue": "Continue",
     "resendToken": {
       "button": "Resend Verification Code",
       "countdownText": "You can request a new code in: <countdown></countdown>",
