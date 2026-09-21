@@ -6,140 +6,129 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 import { faLightbulb } from "@fortawesome/free-solid-svg-icons/faLightbulb";
 import { Link } from "@/i18n/navigation";
+import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+import { getTranslations } from "next-intl/server";
+import { _Translator } from "next-intl";
 
-export default function Page() {
-  const userSteps = [
-    {
-      icon: faUserCircle,
-      title: "جهز ملفك الشخصي",
-      desc: "بعد التسجيل، توجه إلى صفحة البروفايل. تأكد من اختيار اسم مستخدم (Username) يعبر عنك، فهذا الاسم هو ما سيظهر في رابط المراسلة الخاص بك.",
-    },
-    {
-      icon: faLink,
-      title: "شارك الرابط الذكي",
-      desc: "استخدم زر النسخ الموجود في صفحتك الشخصية. ضع الرابط في 'البايو' على إنستجرام أو تيك توك. هذا الرابط هو البوابة التي تسمح للآخرين بمراسلتك دون الحاجة لامتلاكهم حساباً.",
-    },
-    {
-      icon: faUserSecret,
-      title: "استقبل المصارحات السرية",
-      desc: "ستصلك رسائل خاصة في 'الرسائل الواردة'. هذه الرسائل سرية تماماً ولا يراها أحد غيرك. يمكنك قراءتها والاستمتاع بصدق أصدقائك بعيداً عن ضجيج المنشورات العامة.",
-    },
-    {
-      icon: faComments,
-      title: "ابدأ نقاشاً عاماً",
-      desc: "هل تريد معرفة رأي الناس في موضوع معين؟ اطرح سؤالاً في قسم 'أسئلتي' وشارك رابطه. يمكن لأي شخص ترك رد علني يراه الجميع.",
-    },
-    {
-      icon: faPaperPlane,
-      title: "تفاعل مع الردود",
-      desc: "داخل كل سؤال، ستجد مصفوفة من الردود. يمكنك متابعة النقاش، ورؤية من اختار الرد باسمه ومن فضّل الرد كمجهول، مما يخلق بيئة تفاعلية غنية وصريحة.",
-    },
-  ];
+const getSteps = (t: _Translator) => [
+  {
+    icon: faUserCircle,
+    title: t("howItWorks.steps.0.title"),
+    description: t("howItWorks.steps.0.description"),
+  },
+  {
+    icon: faLink,
+    title: t("howItWorks.steps.1.title"),
+    description: t("howItWorks.steps.1.description"),
+  },
+  {
+    icon: faUserSecret,
+    title: t("howItWorks.steps.2.title"),
+    description: t("howItWorks.steps.2.description"),
+  },
+  {
+    icon: faComments,
+    title: t("howItWorks.steps.3.title"),
+    description: t("howItWorks.steps.3.description"),
+  },
+  {
+    icon: faPaperPlane,
+    title: t("howItWorks.steps.4.title"),
+    description: t("howItWorks.steps.4.description"),
+  },
+];
+
+export default async function Page() {
+  const t = await getTranslations();
+
+  const steps = getSteps(t);
 
   return (
-    <div className="w-full bg-surface-muted">
-      <header className="pt-24 pb-16 px-6 text-center bg-white border-b border-border/50">
+    <main className="w-full bg-surface">
+      <section className="pt-20 pb-16 px-6 text-center border-b border-border/50 bg-surface-muted/30">
         <div className="max-w-3xl mx-auto space-y-4">
-          <h1 className="text-4xl md:text-6xl font-black text-primary tracking-tight">
-            كيف تستخدم <span className="text-accent">بصراحة</span>
+          <h1 className="text-4xl font-black text-primary tracking-tight">
+            {t.rich("howItWorks.title", {
+              span: (chunk) => <span className="text-accent">{chunk}</span>,
+            })}
           </h1>
-          <p className="text-lg text-text-muted font-medium leading-relaxed">
-            تعرف على الخطوات البسيطة للبدء في استقبال الرسائل السرية وبناء
-            نقاشات حقيقية مع متابعيك.
+          <p className="text-lg text-text-muted font-medium leading-relaxed max-w-2xl mx-auto">
+            {t("howItWorks.subtitle")}
           </p>
         </div>
-      </header>
+      </section>
 
-      <main className="max-w-6xl mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <div className="space-y-6">
-            {userSteps.map((step, i) => (
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="lg:col-span-7 space-y-4">
+            {steps.map((step, i) => (
               <div
                 key={i}
-                className="relative group bg-surface border border-border p-8 rounded-[2.5rem] flex flex-col md:flex-row gap-6 items-start hover:border-accent/30 transition-all shadow-sm"
+                className="bg-background border border-border p-6 md:p-8 rounded-[2rem] flex items-start gap-5 transition-all"
               >
-                <div className="w-14 h-14 shrink-0 bg-primary text-secondary rounded-2xl flex items-center justify-center text-xl shadow-lg">
+                <div className="w-12 h-12 shrink-0 bg-accent/10 text-accent rounded-2xl flex items-center justify-center text-lg font-bold">
                   <Icon icon={step.icon} />
                 </div>
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-black text-primary flex items-center gap-3">
-                    <span className="text-white bg-accent rounded-full w-8 h-8 aspect-square flex items-center justify-center text-sm absolute top-0 start-0">
+
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="text-xl font-black text-primary">
+                      {step.title}
+                    </h3>
+                    <span className="text-xs font-black text-accent bg-accent/10 px-3 py-1 rounded-full select-none">
                       0{i + 1}
                     </span>
-                    {step.title}
-                  </h3>
-                  <p className="text-text-muted leading-relaxed font-medium">
-                    {step.desc}
+                  </div>
+                  <p className="text-text-muted leading-relaxed text-sm md:text-base font-medium">
+                    {step.description}
                   </p>
                 </div>
               </div>
             ))}
           </div>
 
-          <aside className="space-y-8 lg:sticky lg:top-24">
-            <div className="bg-primary rounded-[3rem] p-10 text-secondary relative overflow-hidden shadow-2xl">
-              <div className="relative z-10 space-y-6">
-                <div className="flex items-center gap-3">
-                  <Icon icon={faLightbulb} className="text-accent text-4xl" />
-                  <h4 className="text-2xl font-black">نصيحة</h4>
+          <aside className="lg:col-span-5 space-y-6 lg:sticky lg:top-22">
+            <div className="bg-primary rounded-[2rem] p-8 text-secondary space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-accent/20 text-accent flex items-center justify-center text-xl">
+                  <Icon icon={faLightbulb} />
                 </div>
-                <p className="text-secondary/70 leading-relaxed font-medium">
-                  للحصول على أكبر عدد من الرسائل، قم بالرد على بعض الأسئلة علناً
-                  وشارك لقطة شاشة (Screenshot) لها في &apos;ستوري&apos;
-                  الإنستجرام. هذا يشجع الآخرين على المشاركة والمصارحة!
-                </p>
+                <h4 className="text-xl font-black">
+                  {t("howItWorks.tip.title")}
+                </h4>
               </div>
-              <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-accent rounded-full blur-[60px] opacity-20" />
-            </div>
-
-            <div className="bg-white border border-border rounded-[2.5rem] p-8 space-y-4">
-              <h4 className="font-black text-primary flex items-center gap-2">
-                <span className="w-1 h-4 bg-accent rounded-full" />
-                الفرق بين الرسالة والسؤال
-              </h4>
-              <div className="space-y-4 pt-2">
-                <div className="p-4 bg-surface-muted rounded-2xl border border-border/50">
-                  <div className="text-xs font-black text-primary mb-1 italic">
-                    الرسالة:
-                  </div>
-                  <p className="text-sm text-text-muted">
-                    تصلك وحدك في صندوق الوارد. لا يراها أحد غيرك، وهي مثالية
-                    للمصارحات الشخصية.
-                  </p>
-                </div>
-                <div className="p-4 bg-accent/5 rounded-2xl border border-accent/10">
-                  <div className="text-xs font-black text-accent mb-1 italic">
-                    السؤال:
-                  </div>
-                  <p className="text-sm text-text-muted">
-                    يظهر لكل من لديه رابطه. يمكن للجميع الرد عليه، وهو مصمم
-                    لبناء نقاشات جماعية علنية.
-                  </p>
-                </div>
-              </div>
+              <p className="text-secondary/80 leading-relaxed font-medium text-sm md:text-base">
+                {t("howItWorks.tip.description")}
+              </p>
             </div>
           </aside>
         </div>
+      </section>
 
-        <div className="mt-20 text-center bg-surface border border-border rounded-[3.5rem] p-12 md:p-20 shadow-xl">
-          <h2 className="text-3xl md:text-5xl font-black text-primary mb-6">
-            هل أنت مستعد لتسمع الحقيقة؟
-          </h2>
-          <p className="text-text-muted text-xl max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-            الآلاف يستخدمون بصراحة يومياً لاكتشاف ما يفكر فيه أصدقاؤهم حقاً. لا
-            تتردد، انضم إلينا الآن.
-          </p>
-          <div className="flex justify-center">
-            <Link
-              href="/signup"
-              target="_blank"
-              className="px-16 py-4 bg-primary text-secondary rounded-2xl font-black text-base hover:bg-accent hover:scale-105 transition-all shadow-2xl shadow-primary/20"
-            >
-              أنشئ حسابك الآن
-            </Link>
+      <section className="bg-background">
+        <div className="mx-auto px-6 py-10">
+          <div className="text-center space-y-8 max-w-4xl mx-auto">
+            <div className="space-y-4 mx-auto">
+              <h2 className="text-2xl md:text-3xl font-black text-primary tracking-tight">
+                {t("home.cta.title")}
+              </h2>
+              <p className="text-text-muted font-medium leading-relaxed">
+                {t("home.cta.description")}
+              </p>
+            </div>
+
+            <div className="flex justify-center">
+              <Link
+                href="/signup"
+                className="h-16 px-10 bg-accent text-secondary rounded-2xl flex items-center justify-center gap-3 font-black text-lg hover:bg-accent/90 transition-all"
+              >
+                {t("home.cta.button")}
+                <Icon icon={faBolt} className="ltr:rotate-180" />
+              </Link>
+            </div>
           </div>
         </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }

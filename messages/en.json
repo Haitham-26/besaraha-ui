@@ -175,7 +175,37 @@
     "cta": {
       "title": "Ready to receive your first message?",
       "description": "Create your free account today, claim your unique link, and start engaging with your friends and followers.",
-      "button": "Create Your Link Now"
+      "button": "Get Started"
+    }
+  },
+  "howItWorks": {
+    "title": "How to use <span>BeSaraha</span>",
+    "subtitle": "Simple steps giving you your personal space to receive secret messages and host engaging discussions with your followers and friends.",
+    "steps": [
+      {
+        "title": "Sign up for free & claim your link",
+        "description": "Sign up for free and head to your profile to find your unique personal link."
+      },
+      {
+        "title": "Share your link",
+        "description": "Copy your unique link and paste it in your Instagram, TikTok, or social media bio. This link allows anyone to message you directly without logging in."
+      },
+      {
+        "title": "Receive anonymous messages",
+        "description": "Get private messages instantly with complete privacy—visible only to you—so you can enjoy hearing honest opinions from friends and followers."
+      },
+      {
+        "title": "Start a public discussion",
+        "description": "Post a question via the \"My Questions\" page and share its link, or make it public to appear on the \"Honestly Forum\" page where anyone can leave a public reply for everyone to see."
+      },
+      {
+        "title": "Engage with replies",
+        "description": "Track responses to your questions and interact with users who chose to reply under their real name or remain anonymous."
+      }
+    ],
+    "tip": {
+      "title": "Pro tip for higher engagement",
+      "description": "To boost replies on your questions, take a screenshot of your question and share it along with the link in your Instagram Story or favorite platform. Then, repost the top answers to encourage even more interaction!"
     }
   },
   "footer": {
