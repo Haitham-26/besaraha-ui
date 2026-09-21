@@ -57,6 +57,7 @@
     },
     "button": "Create Account",
     "divider": "Or continue with",
+    "googleButton": "Sign up with Google",
     "alreadyHaveAccount": "<text>Already have an account?</text> <link>Sign In</link>",
     "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms of Use</termsLink> and <privacyLink>Privacy Policy</privacyLink>."
   },
