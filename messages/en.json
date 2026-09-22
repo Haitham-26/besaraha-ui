@@ -245,12 +245,14 @@
   },
   "settings": {
     "general": {
+      "title": "General",
       "language": {
         "title": "Display Language",
         "description": "This change will apply to the entire application interface, as well as the language of the emails you receive from us."
       }
     },
     "security": {
+      "title": "Security",
       "password": {
         "title": "Change Password",
         "description": "Make sure to use a long, random password to keep your account secure",
