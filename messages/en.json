@@ -5,7 +5,7 @@
     "developer": "Haitham",
     "links": {
       "public": {
-        "communityQuestions": "Community Questions",
+        "communityQuestions": "BeSaraha Community",
         "home": "Home",
         "howItWorks": "How It Works",
         "login": "Login",
@@ -208,6 +208,26 @@
       "description": "To boost replies on your questions, take a screenshot of your question and share it along with the link in your Instagram Story or favorite platform. Then, repost the top answers to encourage even more interaction!"
     }
   },
+  "forum": {
+    "title": "<accent>Be</accent>Saraha Community",
+    "subtitle": "An interactive space to spark discussions and share candid opinions with the BeSaraha community.",
+    "sidebar": {
+      "askCard": {
+        "title": "Have a Question for Everyone?",
+        "description": "Post your own question publicly to receive diverse answers and engage with the community.",
+        "button": "Ask a New Question"
+      },
+      "info": {
+        "communityTitle": "Open Community Discussions",
+        "communityDesc": "All questions and replies in this section are public for everyone to explore and join in.",
+        "privacyTitle": "Reply Named or Anonymous",
+        "privacyDesc": "You have complete freedom to join the discussion under your real name or remain anonymous."
+      }
+    },
+    "questions": {
+      "title": "Explore <span>Latest Questions</span>"
+    }
+  },
   "footer": {
     "platoform": {
       "title": "Platform"
@@ -252,6 +272,11 @@
     "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "share": "Share",
+    "pagination": {
+      "prev": "Previous Page",
+      "next": "Next Page"
+    },
     "continue": "Continue",
     "resendToken": {
       "button": "Resend Verification Code",

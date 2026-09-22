@@ -19,6 +19,7 @@ import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
 import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
+import { useTranslations } from "next-intl";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
@@ -48,6 +49,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations();
 
   const cachedQuestions = queryClient.getQueryData([
     "questions",
@@ -170,7 +172,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
         icon={faShareNodes}
         className="text-xs bg-surface-muted shadow-none font-bold !text-text-muted hover:bg-surface-muted"
       >
-        مشاركة
+        {t("common.share")}
       </Button>
 
       {isOnPrivateQuestionsPage && isOwner ? (

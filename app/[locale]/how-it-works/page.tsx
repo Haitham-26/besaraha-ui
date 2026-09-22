@@ -45,7 +45,7 @@ export default async function Page() {
 
   return (
     <main className="w-full bg-surface">
-      <section className="pt-20 pb-16 px-6 text-center border-b border-border/50 bg-surface-muted/30">
+      <section className="pt-24 pb-10 px-6 text-center border-b border-border/50 bg-surface-muted/30">
         <div className="max-w-3xl mx-auto space-y-4">
           <h1 className="text-4xl font-black text-primary tracking-tight">
             {t.rich("howItWorks.title", {
