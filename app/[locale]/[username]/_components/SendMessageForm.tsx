@@ -8,11 +8,11 @@ import { Toast } from "@/tools/Toast";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
 import { faUserSecret } from "@fortawesome/free-solid-svg-icons/faUserSecret";
-import { faPenNib } from "@fortawesome/free-solid-svg-icons/faPenNib";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Textarea } from "@/app/components/Textarea";
 import { Input } from "@/app/components/Input";
+import { useTranslations } from "next-intl";
 
 type Props = {
   username: string;
@@ -20,6 +20,7 @@ type Props = {
 
 export const SendMessageForm: React.FC<Props> = ({ username }) => {
   const [loading, setLoading] = useState(false);
+  const t = useTranslations();
 
   const {
     control,
@@ -48,13 +49,14 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
   const onSubmit = async () => {
     try {
       setLoading(true);
-      const dto = getValues();
+
       await NextClient(`/messages/${username}/send-message`, {
         method: "POST",
-        data: dto,
+        data: getValues(),
       });
+
       reset();
-      Toast.success("تم إرسال رسالتك بنجاح");
+      Toast.success(t("sendMessage.form.success"));
     } catch (e) {
       Toast.apiError(e);
     } finally {
@@ -63,34 +65,34 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="relative group">
-        <div className="flex items-center gap-3 mb-4 text-slate-300 font-bold text-sm uppercase tracking-widest">
-          <Icon icon={faPenNib} className="text-accent text-xs" />
-          <span>محتوى الرسالة</span>
-        </div>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <label className="block text-sm font-black text-primary">
+          {t("sendMessage.form.label")}
+        </label>
 
         <Controller
           control={control}
           name="message"
           rules={{
-            required: "لا يمكنك إرسال رسالة فارغة",
-            maxLength: { value: 1024, message: "الرسالة طويلة جداً" },
+            required: t("errors.fieldRequired"),
+            maxLength: {
+              value: 1024,
+              message: t("errors.maxLength", {
+                length: 1024,
+              }),
+            },
           }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <Textarea
               value={value}
               onChange={onChange}
-              placeholder="اكتب شيئاً لا تستطيع قوله في العلن..."
-              className={`
-                  w-full min-h-[220px] p-8 rounded-[2.5rem] border outline-none transition-all duration-500 resize-none text-lg font-medium
-                  bg-white/[0.03] text-white placeholder:text-slate-600
-                  ${
-                    error
-                      ? "border-red-500/50 focus:border-red-500 focus:ring-4 focus:ring-red-500/10"
-                      : "border-white/10 focus:border-accent focus:ring-4 focus:ring-accent/10 focus:bg-white/[0.05]"
-                  }
-                `}
+              placeholder={t("sendMessage.form.placeholder")}
+              className={`w-full min-h-[180px] p-5 rounded-2xl border outline-none transition-all resize-none text-base font-medium bg-surface text-primary placeholder:text-text-muted ${
+                error
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-border focus:border-accent"
+              }`}
               valid={!error}
               errorMessage={error?.message}
               maxLength={1024}
@@ -99,48 +101,55 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
         />
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 bg-white/[0.02] rounded-[2rem] border border-white/5">
-        <div className="flex flex-wrap items-center gap-8">
-          <label className="flex items-center gap-3 cursor-pointer group">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
+        <div className="flex flex-wrap items-center gap-4">
+          <label className="flex items-center gap-3 cursor-pointer select-none">
             <div className="relative flex items-center">
               <input
                 type="checkbox"
                 checked={asAnnonymous}
                 onChange={(e) => onCheckAnonymous(e.target.checked)}
-                className="peer appearance-none w-6 h-6 border border-white/20 rounded-lg checked:bg-accent checked:border-accent transition-all cursor-pointer"
+                className="peer appearance-none w-5 h-5 border border-border rounded-md checked:bg-accent checked:border-accent transition-all cursor-pointer"
               />
               <Icon
                 icon={faCheck}
-                className="absolute left-1.5 text-[10px] text-white opacity-0 peer-checked:opacity-100 transition-opacity"
+                className="absolute left-1 text-[10px] text-secondary opacity-0 peer-checked:opacity-100 transition-opacity"
               />
             </div>
             <div className="flex items-center gap-2">
               <Icon
                 icon={faUserSecret}
                 className={`text-sm transition-colors ${
-                  asAnnonymous ? "text-accent" : "text-slate-500"
+                  asAnnonymous ? "text-accent" : "text-text-muted"
                 }`}
               />
-              <span className="text-sm font-bold text-slate-300">
-                إرسال مجهول
+              <span className="text-sm font-bold text-primary">
+                {t("sendMessage.form.anonymousLabel")}
               </span>
             </div>
           </label>
 
           {!asAnnonymous ? (
-            <div className="w-full md:w-fit animate-in fade-in slide-in-from-right-2 duration-300">
+            <div className="w-full sm:w-48">
               <Controller
                 control={control}
                 name="senderName"
-                rules={{ maxLength: 32 }}
+                rules={{
+                  maxLength: {
+                    value: 32,
+                    message: t("errors.maxLength", {
+                      length: 32,
+                    }),
+                  },
+                }}
                 render={({ field: { value, onChange } }) => (
                   <Input
-                    placeholder="ضع اسماً مستعاراً"
+                    placeholder={t("sendMessage.form.senderPlaceholder")}
                     value={value}
                     onChange={onChange}
                     classNames={{
                       input:
-                        "!bg-white/5 !border-white/10 !text-white h-11 px-6 rounded-xl text-sm w-full md:w-52 focus:!border-accent/50",
+                        "h-10 px-4 rounded-xl text-sm w-full bg-surface border-border text-primary focus:border-accent",
                     }}
                   />
                 )}
@@ -152,10 +161,9 @@ export const SendMessageForm: React.FC<Props> = ({ username }) => {
         <Button
           onClick={handleSubmit(onSubmit)}
           loading={loading}
-          className="h-14 px-12 !bg-accent hover:!bg-accent/90 text-white rounded-2xl font-black text-lg shadow-2xl shadow-accent/20 transition-all hover:-translate-y-1 active:scale-95 flex items-center gap-3"
+          icon={faPaperPlane}
         >
-          <span>إرسال</span>
-          <Icon icon={faPaperPlane} className="text-sm" />
+          {t("sendMessage.form.button")}
         </Button>
       </div>
     </div>

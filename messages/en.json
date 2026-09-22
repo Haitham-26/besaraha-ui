@@ -228,6 +228,23 @@
       "title": "Explore <span>Latest Questions</span>"
     }
   },
+  "sendMessage": {
+    "title": "Send a secret message to <span>{name}</span>",
+    "privacyNote": "Your identity is completely hidden and will never be shared.",
+    "form": {
+      "label": "Your Message",
+      "placeholder": "Write your honest message here...",
+      "anonymousLabel": "Send anonymously",
+      "senderPlaceholder": "Your nickname (optional)",
+      "button": "Send Message",
+      "success": "Your message was sent successfully"
+    },
+    "cta": {
+      "title": "Want to receive anonymous messages too?",
+      "subtitle": "Create your free account and get your own link in seconds, share it with your friends and followers on social media and start receiving messages!.",
+      "button": "Get Your Link Now"
+    }
+  },
   "footer": {
     "platoform": {
       "title": "Platform"
