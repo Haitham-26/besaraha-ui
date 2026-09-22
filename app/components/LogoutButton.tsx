@@ -38,7 +38,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
     <Button
       onClick={logout}
       icon={faRightFromBracket}
-      className={`!bg-danger !p-5 w-10 h-10 md:w-auto md:h-12 text-secondary hover:!bg-danger/90 shadow-none ${className}`}
+      className={`!w-full !bg-danger !p-5 h-10 md:w-auto md:h-12 text-secondary hover:!bg-danger/90 shadow-none ${className}`}
     >
       <span className="hidden md:inline">{t("logout")}</span>
     </Button>

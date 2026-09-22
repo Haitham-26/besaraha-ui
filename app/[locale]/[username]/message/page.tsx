@@ -71,6 +71,7 @@ export default async function Page({ params }: Props) {
                   alt={profile.name}
                   width={96}
                   height={96}
+                  quality={100}
                   className="object-cover w-full h-full"
                 />
               ) : (

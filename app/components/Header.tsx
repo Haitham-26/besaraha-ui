@@ -204,7 +204,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                         onClick={toggle}
                         aria-haspopup="menu"
                         aria-expanded={open}
-                        className="!bg-transparent !p-0 overflow-hidden rounded-full ring-2 ring-white/10 h-14 w-14 !shadow-none"
+                        className="!bg-transparent !p-0 overflow-hidden rounded-full ring-2 ring-white/10 h-14 w-14 !shadow-none [&>div]:w-full [&>div]:h-full"
                       >
                         {user?.avatar ? (
                           <Image
@@ -213,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                             width={100}
                             height={100}
                             quality={100}
-                            className="w-full h-full object-cover"
+                            className="!w-full h-full object-cover"
                           />
                         ) : (
                           <Icon
