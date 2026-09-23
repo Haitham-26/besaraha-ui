@@ -44,7 +44,7 @@ export function QuestionsPageContent({
   });
 
   return (
-    <main className="w-full bg-background pt-10 pb-6">
+    <main className="w-full bg-background pt-10 pb-7 lg:pb-6">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 px-6">
         <aside className="md:col-span-4 space-y-6">
           <div className="bg-primary rounded-[2.5rem] p-8 text-secondary shadow-2xl relative overflow-hidden group">

@@ -67,7 +67,7 @@ export const ProfileContent: React.FC = () => {
   const infoData = getInfoData(t, user);
 
   return (
-    <main className="w-full bg-background pt-10 pb-6">
+    <main className="w-full bg-background pt-10 pb-7 lg:pb-6">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 px-6">
         <aside className="relative p-8 bg-primary rounded-4xl md:col-span-4 space-y-6 h-fit md:sticky md:top-26">
           <div className="relative z-10 flex flex-col items-center gap-4 m-0">
