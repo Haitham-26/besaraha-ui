@@ -79,12 +79,10 @@ export function MessagesPageContent({
   };
 
   return (
-    <div className="w-full bg-surface-muted p-4 pt-6 md:p-8 lg:p-12 relative">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <aside className="lg:col-span-4 space-y-6">
+    <main className="w-full bg-background pt-10 pb-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 px-6">
+        <aside className="md:col-span-4 space-y-6">
           <div className="bg-primary rounded-[2.5rem] p-8 text-secondary shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-[-20%] right-[-20%] w-40 h-40 bg-accent rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-
             <div className="relative z-10">
               <div className="inline-flex items-center justify-center p-3 bg-secondary/10 backdrop-blur-md rounded-2xl mb-6">
                 <Icon icon={faInbox} className="text-accent text-2xl" />
@@ -106,7 +104,7 @@ export function MessagesPageContent({
           <MessagesFilters />
         </aside>
 
-        <div className="lg:col-span-8">
+        <div className="md:col-span-8">
           <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col overflow-hidden">
             <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
@@ -171,6 +169,6 @@ export function MessagesPageContent({
           description="هل أنت متأكد؟ سيتم حذف جميع الرسائل الواردة نهائياً ولا يمكن التراجع عن هذا الإجراء."
         />
       ) : null}
-    </div>
+    </main>
   );
 }
