@@ -17,9 +17,8 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
-import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 const markPrivateModalDescription =
   "سيتم إزالة هذا السؤال من صفحة الأسئلة العامة، وسيظهر فقط لمن يملك رابطه. هل تريد المتابعة؟";
@@ -64,7 +63,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
   );
   const isOwner = userId && userId === question.userId;
 
-  const lang = getClientLocaleCookies();
+  const lang = useLocale();
 
   const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
 

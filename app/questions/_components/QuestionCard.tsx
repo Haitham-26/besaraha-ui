@@ -19,9 +19,8 @@ import { QuestionReplyForm } from "./replies/QuestionReplyForm";
 import { Pagination } from "@/app/components/Pagination";
 import { NextClient } from "@/tools/NextClient";
 import { useSearchParams } from "next/navigation";
-import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type QuestionCardProps = {
   question: Question;
@@ -50,7 +49,7 @@ export default function QuestionCard({
   const userId = session?.user?._id;
   const isOwner = question.userId === userId;
 
-  const lang = getClientLocaleCookies();
+  const lang = useLocale();
 
   const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
 

@@ -44,7 +44,7 @@ export function QuestionsPageContent({
   });
 
   return (
-    <div className="w-full min-h-screen bg-surface-muted p-4 pt-6 md:p-8 lg:p-12">
+    <main className="w-full bg-surface-muted p-4 pt-6 md:p-8 lg:p-12">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         <aside className="lg:col-span-4 space-y-6">
           <div className="bg-primary rounded-[2.5rem] p-8 text-secondary shadow-2xl relative overflow-hidden group">
@@ -76,7 +76,7 @@ export function QuestionsPageContent({
           <QuestionsFilters />
         </aside>
 
-        <main className="lg:col-span-8">
+        <div className="lg:col-span-8">
           <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col">
             <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
@@ -118,8 +118,8 @@ export function QuestionsPageContent({
               ) : null}
             </div>
           </div>
-        </main>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

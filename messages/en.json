@@ -245,6 +245,24 @@
       "button": "Get Your Link Now"
     }
   },
+  "profile": {
+    "side": {
+      "button": "Edit Profile"
+    },
+    "link": {
+      "title": "Your Link to Receive Secret Messages",
+      "description": "Copy and add this link to your social media bio to start receiving secret messages."
+    },
+    "info": {
+      "title": "Account Information",
+      "fields": {
+        "name": "Full Name",
+        "username": "Username",
+        "email": "Email Address",
+        "createdAt": "Joined Date"
+      }
+    }
+  },
   "footer": {
     "platoform": {
       "title": "Platform"
@@ -291,6 +309,8 @@
     "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "copy": "Copy",
+    "copySuccess": "Copied successfully!",
     "share": "Share",
     "pagination": {
       "prev": "Previous Page",
