@@ -8,12 +8,13 @@ import { ImageCropModal } from "./ImageCropModal";
 import { Popover } from "./Popover";
 import Image from "next/image";
 import { Button } from "./Button";
+import { useTranslations } from "next-intl";
 
 type ImageUploadProps = {
   value: File | string | null;
   onChange: (file: File | string) => void;
+  label: string;
   accept?: string;
-  label?: string;
   className?: string;
   aspect?: number;
 };
@@ -31,6 +32,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const [pendingSrc, setPendingSrc] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const t = useTranslations("common.imageUpload");
 
   const getSrc = () => {
     if (value instanceof File) {
@@ -90,9 +93,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      {label ? (
-        <span className="text-sm font-bold text-slate-600">{label}</span>
-      ) : null}
+      <span className="text-sm font-bold text-slate-600">{label}</span>
 
       <div className="relative h-32 w-32 shrink-0">
         <div
@@ -109,7 +110,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           {src ? (
             <Image
               src={src}
-              alt={label ?? "الصورة"}
+              alt={label}
               fill
               className="h-full w-full object-cover rounded-full"
             />
@@ -129,7 +130,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
                 onClick={toggle}
                 aria-haspopup="menu"
                 aria-expanded={open}
-                aria-label="خيارات الصورة"
                 className="!p-0 !absolute -bottom-1 -end-1 flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-accent text-white shadow-lg transition-transform hover:scale-105"
               >
                 <Icon icon={faPen} className="text-sm" />
@@ -140,13 +140,13 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
               onClick={handlePick}
               className="!bg-transparent rounded-none shadow-none w-full text-sm !text-slate-300 hover:!bg-white/5 hover:!text-white"
             >
-              تغيير الصورة
+              {t("actions.change")}
             </Button>
             <Button
               onClick={handleRemove}
               className="!bg-transparent rounded-none shadow-none w-full text-sm !text-red-400 hover:!bg-red-500/10 hover:!text-red-300"
             >
-              إزالة الصورة
+              {t("actions.remove")}
             </Button>
           </Popover>
         ) : null}

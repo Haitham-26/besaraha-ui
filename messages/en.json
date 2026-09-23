@@ -261,6 +261,16 @@
         "email": "Email Address",
         "createdAt": "Joined Date"
       }
+    },
+    "edit": {
+      "title": "Edit Profile",
+      "fields": {
+        "avatar": "Profile Picture",
+        "name": "Full Name",
+        "username": "Username"
+      },
+      "warning": "Changing your username will update your personal messaging link (Receive secret messages link). Don't forget to update the link wherever you previously shared it.",
+      "success": "Profile updated successfully"
     }
   },
   "footer": {
@@ -309,6 +319,18 @@
     "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "imageUpload": {
+      "actions": {
+        "change": "Change Image",
+        "remove": "Remove Image"
+      },
+      "crop": {
+        "title": "Crop Image",
+        "zoom": "Zoom"
+      }
+    },
+    "cancel": "Cancel",
+    "update": "Update",
     "copy": "Copy",
     "copySuccess": "Copied successfully!",
     "share": "Share",

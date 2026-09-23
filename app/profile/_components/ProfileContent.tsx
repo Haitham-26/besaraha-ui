@@ -69,7 +69,7 @@ export const ProfileContent: React.FC = () => {
   return (
     <div className="w-full bg-background pt-10 pb-6">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 px-6">
-        <aside className="relative p-8 md:p-12 bg-primary rounded-4xl md:col-span-4 space-y-6 h-fit md:sticky md:top-26">
+        <aside className="relative p-8 bg-primary rounded-4xl md:col-span-4 space-y-6 h-fit md:sticky md:top-26">
           <div className="relative z-10 flex flex-col items-center gap-4 m-0">
             <div className="w-32 h-32 bg-surface rounded-full flex items-center justify-center border-2 border-surface-muted/5 overflow-hidden">
               {user?.avatar ? (
@@ -91,10 +91,10 @@ export const ProfileContent: React.FC = () => {
 
             <div className="text-center space-y-2">
               <div className="flex flex-col gap-1">
-                <h1 className="text-4xl font-black text-white tracking-tight">
+                <h1 className="text-3xl font-black text-white tracking-tight">
                   {user.name}
                 </h1>
-                <p className="text-accent font-mono text-xl [dir:ltr]">
+                <p className="text-accent font-mono text-مل [dir:ltr]">
                   @{user.username}
                 </p>
               </div>
