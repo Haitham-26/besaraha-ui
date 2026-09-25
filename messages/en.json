@@ -1,33 +1,352 @@
 {
+  "app": {
+    "name": "BeSaraha",
+    "description": "Your space for secret messages and open discussions.",
+    "developer": "Haitham",
+    "links": {
+      "public": {
+        "communityQuestions": "BeSaraha Community",
+        "home": "Home",
+        "howItWorks": "How It Works",
+        "login": "Login",
+        "signUp": "Sign Up",
+        "terms": "Terms & Conditions",
+        "privacy": "Privacy Policy"
+      },
+      "private": {
+        "messages": "Inbox",
+        "questions": "Questions",
+        "profile": "Profile",
+        "settings": "Settings"
+      }
+    }
+  },
+  "login": {
+    "title": "Welcome to <span>Be</span>Saraha",
+    "subtitle": "Sign In",
+    "identifier": {
+      "title": "Email or Username"
+    },
+    "password": {
+      "title": "Password"
+    },
+    "forgotPassword": "Forgot password?",
+    "button": "Sign In",
+    "divider": "Or continue with",
+    "googleButton": "Sign in with Google",
+    "haveNoAccount": "<text>Don't have an account?</text> <link>Create one now</link>",
+    "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms & Conditions</termsLink> and <privacyLink>Privacy Policy</privacyLink>.",
+    "success": "Signed in successfully!"
+  },
+  "signup": {
+    "title": "Welcome to <span>Be</span>Saraha",
+    "subtitle": "Create Account",
+    "username": {
+      "title": "Username",
+      "placeholder": "e.g. haitham_waki"
+    },
+    "name": {
+      "title": "Full Name",
+      "placeholder": "e.g. Haitham Waki"
+    },
+    "email": {
+      "title": "Email"
+    },
+    "password": {
+      "title": "Password"
+    },
+    "button": "Create Account",
+    "divider": "Or continue with",
+    "googleButton": "Sign up with Google",
+    "alreadyHaveAccount": "<text>Already have an account?</text> <link>Sign In</link>",
+    "disclaimer": "By continuing, you agree to our <br></br> <termsLink>Terms of Use</termsLink> and <privacyLink>Privacy Policy</privacyLink>."
+  },
+  "signupToken": {
+    "title": "<span>Be</span>Saraha",
+    "subtitle": "Verify Your Email",
+    "description": "A {tokenLength}-digit verification code has been sent to <span>{email}</span>. Please check your inbox or spam folder.",
+    "button": "Activate Account",
+    "changeEmail": "Change Email",
+    "success": "Your account has been activated successfully!"
+  },
+  "forgotPasswordEmail": {
+    "title": "Reset Password",
+    "subtitle": "Email Verification",
+    "description": "Enter the email associated with your account and we will send you a verification code to reset your password.",
+    "email": "Email Address"
+  },
+  "forgotPasswordToken": {
+    "title": "Reset Password",
+    "subtitle": "Email Verification",
+    "description": "We sent a verification code to your email <span>{email}</span>. Please check your inbox or spam folder and enter it below to set a new password.",
+    "button": "Verify & Continue",
+    "success": "Email verified successfully. Set and confirm your new password."
+  },
+  "forgotPasswordNew": {
+    "title": "Reset Password",
+    "subtitle": "Set New Password",
+    "description": "Enter and confirm your new password. Your account password will be updated, and you can then use it to sign in.",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "success": "Password has been reset successfully"
+  },
+  "home": {
+    "hero": {
+      "title": "<primary>Be</primary><accent>Saraha</accent>",
+      "subtitle": "Discover what others<br></br>think about you",
+      "description": "Your all-in-one platform to receive secret messages through your unique link or start discussions with friends and followers on social media in complete privacy.",
+      "actions": {
+        "main": "Get Started",
+        "secondary": "How It Works"
+      },
+      "cards": [
+        {
+          "header": "New anonymous message",
+          "body": "\"Honestly, I think you're a bit weird, but you're still awesome to me🙃\""
+        },
+        {
+          "header": "New reply to your question",
+          "body": "\"If my identity weren't encrypted, I wouldn't have been able to answer your question with my real identity☠️ Truth is, I am...\""
+        }
+      ]
+    },
+    "features": {
+      "title": "Everything you need for engaging conversations",
+      "subtitle": "Your platform to receive secret messages and start open discussions with total freedom.",
+      "items": {
+        "link": {
+          "title": "Your Unique Link",
+          "description": "Add your personal link to your social media bio and start receiving secret messages and feedback effortlessly."
+        },
+        "forum": {
+          "title": "Questions & Open Forum",
+          "description": "Post questions for your followers or share them in the public forum. Anyone can reply publicly, using an alias, or anonymously."
+        },
+        "privacy": {
+          "title": "Total Anonymity & Freedom",
+          "description": "Complete privacy for senders. Express yourself completely anonymously or use any custom nickname."
+        }
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Three simple steps to start receiving messages and hosting discussions",
+      "steps": [
+        {
+          "title": "Get your unique link",
+          "description": "Sign up for free and instantly claim your unique link."
+        },
+        {
+          "title": "Add to Your Bio",
+          "description": "Place your link in your social media bio and start receiving secret messages."
+        },
+        {
+          "title": "Ask & Discuss",
+          "description": "Post questions and share their links, or set them public for the \"BeSaraha Forum\" and receive replies."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Everything you need to know about using the platform and privacy",
+      "items": [
+        {
+          "q": "Is the platform free to use?",
+          "a": "Yes, the platform is 100% free for everyone. You can create your account, claim your custom link, receive messages, and ask questions at no cost. In the future, optional premium customization and advanced analytics features may be introduced."
+        },
+        {
+          "q": "Are messages and replies really anonymous?",
+          "a": "Yes, we guarantee total sender anonymity with zero identity tracking, giving you and your friends complete freedom to express yourselves."
+        },
+        {
+          "q": "Does a sender need an account to message me?",
+          "a": "No, anyone with your personal link can send you a secret message or reply to your questions directly without creating an account."
+        },
+        {
+          "q": "What is the \"Honestly Forum\" and how does it work?",
+          "a": "When posting a question, you can choose to display it on the public \"Honestly Forum\", allowing all platform visitors to view, interact, and respond to it."
+        },
+        {
+          "q": "Can I send messages or reply using a nickname?",
+          "a": "Absolutely. Senders have full flexibility to choose between complete anonymity or using a custom nickname."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to receive your first message?",
+      "description": "Create your free account today, claim your unique link, and start engaging with your friends and followers.",
+      "button": "Get Started"
+    }
+  },
+  "howItWorks": {
+    "title": "How to use <span>BeSaraha</span>",
+    "subtitle": "Simple steps giving you your personal space to receive secret messages and host engaging discussions with your followers and friends.",
+    "steps": [
+      {
+        "title": "Sign up for free & claim your link",
+        "description": "Sign up for free and head to your profile to find your unique personal link."
+      },
+      {
+        "title": "Share your link",
+        "description": "Copy your unique link and paste it in your Instagram, TikTok, or social media bio. This link allows anyone to message you directly without logging in."
+      },
+      {
+        "title": "Receive anonymous messages",
+        "description": "Get private messages instantly with complete privacy—visible only to you—so you can enjoy hearing honest opinions from friends and followers."
+      },
+      {
+        "title": "Start a public discussion",
+        "description": "Post a question via the \"My Questions\" page and share its link, or make it public to appear on the \"Honestly Forum\" page where anyone can leave a public reply for everyone to see."
+      },
+      {
+        "title": "Engage with replies",
+        "description": "Track responses to your questions and interact with users who chose to reply under their real name or remain anonymous."
+      }
+    ],
+    "tip": {
+      "title": "Pro tip for higher engagement",
+      "description": "To boost replies on your questions, take a screenshot of your question and share it along with the link in your Instagram Story or favorite platform. Then, repost the top answers to encourage even more interaction!"
+    }
+  },
+  "forum": {
+    "title": "<accent>Be</accent>Saraha Community",
+    "subtitle": "An interactive space to spark discussions and share candid opinions with the BeSaraha community.",
+    "sidebar": {
+      "askCard": {
+        "title": "Have a Question for Everyone?",
+        "description": "Post your own question publicly to receive diverse answers and engage with the community.",
+        "button": "Ask a New Question"
+      },
+      "info": {
+        "communityTitle": "Open Community Discussions",
+        "communityDesc": "All questions and replies in this section are public for everyone to explore and join in.",
+        "privacyTitle": "Reply Named or Anonymous",
+        "privacyDesc": "You have complete freedom to join the discussion under your real name or remain anonymous."
+      }
+    },
+    "questions": {
+      "title": "Explore <span>Latest Questions</span>"
+    }
+  },
+  "sendMessage": {
+    "title": "Send a secret message to <span>{name}</span>",
+    "privacyNote": "Your identity is completely hidden and will never be shared.",
+    "form": {
+      "label": "Your Message",
+      "placeholder": "Write your honest message here...",
+      "anonymousLabel": "Send anonymously",
+      "senderPlaceholder": "Your nickname (optional)",
+      "button": "Send Message",
+      "success": "Your message was sent successfully"
+    },
+    "cta": {
+      "title": "Want to receive anonymous messages too?",
+      "subtitle": "Create your free account and get your own link in seconds, share it with your friends and followers on social media and start receiving messages!.",
+      "button": "Get Your Link Now"
+    }
+  },
+  "profile": {
+    "side": {
+      "button": "Edit Profile"
+    },
+    "link": {
+      "title": "Your Link to Receive Secret Messages",
+      "description": "Copy and add this link to your social media bio to start receiving secret messages."
+    },
+    "info": {
+      "title": "Account Information",
+      "fields": {
+        "name": "Full Name",
+        "username": "Username",
+        "email": "Email Address",
+        "createdAt": "Joined Date"
+      }
+    },
+    "edit": {
+      "title": "Edit Profile",
+      "fields": {
+        "avatar": "Profile Picture",
+        "name": "Full Name",
+        "username": "Username"
+      },
+      "warning": "Changing your username will update your personal messaging link (Receive secret messages link). Don't forget to update the link wherever you previously shared it.",
+      "success": "Profile updated successfully"
+    }
+  },
+  "footer": {
+    "platoform": {
+      "title": "Platform"
+    },
+    "legal": {
+      "title": "Legal"
+    },
+    "systemStatus": {
+      "title": "System Status",
+      "subtitle": "All services are running efficiently",
+      "description": "Systems are updated regularly to ensure 100% encryption of your data via advanced protection protocols."
+    },
+    "developedBy": "Developed by {name}",
+    "copyright": "All rights reserved © {year}"
+  },
   "settings": {
     "general": {
+      "title": "General",
       "language": {
         "title": "Display Language",
-        "description": "This change will be applied to the entire application interface, as well as the language of the emails you receive from us."
+        "description": "This change will apply to the entire application interface, as well as the language of the emails you receive from us."
       }
     },
     "security": {
+      "title": "Security",
       "password": {
         "title": "Change Password",
-        "description": "Ensure your account is using a long, random password to stay secure",
+        "description": "Make sure to use a long, random password to keep your account secure",
         "current": "Current Password",
         "new": "New Password",
         "confirm": "Confirm New Password",
         "validation": {
-          "mismatch": "Passwords do not match."
+          "mismatch": "The passwords do not match."
         }
       }
     },
     "success": "Settings updated successfully."
   },
   "errors": {
+    "token": "Please enter the full {tokenLength}-digit verification code",
+    "generic": "Something went wrong. Please try again or contact support.",
     "fieldRequired": "This field is required.",
-    "minLength": "This field must be at least {length} characters.",
-    "maxLength": "This field must be at most {length} characters."
+    "minLength": "This field must contain at least {length} characters.",
+    "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "imageUpload": {
+      "actions": {
+        "change": "Change Image",
+        "remove": "Remove Image"
+      },
+      "crop": {
+        "title": "Crop Image",
+        "zoom": "Zoom"
+      }
+    },
+    "cancel": "Cancel",
+    "update": "Update",
+    "copy": "Copy",
+    "copySuccess": "Copied successfully!",
+    "share": "Share",
+    "pagination": {
+      "prev": "Previous Page",
+      "next": "Next Page"
+    },
+    "continue": "Continue",
+    "resendToken": {
+      "button": "Resend Verification Code",
+      "countdownText": "You can request a new code in: <countdown></countdown>",
+      "success": "Verification code sent successfully. Please check your inbox or spam folder."
+    },
     "save": "Save",
     "saving": "Saving...",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "logout": "Log Out"
   }
 }

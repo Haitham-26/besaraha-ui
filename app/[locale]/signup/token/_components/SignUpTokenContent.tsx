@@ -15,6 +15,9 @@ import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 import { signIn } from "next-auth/react";
 import { Link } from "@/i18n/navigation";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+
+const TOKEN_LENGTH = 6;
 
 type SignUpTokenContentProps = {
   email: string;
@@ -24,17 +27,21 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
   email,
 }) => {
   const router = useRouter();
+  const t = useTranslations();
+  const locale = useLocale();
 
   const [loading, setLoading] = useState(false);
 
-  const { control, handleSubmit, getValues, reset } =
+  const { control, handleSubmit, getValues, reset, watch } =
     useForm<SignUpVerifyTokenDto>({
       defaultValues: {
         token: "",
         email,
-        lang: (document.documentElement.lang as AppLangs) || AppLangs.EN,
+        lang: locale as AppLangs,
       },
     });
+
+  const token = watch("token");
 
   const LOCAL_STORAGE_RESEND_KEY = `signup-verification-${email}`;
 
@@ -48,9 +55,9 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
       });
 
       if (!res?.ok) {
-        Toast.error(res?.error || "حدث خطأ ما");
+        Toast.error(res?.error || t("errors.generic"));
       } else {
-        Toast.success("تم تفعيل حسابك بنجاح");
+        Toast.success(t("signupToken.success"));
 
         reset();
 
@@ -71,7 +78,7 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
       method: "POST",
       data: {
         email,
-        lang: document.documentElement.lang as AppLangs,
+        lang: locale,
       },
       withCredentials: true,
     });
@@ -85,12 +92,17 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
       <div className="mt-8 text-center">
         <h2 className="text-3xl font-black text-white">
-          تحقق من بريدك الإلكتروني
+          {t("signupToken.subtitle")}
         </h2>
 
         <p className="mt-4 text-text-muted leading-7">
-          <span>أرسلنا رمز تحقق مكونًا من 6 خانات إلى</span>
-          <strong className="text-white/80"> {email}</strong>
+          {t.rich("signupToken.description", {
+            email,
+            tokenLength: TOKEN_LENGTH,
+            span: (chunk) => (
+              <span className="text-white/80 font-bold">{chunk}</span>
+            ),
+          })}
         </p>
       </div>
 
@@ -98,9 +110,30 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
         <Controller
           control={control}
           name="token"
-          rules={{ required: true }}
-          render={({ field: { value, onChange } }) => (
-            <OTPInput value={value} onChange={onChange} length={6} />
+          rules={{
+            required: t("errors.token", {
+              tokenLength: TOKEN_LENGTH,
+            }),
+            minLength: {
+              value: TOKEN_LENGTH,
+              message: t("errors.token", {
+                tokenLength: TOKEN_LENGTH,
+              }),
+            },
+            maxLength: {
+              value: TOKEN_LENGTH,
+              message: t("errors.token", {
+                tokenLength: TOKEN_LENGTH,
+              }),
+            },
+          }}
+          render={({ field: { value, onChange }, fieldState: { error } }) => (
+            <OTPInput
+              value={value}
+              onChange={onChange}
+              length={TOKEN_LENGTH}
+              errorMessage={error?.message}
+            />
           )}
         />
 
@@ -112,17 +145,18 @@ export const SignUpTokenContent: React.FC<SignUpTokenContentProps> = ({
 
       <Button
         loading={loading}
+        disabled={!token || token.length !== TOKEN_LENGTH}
         onClick={handleSubmit(onSubmit)}
-        className="mt-10 w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-accent/20"
+        className="mt-6 w-full"
       >
-        تفعيل الحساب
+        {t("signupToken.button")}
       </Button>
 
       <Link
         href="/signup"
         className="mt-8 text-sm font-semibold text-text-muted hover:text-white transition-colors"
       >
-        تغيير البريد الإلكتروني
+        {t("signupToken.changeEmail")}
       </Link>
     </div>
   );

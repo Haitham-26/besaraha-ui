@@ -19,8 +19,8 @@ import { QuestionReplyForm } from "./replies/QuestionReplyForm";
 import { Pagination } from "@/app/components/Pagination";
 import { NextClient } from "@/tools/NextClient";
 import { useSearchParams } from "next/navigation";
-import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
+import { useLocale, useTranslations } from "next-intl";
 
 type QuestionCardProps = {
   question: Question;
@@ -41,6 +41,7 @@ export default function QuestionCard({
 }: QuestionCardProps) {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
+  const t = useTranslations();
 
   const isOnProfilePage = pathname === "/questions";
   const isListView = isOnProfilePage || pathname === "/public-questions";
@@ -48,7 +49,7 @@ export default function QuestionCard({
   const userId = session?.user?._id;
   const isOwner = question.userId === userId;
 
-  const lang = getClientLocaleCookies();
+  const lang = useLocale();
 
   const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
 
@@ -84,7 +85,7 @@ export default function QuestionCard({
   });
 
   return (
-    <div className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
+    <div className="w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
       <div className="flex items-center justify-between mb-4 text-xs text-text-muted">
         <span className="flex items-center gap-1.5">
           <Icon icon={faClock} className="text-accent" />
@@ -112,7 +113,7 @@ export default function QuestionCard({
 
           <Icon
             icon={faAngleLeft}
-            className="text-text-muted shrink-0 group-hover/title:text-accent transition-colors"
+            className="text-text-muted shrink-0 group-hover/title:text-accent transition-colors ltr:rotate-180"
           />
         </Link>
       ) : (

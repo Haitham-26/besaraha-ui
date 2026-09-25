@@ -11,8 +11,12 @@ import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import React, { useCallback, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+
+const MAX_USERNAME_LENGTH = 20;
+const MAX_NAME_LENGTH = 30;
 
 type ProfileUpdateModalProps = {
   open: boolean;
@@ -25,6 +29,7 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
 }) => {
   const { data, update } = useSession();
   const queryClient = useQueryClient();
+  const t = useTranslations();
 
   const { name, username, avatar } = data?.user || {};
 
@@ -84,7 +89,7 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
 
       onCloseModal();
 
-      Toast.success("تم تحديث الملف الشخصي بنجاح");
+      Toast.success(t("profile.edit.success"));
     },
     onError: (e) => {
       console.log(e);
@@ -99,7 +104,7 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
   }, [open, localReset]);
 
   return (
-    <Modal title="تعديل الملف الشخصي" open={open} onClose={onCloseModal}>
+    <Modal title={t("profile.edit.title")} open={open} onClose={onCloseModal}>
       <Controller
         control={control}
         name="avatar"
@@ -107,7 +112,7 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
           <ImageUpload
             value={value || null}
             onChange={onChange}
-            label="صورة الملف الشخصي"
+            label={t("profile.edit.fields.avatar")}
             className="items-center"
           />
         )}
@@ -118,18 +123,18 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
         name="name"
         rules={{
           maxLength: {
-            value: 30,
-            message: "الاسم لا يمكن أن يكون أكثر من 30 حرف",
+            value: MAX_NAME_LENGTH,
+            message: t("errors.maxLength", { length: MAX_NAME_LENGTH }),
           },
         }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <Input
-            title="الاسم"
+            title={t("profile.edit.fields.name")}
             value={value}
             onChange={onChange}
             valid={!error}
             errorMessage={error?.message}
-            maxLength={30}
+            maxLength={MAX_NAME_LENGTH}
           />
         )}
       />
@@ -140,27 +145,23 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
           name="username"
           rules={{
             maxLength: {
-              value: 20,
-              message: "الاسم لا يمكن أن يكون أكثر من 20 حرف",
+              value: MAX_USERNAME_LENGTH,
+              message: t("errors.maxLength", { length: MAX_USERNAME_LENGTH }),
             },
           }}
           render={({ field: { value, onChange }, fieldState: { error } }) => (
             <Input
-              title="اسم المستخدم"
+              title={t("profile.edit.fields.username")}
               value={value}
               onChange={onChange}
               valid={!error}
               errorMessage={error?.message}
-              maxLength={20}
+              maxLength={MAX_USERNAME_LENGTH}
             />
           )}
         />
 
-        <Info className="mt-2">
-          عند تغيير اسم المستخدم، سيتم تحديث رابط المراسلة الخاص بك، لذا لا تنسى
-          أن تقوم بتغيير رابط المراسلة الخاص بك في أي مكان كنت قد وضعته فيه من
-          قبل.
-        </Info>
+        <Info className="mt-2">{t("profile.edit.warning")}</Info>
       </div>
 
       <Button
@@ -168,7 +169,7 @@ export const ProfileUpdateModal: React.FC<ProfileUpdateModalProps> = ({
         onClick={handleSubmit(() => mutation.mutate())}
         className="w-full mt-6"
       >
-        تحديث
+        {t("common.update")}
       </Button>
     </Modal>
   );
