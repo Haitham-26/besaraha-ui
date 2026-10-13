@@ -497,5 +497,85 @@
     "saving": "Saving...",
     "saveChanges": "Save Changes",
     "logout": "Log Out"
+  },
+  "serverErrors": {
+    "unauthorized": "Authentication failed",
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "rateLimits": {
+      "global": "You are performing too many actions too quickly. Please try again in 15 minutes.",
+      "sendMessage": "You have reached the maximum number of messages. Please wait 30 minutes before trying again.",
+      "replyOnQuestion": "You are replying to questions too quickly. Please wait 10 minutes before trying again."
+    },
+    "uploadImage": {
+      "invalidType": "Invalid image format",
+      "limit": {
+        "size": "File size is too large. Maximum allowed size is {maxSizeMB} MB.",
+        "field": "An unexpected file was received.",
+        "count": "Cannot upload more than {maxCount} files."
+      }
+    },
+    "auth": {
+      "token": {
+        "length": "Verification code must be {length} characters long",
+        "incorrect": "Incorrect verification code",
+        "expired": "Verification code expired. Please request a new code.",
+        "hasBeenSent": "Please wait a moment before requesting another verification code."
+      },
+      "signup": {
+        "email": {
+          "username": {
+            "min": "Username must be at least {min} characters",
+            "max": "Username must be at most {max} characters",
+            "regex": "Username can only contain Latin letters, numbers, and non-leading underscores"
+          },
+          "name": {
+            "min": "Name must be at least {min} characters",
+            "max": "Name must be at most {max} characters",
+            "regex": "Name contains invalid characters"
+          },
+          "email": {
+            "invalid": "Invalid email address"
+          },
+          "password": {
+            "min": "Password must be at least {min} characters",
+            "max": "Password must be at most {max} characters",
+            "regex": "Password can only contain English letters, numbers, and special symbols (like @#$%) with no spaces"
+          },
+          "emailExists": "Email is already in use",
+          "usernameExists": "Username is already taken",
+          "existsNotVerified": "Account is not verified. Please try signing up again in a few minutes or use a different email."
+        },
+        "token": {
+          "userNotFound": "Account not found. Please create a new account."
+        },
+        "sendToken": {
+          "userNotFound": "No account found with this email address",
+          "differentSignupMethod": "This account was created via Google and cannot be verified this way",
+          "alreadyVerified": "This account is already verified."
+        }
+      },
+      "login": {
+        "identifier": {
+          "min": "Please enter your username or email address",
+          "regex": "Please enter a valid email address or username"
+        },
+        "userNotFound": "No account found with this email or username",
+        "differentSignupMethod": "This account was not created using email and password. Please sign in with Google.",
+        "incorrectIdentifierOrPassword": "Incorrect email/username or password"
+      },
+      "googleLogin": {
+        "invalidIdToken": "Invalid Google verification token",
+        "notVerified": "This Google account is unverified. Please try signing in with another Google account.",
+        "differentSignupMethod": "This account was not created with Google. Please sign in using your email and password."
+      },
+      "forgotPassword": {
+        "email": {
+          "userNotFound": "No account found with this email address"
+        },
+        "token": {
+          "notFound": "An error occurred while verifying the code. Please restart the password reset process."
+        }
+      }
+    }
   }
 }

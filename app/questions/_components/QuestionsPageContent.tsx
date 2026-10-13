@@ -90,7 +90,7 @@ export function QuestionsPageContent({
 
         <div className="md:col-span-8">
           <div className="bg-surface border border-border rounded-4xl shadow-sm min-h-[16rem] flex flex-col">
-            <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
+            <div className="px-8 py-6 border-b border-border rounded-t-4xl flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-accent" />
                 {t("menu.title")}
