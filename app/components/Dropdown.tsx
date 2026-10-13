@@ -70,7 +70,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           className={`
             absolute top-full mt-2 z-50 py-2
             bg-surface border border-border rounded-2xl shadow-xl
-            animate-in fade-in zoom-in-95 duration-200
+            animate-in fade-in zoom-in-95 duration-200 w-max
             ${openDirection === "left" ? "right-0" : "left-0"}
             ${className || ""}
           `}

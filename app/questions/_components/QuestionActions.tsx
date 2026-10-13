@@ -169,7 +169,7 @@ export const QuestionActions: React.FC<QuestionActionsProps> = ({
 
       {isOnPrivateQuestionsPage && isOwner ? (
         <Fragment>
-          <Dropdown items={dropdownItems} className="!w-[max-content]">
+          <Dropdown items={dropdownItems} className="!w-max">
             <Button
               icon={faEllipsisVertical}
               className="!w-8 !h-8 aspect-square rounded-full !bg-transparent hover:!bg-border/50 !text-text-muted shadow-none !p-3"
