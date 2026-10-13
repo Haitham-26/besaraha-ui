@@ -62,7 +62,7 @@ export const ProfileContent: React.FC = () => {
 
   const user = data || ({} as User);
 
-  const profileUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${locale !== AppLangs.EN ? `/${locale}` : ""}/${user.username || user._id}/message`;
+  const receiveMessageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${locale !== AppLangs.EN ? `/${locale}` : ""}/${user.username || user._id}/message`;
 
   const infoData = getInfoData(t, user);
 
@@ -131,10 +131,10 @@ export const ProfileContent: React.FC = () => {
 
               <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse p-2 bg-surface-muted rounded-2xl border-2 border-border/50">
                 <div className="grow px-6 py-4 font-mono text-text-primary [direction:ltr] max-w-full text-start truncate ps-0">
-                  {profileUrl}
+                  {receiveMessageUrl}
                 </div>
 
-                <CopyButton text={profileUrl} />
+                <CopyButton text={receiveMessageUrl} />
               </div>
             </div>
           </div>

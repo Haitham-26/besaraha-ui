@@ -7,11 +7,13 @@ import { useRouter } from "next/navigation";
 import { usePathname, useSearchParams } from "next/navigation";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { faRotateBack } from "@fortawesome/free-solid-svg-icons/faRotateBack";
+import { useTranslations } from "next-intl";
 
 export default function MessagesFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
+  const t = useTranslations("messages.filters");
 
   const isStarredParam = searchParams.get("isStarred");
 
@@ -50,30 +52,28 @@ export default function MessagesFilters() {
 
   return (
     <div className="bg-surface border border-border rounded-[2.5rem] p-6 space-y-4 shadow-sm">
-      <h3 className="font-bold text-text-primary px-2 text-sm">
-        تصفية الرسائل
-      </h3>
+      <h3 className="font-bold text-text-primary px-2 text-sm">{t("title")}</h3>
 
       <Select
+        title={t("star.title")}
         items={[
-          { label: "جميع الرسائل", value: undefined },
-          { label: "المميزة بنجمة", value: true },
-          { label: "غير المميزة", value: false },
+          { label: t("star.all"), value: undefined },
+          { label: t("star.starred"), value: true },
+          { label: t("star.unstarred"), value: false },
         ]}
         value={isStarred}
         onChange={handleStarredFilterChange}
-        placeholder="اختر النوع"
       />
 
       <Select
+        title={t("sort.title")}
         items={[
-          { label: "الافتراضي", value: undefined },
-          { label: "الأحدث أولاً", value: GenericSortType.NEWEST },
-          { label: "الأقدم أولاً", value: GenericSortType.OLDEST },
+          { label: t("sort.default"), value: undefined },
+          { label: t("sort.newest"), value: GenericSortType.NEWEST },
+          { label: t("sort.oldest"), value: GenericSortType.OLDEST },
         ]}
         value={sort}
         onChange={handleSortChange}
-        placeholder="اختر الترتيب"
       />
 
       {isStarred !== undefined || sort !== undefined ? (
@@ -82,7 +82,7 @@ export default function MessagesFilters() {
           className="w-full"
           onClick={() => router.push(pathname, { scroll: false })}
         >
-          إلغاء الفلاتر
+          {t("clear")}
         </Button>
       ) : null}
     </div>

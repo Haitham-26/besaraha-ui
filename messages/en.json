@@ -316,6 +316,60 @@
       "success": "Question created successfully"
     }
   },
+  "messages": {
+    "side": {
+      "title": "Inbox",
+      "totalTitle": "Incoming Messages",
+      "button": "Copy Message Link"
+    },
+    "card": {
+      "showMore": "Show full message",
+      "showLess": "Show less"
+    },
+    "actions": {
+      "delete": "Delete Message",
+      "deleteAll": "Delete All"
+    },
+    "delete": {
+      "title": "Delete Message",
+      "description": "Once deleted, this message cannot be recovered.",
+      "success": "Message deleted successfully"
+    },
+    "deleteAll": {
+      "title": "Delete All Messages",
+      "description": "Are you sure? All incoming messages will be permanently deleted and this action cannot be undone.",
+      "success": "All messages deleted successfully"
+    },
+    "star": {
+      "success": "Message starred successfully"
+    },
+    "unstar": {
+      "success": "Message unstarred successfully"
+    },
+    "filters": {
+      "title": "Filter Options",
+      "star": {
+        "title": "Star Status",
+        "all": "All",
+        "starred": "Starred",
+        "unstarred": "Unstarred"
+      },
+      "sort": {
+        "title": "Sort By",
+        "default": "Default",
+        "newest": "Newest First",
+        "oldest": "Oldest First"
+      },
+      "clear": "Clear Filters"
+    },
+    "menu": {
+      "title": "Incoming Messages",
+      "empty": {
+        "title": "No messages yet",
+        "description": "Share your link with others to start receiving your messages."
+      }
+    }
+  },
   "sendMessage": {
     "title": "Send a secret message to <span>{name}</span>",
     "privacyNote": "Your identity is completely hidden and will never be shared.",

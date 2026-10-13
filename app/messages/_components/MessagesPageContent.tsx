@@ -19,6 +19,10 @@ import { WarningModal } from "@/app/components/WarningModal";
 import { Toast } from "@/tools/Toast";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { usePathname, useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { faCopy } from "@fortawesome/free-solid-svg-icons/faCopy";
+import { useSession } from "next-auth/react";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type MessagesPageContentProps = {
   searchParams: URLSearchParams;
@@ -37,8 +41,11 @@ export function MessagesPageContent({
   const [deleteAllModalVisible, setDeleteAllModalVisible] = useState(false);
   const [deleteAllLoading, setDeleteAllLoading] = useState(false);
 
+  const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations();
 
   const { data: messages, isLoading: messagesLoading } = useQuery({
     queryKey: ["messages", normalizedParams],
@@ -55,6 +62,15 @@ export function MessagesPageContent({
     staleTime: 0,
   });
 
+  const receiveMessageUrl = session?.user
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}${locale !== AppLangs.EN ? `/${locale}` : ""}/${session?.user.username}/message`
+    : "";
+
+  const onCopyLink = () => {
+    navigator.clipboard.writeText(receiveMessageUrl);
+    Toast.success(t("common.copySuccess"));
+  };
+
   const handleDeleteAll = async () => {
     try {
       setDeleteAllLoading(true);
@@ -70,7 +86,8 @@ export function MessagesPageContent({
       router.push(updatedURL, { scroll: false });
 
       setDeleteAllModalVisible(false);
-      Toast.success("تم حذف جميع الرسائل بنجاح");
+
+      Toast.success(t("messages.deleteAll.success"));
     } catch (e) {
       Toast.apiError(e);
     } finally {
@@ -88,16 +105,24 @@ export function MessagesPageContent({
                 <Icon icon={faInbox} className="text-accent text-2xl" />
               </div>
               <h1 className="text-4xl font-black mb-4 leading-tight">
-                الرسائل الواردة
+                {t("messages.side.title")}
               </h1>
               <div className="flex items-baseline gap-2">
                 <span className="text-6xl font-black text-accent">
                   {messages?.meta?.total || 0}
                 </span>
                 <span className="text-secondary/40 text-sm font-bold tracking-widest uppercase">
-                  رسالة واردة
+                  {t("messages.side.totalTitle")}
                 </span>
               </div>
+
+              <Button
+                onClick={onCopyLink}
+                icon={faCopy}
+                className="w-full mt-8"
+              >
+                {t("messages.side.button")}
+              </Button>
             </div>
           </div>
 
@@ -105,11 +130,11 @@ export function MessagesPageContent({
         </aside>
 
         <div className="md:col-span-8">
-          <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col overflow-hidden">
+          <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col">
             <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                الرسائل الأخيرة
+                <span className="w-2 h-2 rounded-full bg-accent"></span>
+                {t("messages.menu.title")}
               </h2>
 
               <Button
@@ -119,7 +144,7 @@ export function MessagesPageContent({
                 loading={deleteAllLoading}
                 disabled={!messages?.data?.length}
               >
-                حذف الكل
+                {t("messages.actions.deleteAll")}
               </Button>
             </div>
 
@@ -150,8 +175,12 @@ export function MessagesPageContent({
 
               {!messages?.data?.length && !messagesLoading ? (
                 <Empty
-                  title="لا توجد رسائل حالياً"
-                  description="شارك الرابط الخاص بك مع الآخرين لاستقبال أول رسالة لك!"
+                  title={t("messages.empty.title")}
+                  description={t("messages.empty.description")}
+                  action={{
+                    title: t("messages.side.button"),
+                    onClick: onCopyLink,
+                  }}
                 />
               ) : null}
             </div>
@@ -165,8 +194,8 @@ export function MessagesPageContent({
           onClose={() => setDeleteAllModalVisible(false)}
           onConfirm={handleDeleteAll}
           loading={deleteAllLoading}
-          title="حذف جميع الرسائل"
-          description="هل أنت متأكد؟ سيتم حذف جميع الرسائل الواردة نهائياً ولا يمكن التراجع عن هذا الإجراء."
+          title={t("messages.deleteAll.title")}
+          description={t("messages.deleteAll.description")}
         />
       ) : null}
     </main>

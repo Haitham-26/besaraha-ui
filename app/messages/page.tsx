@@ -7,7 +7,7 @@ import { authOptions } from "@/lib/auth";
 import { AuthClient } from "@/tools/AuthClient";
 import getToken from "@/tools/getToken";
 
-const MESSAGES_LIMIT = 2;
+const MESSAGES_LIMIT = 10;
 
 type Props = {
   searchParams: Promise<{
