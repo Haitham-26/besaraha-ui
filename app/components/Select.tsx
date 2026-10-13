@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Icon } from "@/app/components/Icon";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
+import { useTranslations } from "next-intl";
 
 type Props = {
   items: {
@@ -11,6 +12,7 @@ type Props = {
   }[];
   value?: any;
   onChange: (value?: any) => void;
+  title?: string;
   placeholder?: string;
 };
 
@@ -18,10 +20,14 @@ export const Select: React.FC<Props> = ({
   items = [],
   value,
   onChange,
-  placeholder = "اختر...",
+  title,
+  placeholder,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const t = useTranslations("common");
 
   const selectedItem = items.find((item) => item.value === value);
 
@@ -47,6 +53,9 @@ export const Select: React.FC<Props> = ({
 
   return (
     <div className="relative w-full" ref={containerRef}>
+      {title ? (
+        <p className="text-xs text-text-muted font-black mb-2">{title}</p>
+      ) : null}
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`
@@ -58,7 +67,9 @@ export const Select: React.FC<Props> = ({
         <span
           className={`text-xs ${selectedItem ? "text-text-primary" : "text-slate-400"}`}
         >
-          {selectedItem ? selectedItem.label : placeholder}
+          {selectedItem
+            ? selectedItem.label
+            : placeholder || `${t("select")}...`}
         </span>
 
         <Icon
@@ -76,7 +87,7 @@ export const Select: React.FC<Props> = ({
                   key={item.label}
                   onClick={() => handleSelect(item.value)}
                   className={`
-                    p-3 px-4 cursor-pointer text-xs transition-colors text-right
+                    p-3 px-4 cursor-pointer text-xs transition-colors text-start select-none
                     ${value === item.value ? "bg-accent/10 text-accent font-bold" : "text-text-primary hover:bg-slate-50"}
                   `}
                 >

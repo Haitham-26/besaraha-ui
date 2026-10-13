@@ -10,6 +10,9 @@ type ModalProps = {
   onClose?: VoidFunction;
   open: boolean;
   children?: React.ReactNode;
+  classNames?: {
+    wrapper?: string;
+  };
 };
 
 export const Modal: React.FC<ModalProps> = ({
@@ -17,6 +20,7 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   open,
   children,
+  classNames = { wrapper: "" },
 }) => {
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -41,7 +45,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div className="fixed inset-0 bg-primary/40 backdrop-blur-md pointer-events-none" />
 
       <div
-        className="relative bg-surface w-full max-w-md rounded-3xl shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 mb-6 mt-24 md:mb-10 md:mt-40"
+        className={`relative bg-surface w-full max-w-md rounded-3xl shadow-2xl border border-border overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 mb-6 mt-24 md:mb-10 md:mt-40 ${classNames.wrapper}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-surface-muted/30 px-8 py-6 border-b border-border flex items-center justify-between">

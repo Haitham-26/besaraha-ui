@@ -6,14 +6,17 @@ import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
 import QuestionCard from "./QuestionCard";
 import { Empty } from "../../components/Empty";
 import { Pagination } from "../../components/Pagination";
-import { QuestionCreateModalAndButton } from "./QuestionCreateModalAndButton";
+import { QuestionCreateModal } from "./QuestionCreateModal";
 import { QuestionsFilters } from "./QuestionsFilters";
 import { GetQuestionsResponseDto } from "@/model/question/dto/GetQuestionsResponseDto";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/app/components/Spinner";
 import { NextClient } from "@/tools/NextClient";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/app/components/Button";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 
 const PATHNAME = "/questions";
 
@@ -31,6 +34,11 @@ export function QuestionsPageContent({
   searchParams,
   normalizedParams,
 }: QuestionsPageContentProps) {
+  const [createQuestionModalVisible, setCreateQuestionModalVisible] =
+    useState(false);
+
+  const t = useTranslations("questions");
+
   const { data: questions, isLoading } = useQuery<GetQuestionsResponseDto>({
     queryKey: ["questions", "user", normalizedParams],
     queryFn: async () => {
@@ -54,7 +62,7 @@ export function QuestionsPageContent({
               </div>
 
               <h1 className="text-4xl font-black mb-4 leading-tight">
-                مركز الأسئلة
+                {t("side.title")}
               </h1>
 
               <div className="flex items-baseline gap-2 mb-8">
@@ -63,11 +71,17 @@ export function QuestionsPageContent({
                 </span>
 
                 <span className="text-secondary/40 text-sm font-bold tracking-widest uppercase">
-                  سؤال نشط
+                  {t("side.totalTitle")}
                 </span>
               </div>
 
-              <QuestionCreateModalAndButton />
+              <Button
+                onClick={() => setCreateQuestionModalVisible(true)}
+                className="w-full !h-14 !rounded-2xl !bg-accent !text-secondary font-black shadow-lg shadow-accent/20"
+                icon={faPlus}
+              >
+                {t("side.button")}
+              </Button>
             </div>
           </div>
 
@@ -78,8 +92,8 @@ export function QuestionsPageContent({
           <div className="bg-surface border border-border rounded-4xl shadow-sm min-h-[16rem] flex flex-col">
             <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                قائمة الأسئلة
+                <span className="w-2 h-2 rounded-full bg-accent" />
+                {t("menu.title")}
               </h2>
             </div>
 
@@ -110,14 +124,23 @@ export function QuestionsPageContent({
 
               {!questions?.data?.length && !isLoading ? (
                 <Empty
-                  title="لا توجد نتائج"
-                  description="جرب تغيير فلاتر البحث أو ابدأ بإضافة سؤال جديد."
+                  title={t("menu.empty.title")}
+                  description={t("menu.empty.description")}
+                  action={{
+                    title: t("menu.empty.action"),
+                    onClick: () => setCreateQuestionModalVisible(true),
+                  }}
                 />
               ) : null}
             </div>
           </div>
         </div>
       </div>
+
+      <QuestionCreateModal
+        open={createQuestionModalVisible}
+        onClose={() => setCreateQuestionModalVisible(false)}
+      />
     </main>
   );
 }

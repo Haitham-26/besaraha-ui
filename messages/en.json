@@ -228,6 +228,94 @@
       "title": "Explore <span>Latest Questions</span>"
     }
   },
+  "questions": {
+    "properties": {
+      "isPublic": "Added to Community"
+    },
+    "replies": {
+      "empty": "No replies yet. Be the first to reply to this question.",
+      "form": {
+        "input": {
+          "placeholder": "Write your reply here..."
+        },
+        "anonymous": {
+          "label": "Reply anonymously",
+          "placeholder": "Enter your nickname"
+        },
+        "success": "Reply sent successfully"
+      },
+      "card": {
+        "anonymous": "Anonymous"
+      }
+    },
+    "actions": {
+      "makePrivate": "Remove from Community",
+      "makePublic": "Add to Community",
+      "delete": "Delete Question"
+    },
+    "share": {
+      "success": "Link copied successfully"
+    },
+    "delete": {
+      "title": "Delete Question",
+      "success": "Question deleted successfully"
+    },
+    "changePrivacy": {
+      "makePrivate": {
+        "title": "Remove Question from Community",
+        "description": "Do you want to remove this question from the community? Anyone with the direct link can still access it, but it will no longer appear on the BeSaraha Community.",
+        "success": "Question removed from community successfully"
+      },
+      "makePublic": {
+        "title": "Add Question to Community",
+        "description": "Do you want to add this question to the community so everyone can view and interact with it?",
+        "success": "Question added to community successfully"
+      }
+    },
+    "side": {
+      "title": "My Questions",
+      "totalTitle": "Questions",
+      "button": "Ask New Question"
+    },
+    "menu": {
+      "title": "Questions List",
+      "empty": {
+        "title": "No questions yet",
+        "description": "No results found. Start by asking a new question now.",
+        "action": "Ask New Question"
+      }
+    },
+    "filters": {
+      "title": "Filter Options",
+      "addedToCommunity": {
+        "title": "Added to Community",
+        "all": "All",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "sort": {
+        "title": "Sort By",
+        "default": "Default",
+        "newest": "Newest First",
+        "oldest": "Oldest First"
+      },
+      "clear": "Clear Filters"
+    },
+    "create": {
+      "title": "Ask a New Question",
+      "description": "Ask your question, share its link with your friends or followers, and start receiving replies.",
+      "question": {
+        "title": "Question Text",
+        "placeholder": "e.g., What is the best book you read this year?"
+      },
+      "showInCommunity": {
+        "title": "Display on BeSaraha Community?",
+        "description": "When enabled, this question will appear on the <strong>BeSaraha Community</strong> for everyone to discover and reply to. Otherwise, only people with the direct link can view it."
+      },
+      "submit": "Post Question",
+      "success": "Question created successfully"
+    }
+  },
   "sendMessage": {
     "title": "Send a secret message to <span>{name}</span>",
     "privacyNote": "Your identity is completely hidden and will never be shared.",
@@ -319,6 +407,13 @@
     "maxLength": "This field must not exceed {length} characters."
   },
   "common": {
+    "confirm": "Confrim",
+    "warningModal": {
+      "title": "Are you sure?",
+      "description": "Once confirmed, you will not be able to undo this action later."
+    },
+    "submit": "Submit",
+    "select": "Select",
     "imageUpload": {
       "actions": {
         "change": "Change Image",
