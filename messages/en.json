@@ -576,6 +576,29 @@
           "notFound": "An error occurred while verifying the code. Please restart the password reset process."
         }
       }
+    },
+    "user": {
+      "update": {
+        "avatar": {
+          "invalidBodyString": "Invalid image string"
+        },
+        "username": {
+          "alreadyTaken": "Username is already taken, please choose another one"
+        }
+      },
+      "changePassword": {
+        "differentSignupMethod": "Your account was created using Google without a password, so you cannot change your password.",
+        "incorrectCurrentPassword": "Current password is incorrect",
+        "samePassword": "New password must be different from the current password"
+      }
+    },
+    "settings": {
+      "update": {
+        "lang": {
+          "invalid": "Invalid language"
+        },
+        "notFound": "Account settings not found"
+      }
     }
   }
 }
