@@ -5,40 +5,43 @@ import { Select } from "@/app/components/Select";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { faRotateBack } from "@fortawesome/free-solid-svg-icons/faRotateBack";
+import { _Translator } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
+import { useTranslations } from "use-intl";
 
-const privacyOptions = [
+const getPrivacyOptions = (t: _Translator) => [
   {
-    label: "كل الأنواع",
+    label: t("addedToCommunity.all"),
     value: undefined,
   },
   {
-    label: "خاص",
-    value: false,
+    label: t("addedToCommunity.yes"),
+    value: true,
   },
   {
-    label: "عام",
-    value: true,
+    label: t("addedToCommunity.no"),
+    value: false,
   },
 ];
 
-const sortOptions = [
+const getSortOptions = (t: _Translator) => [
   {
-    label: "الافتراضي",
+    label: t("sort.default"),
     value: undefined,
   },
   {
-    label: "الأحدث أولاً",
+    label: t("sort.newest"),
     value: GenericSortType.NEWEST,
   },
   {
-    label: "الأقدم أولاً",
+    label: t("sort.oldest"),
     value: GenericSortType.OLDEST,
   },
 ];
 
 export const QuestionsFilters: React.FC = () => {
+  const t = useTranslations("questions.filters");
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -55,6 +58,9 @@ export const QuestionsFilters: React.FC = () => {
         return undefined;
     }
   };
+
+  const privacyOptions = getPrivacyOptions(t);
+  const sortOptions = getSortOptions(t);
 
   const isPublic = getIsPublic();
   const sort =
@@ -80,7 +86,7 @@ export const QuestionsFilters: React.FC = () => {
 
   return (
     <div className="bg-surface border border-border rounded-[2.5rem] p-6 space-y-4 shadow-sm">
-      <h3 className="font-bold text-text-primary px-2">نتائج الأسئلة</h3>
+      <h3 className="font-bold text-text-primary px-2">{t("title")}</h3>
 
       <Select
         items={privacyOptions}
@@ -88,23 +94,23 @@ export const QuestionsFilters: React.FC = () => {
           privacyOptions.find((option) => option.value === isPublic)?.value
         }
         onChange={handlePublicFilterChange}
-        placeholder="اختر النوع"
+        title={t("addedToCommunity.title")}
       />
 
       <Select
         items={sortOptions}
         value={sortOptions.find((option) => option.value === sort)?.value}
         onChange={handleSortChange}
-        placeholder="اختر الترتيب"
+        title={t("sort.title")}
       />
 
       {isPublic !== undefined || sort !== undefined ? (
         <Button
           icon={faRotateBack}
-          className="w-full"
+          className="w-full text-xs"
           onClick={() => router.push(pathname, { scroll: false })}
         >
-          إلغاء الفلاتر
+          {t("clear")}
         </Button>
       ) : null}
     </div>

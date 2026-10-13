@@ -19,6 +19,10 @@ import { WarningModal } from "@/app/components/WarningModal";
 import { Toast } from "@/tools/Toast";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { usePathname, useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { faCopy } from "@fortawesome/free-solid-svg-icons/faCopy";
+import { useSession } from "next-auth/react";
+import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type MessagesPageContentProps = {
   searchParams: URLSearchParams;
@@ -37,8 +41,11 @@ export function MessagesPageContent({
   const [deleteAllModalVisible, setDeleteAllModalVisible] = useState(false);
   const [deleteAllLoading, setDeleteAllLoading] = useState(false);
 
+  const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations();
 
   const { data: messages, isLoading: messagesLoading } = useQuery({
     queryKey: ["messages", normalizedParams],
@@ -55,6 +62,15 @@ export function MessagesPageContent({
     staleTime: 0,
   });
 
+  const receiveMessageUrl = session?.user
+    ? `${process.env.NEXT_PUBLIC_BASE_URL}${locale !== AppLangs.EN ? `/${locale}` : ""}/${session?.user.username}/message`
+    : "";
+
+  const onCopyLink = () => {
+    navigator.clipboard.writeText(receiveMessageUrl);
+    Toast.success(t("common.copySuccess"));
+  };
+
   const handleDeleteAll = async () => {
     try {
       setDeleteAllLoading(true);
@@ -70,7 +86,8 @@ export function MessagesPageContent({
       router.push(updatedURL, { scroll: false });
 
       setDeleteAllModalVisible(false);
-      Toast.success("تم حذف جميع الرسائل بنجاح");
+
+      Toast.success(t("messages.deleteAll.success"));
     } catch (e) {
       Toast.apiError(e);
     } finally {
@@ -79,39 +96,45 @@ export function MessagesPageContent({
   };
 
   return (
-    <div className="w-full bg-surface-muted p-4 pt-6 md:p-8 lg:p-12 relative">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <aside className="lg:col-span-4 space-y-6">
-          <div className="bg-primary rounded-[2.5rem] p-8 text-secondary shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-[-20%] right-[-20%] w-40 h-40 bg-accent rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-
+    <main className="w-full bg-background pt-10 pb-7 lg:pb-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 px-6">
+        <aside className="md:col-span-4 space-y-6">
+          <div className="bg-primary rounded-4xl p-8 text-secondary shadow-2xl relative overflow-hidden group">
             <div className="relative z-10">
               <div className="inline-flex items-center justify-center p-3 bg-secondary/10 backdrop-blur-md rounded-2xl mb-6">
                 <Icon icon={faInbox} className="text-accent text-2xl" />
               </div>
               <h1 className="text-4xl font-black mb-4 leading-tight">
-                الرسائل الواردة
+                {t("messages.side.title")}
               </h1>
               <div className="flex items-baseline gap-2">
                 <span className="text-6xl font-black text-accent">
                   {messages?.meta?.total || 0}
                 </span>
                 <span className="text-secondary/40 text-sm font-bold tracking-widest uppercase">
-                  رسالة واردة
+                  {t("messages.side.totalTitle")}
                 </span>
               </div>
+
+              <Button
+                onClick={onCopyLink}
+                icon={faCopy}
+                className="w-full mt-8"
+              >
+                {t("messages.side.button")}
+              </Button>
             </div>
           </div>
 
           <MessagesFilters />
         </aside>
 
-        <div className="lg:col-span-8">
-          <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col overflow-hidden">
-            <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
+        <div className="md:col-span-8">
+          <div className="bg-surface border border-border rounded-4xl shadow-sm min-h-[600px] flex flex-col">
+            <div className="px-8 py-6 border-b border-border rounded-t-4xl flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                الرسائل الأخيرة
+                <span className="w-2 h-2 rounded-full bg-accent"></span>
+                {t("messages.menu.title")}
               </h2>
 
               <Button
@@ -121,7 +144,7 @@ export function MessagesPageContent({
                 loading={deleteAllLoading}
                 disabled={!messages?.data?.length}
               >
-                حذف الكل
+                {t("messages.actions.deleteAll")}
               </Button>
             </div>
 
@@ -152,8 +175,12 @@ export function MessagesPageContent({
 
               {!messages?.data?.length && !messagesLoading ? (
                 <Empty
-                  title="لا توجد رسائل حالياً"
-                  description="شارك الرابط الخاص بك مع الآخرين لاستقبال أول رسالة لك!"
+                  title={t("messages.empty.title")}
+                  description={t("messages.empty.description")}
+                  action={{
+                    title: t("messages.side.button"),
+                    onClick: onCopyLink,
+                  }}
                 />
               ) : null}
             </div>
@@ -167,10 +194,10 @@ export function MessagesPageContent({
           onClose={() => setDeleteAllModalVisible(false)}
           onConfirm={handleDeleteAll}
           loading={deleteAllLoading}
-          title="حذف جميع الرسائل"
-          description="هل أنت متأكد؟ سيتم حذف جميع الرسائل الواردة نهائياً ولا يمكن التراجع عن هذا الإجراء."
+          title={t("messages.deleteAll.title")}
+          description={t("messages.deleteAll.description")}
         />
       ) : null}
-    </div>
+    </main>
   );
 }

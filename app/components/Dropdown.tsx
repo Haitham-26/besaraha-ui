@@ -60,7 +60,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   }, []);
 
   return (
-    <div className="relative inline-block text-right" ref={containerRef}>
+    <div className="relative inline-block text-start" ref={containerRef}>
       <div className="cursor-pointer" onClick={handleToggle}>
         {children}
       </div>
@@ -70,7 +70,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           className={`
             absolute top-full mt-2 z-50 py-2
             bg-surface border border-border rounded-2xl shadow-xl
-            animate-in fade-in zoom-in-95 duration-200
+            animate-in fade-in zoom-in-95 duration-200 w-max
             ${openDirection === "left" ? "right-0" : "left-0"}
             ${className || ""}
           `}
@@ -84,7 +84,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               }}
               className={`
                 w-full cursor-pointer flex items-center gap-3 px-4 py-2.5
-                text-xs font-black transition-colors text-right
+                text-xs font-black transition-colors text-start
                 border-b border-border/50 last:border-0
                 hover:bg-surface-muted
                 ${item.className || "text-text-primary"}

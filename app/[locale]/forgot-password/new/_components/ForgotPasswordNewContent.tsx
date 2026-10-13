@@ -6,13 +6,18 @@ import { useRouter } from "@/i18n/navigation";
 import { ForgotPasswordNewDto } from "@/model/auth/forgot-password/dto/ForgotPasswordNewDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 64;
+
 export const ForgotPasswordNewContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const router = useRouter();
   const { control, handleSubmit, watch, reset, getValues } = useForm<
@@ -44,7 +49,7 @@ export const ForgotPasswordNewContent: React.FC = () => {
         data,
       });
 
-      Toast.success("تمت إعادة تعيين كلمة المرور بنجاح");
+      Toast.success(t("forgotPasswordNew.success"));
 
       router.replace("/login");
     } catch (e) {
@@ -70,15 +75,19 @@ export const ForgotPasswordNewContent: React.FC = () => {
         control={control}
         name="password"
         rules={{
-          required: "كلمة السر مطلوبة",
+          required: t("errors.fieldRequired"),
           minLength: {
-            value: 8,
-            message: "كلمة السر يجب أن تكون 8 رموز على الأقل",
+            value: MAX_PASSWORD_LENGTH,
+            message: t("errors.minLength", { length: MIN_PASSWORD_LENGTH }),
+          },
+          maxLength: {
+            value: MAX_PASSWORD_LENGTH,
+            message: t("errors.maxLength", { length: MAX_PASSWORD_LENGTH }),
           },
         }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <AuthInput
-            title="كلمة السر الجديدة"
+            title={t("forgotPasswordNew.newPassword")}
             value={value}
             onChange={onChange}
             valid={!error}
@@ -93,12 +102,12 @@ export const ForgotPasswordNewContent: React.FC = () => {
         control={control}
         name="passwordConfirm"
         rules={{
-          required: "تأكيد كلمة السر مطلوب",
+          required: t("errors.fieldRequired"),
           validate: (value) => value === password || "كلمات السر غير متطابقة",
         }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <AuthInput
-            title="تأكيد كلمة السر الجديدة"
+            title={t("forgotPasswordNew.confirmNewPassword")}
             value={value}
             onChange={onChange}
             valid={!error}
@@ -114,7 +123,7 @@ export const ForgotPasswordNewContent: React.FC = () => {
         onClick={handleSubmit(onSubmit)}
         disabled={!password || !passwordConfirm}
       >
-        استمرار
+        {t("common.continue")}
       </Button>
     </Fragment>
   );

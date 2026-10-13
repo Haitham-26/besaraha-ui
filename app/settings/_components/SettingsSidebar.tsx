@@ -7,17 +7,25 @@ import { faShieldHalved } from "@fortawesome/free-solid-svg-icons/faShieldHalved
 import { Icon } from "@/app/components/Icon";
 import { useSession } from "next-auth/react";
 import { SignUpMethods } from "@/model/user/types/SignUpMethods.enum";
+import { _Translator, useTranslations } from "next-intl";
 
-const settingsLinks = [
-  { title: "عام", path: "/settings", icon: faGear },
-  { title: "الأمان", path: "/settings/security", icon: faShieldHalved },
+const getSettingsLinks = (t: _Translator) => [
+  { title: t("general.title"), path: "/settings", icon: faGear },
+  {
+    title: t("security.title"),
+    path: "/settings/security",
+    icon: faShieldHalved,
+  },
 ];
 
 export default function SettingsSidebar() {
   const { data } = useSession();
   const pathname = usePathname();
+  const t = useTranslations("settings");
 
   const userSignupMethod = data?.user?.signUpMethod;
+
+  const settingsLinks = getSettingsLinks(t);
 
   const allowedLinks = settingsLinks.filter((link) => {
     if (

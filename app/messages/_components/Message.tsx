@@ -22,6 +22,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataWithMeta } from "@/model/shared/types/DataWithMeta";
 import { getUpdatedURLQuery } from "@/tools/getUpdatedURLQuery";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 type Props = {
   message: MessageModel;
@@ -34,24 +35,29 @@ type Props = {
 };
 
 export default function Message({ message, normalizedParams }: Props) {
-  const isAnonymous = !message.name;
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isCollapsible, setIsCollapsible] = useState(false);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
 
+  const contentHeight = textRef.current?.scrollHeight;
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isCollapsible, setIsCollapsible] = useState(
+    contentHeight && contentHeight > 70,
+  );
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isStarred, setIsStarred] = useState(message?.isStarred);
 
+  const t = useTranslations("messages");
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const textRef = useRef<HTMLParagraphElement>(null);
-
   const cachedMessages = queryClient.getQueryData([
     "messages",
     normalizedParams,
   ]) as DataWithMeta<MessageModel>;
+
+  const isAnonymous = !message.name;
 
   const navigateToPreviousPageIfNeeded = (isDelete?: boolean) => {
     const isOnFirstPage = normalizedParams.page === 1;
@@ -86,7 +92,7 @@ export default function Message({ message, normalizedParams }: Props) {
 
       setDeleteModalVisible(false);
 
-      Toast.success("تم حذف الرسالة بنجاح");
+      Toast.success(t("delete.success"));
     },
 
     onError: (e) => {
@@ -116,9 +122,7 @@ export default function Message({ message, normalizedParams }: Props) {
         queryKey: ["messages", normalizedParams],
       });
 
-      Toast.success(
-        message.isStarred ? "تم إلغاء تمييز الرسالة" : "تم تمييز الرسالة بنجاح",
-      );
+      Toast.success(t(`${message.isStarred ? "unstar" : "star"}.success`));
     },
 
     onError: (e) => {
@@ -147,7 +151,7 @@ export default function Message({ message, normalizedParams }: Props) {
         <div className="flex flex-wrap items-start justify-between px-4 py-3 border-b border-border bg-surface-muted/30 gap-y-3">
           <div className="flex items-center gap-2.5 min-w-0 max-w-full">
             <div
-              className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs shadow-sm ${
+              className={`flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs ${
                 isAnonymous
                   ? "bg-white text-text-muted border border-border"
                   : "bg-accent text-white"
@@ -171,7 +175,7 @@ export default function Message({ message, normalizedParams }: Props) {
             <Dropdown
               items={[
                 {
-                  title: "حذف الرسالة",
+                  title: t("actions.delete"),
                   icon: faTrash,
                   className: "text-danger hover:!bg-danger/5",
                   onClick: () => setDeleteModalVisible(true),
@@ -224,7 +228,7 @@ export default function Message({ message, normalizedParams }: Props) {
               onClick={() => setIsExpanded(!isExpanded)}
               className="mt-3 flex items-center gap-1.5 text-[11px] font-black !text-accent hover:opacity-80 transition-all uppercase tracking-tighter !p-2 !bg-transparent shadow-none"
             >
-              <span>{isExpanded ? "عرض أقل" : "إظهار الرسالة كاملة"}</span>
+              <span>{t(`card.${isExpanded ? "showLess" : "showMore"}`)}</span>
               <Icon
                 icon={isExpanded ? faChevronUp : faChevronDown}
                 className="text-[9px]"
@@ -235,8 +239,8 @@ export default function Message({ message, normalizedParams }: Props) {
       </div>
 
       <WarningModal
-        title="حذف الرسالة"
-        description="بمجرد حذف الرسالة لا يمكن استرجاعها لاحقًا."
+        title={t("delete.title")}
+        description={t("delete.description")}
         open={deleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
         onConfirm={() => deleteMutation.mutate()}

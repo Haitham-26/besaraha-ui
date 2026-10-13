@@ -6,7 +6,7 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons/faRightFro
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { signOut } from "next-auth/react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
 
 type LogoutButtonProps = {
@@ -16,6 +16,7 @@ type LogoutButtonProps = {
 export const LogoutButton: React.FC<LogoutButtonProps> = ({
   className = "",
 }) => {
+  const t = useTranslations("common");
   const locale = useLocale();
 
   const prefix = locale !== AppLangs.EN ? `/${locale}` : "";
@@ -37,9 +38,9 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
     <Button
       onClick={logout}
       icon={faRightFromBracket}
-      className={`!bg-danger !p-5 w-10 h-10 md:w-auto md:h-12 text-secondary hover:!bg-danger/90 shadow-none ${className}`}
+      className={`!w-full !bg-danger !p-5 h-10 md:w-auto md:h-12 aspect-square md:aspect-auto text-secondary hover:!bg-danger/90 shadow-none ${className}`}
     >
-      <span className="hidden md:inline">تسجيل الخروج</span>
+      <span className="hidden md:inline">{t("logout")}</span>
     </Button>
   );
 };

@@ -10,12 +10,13 @@ import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons/faPaperPlane";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
 type QuestionReplyFormProps = {
   question: Question;
-  getRepliesParams: {
+  repliesParams: {
     questionId: string;
     page: number;
     limit: number;
@@ -25,8 +26,9 @@ type QuestionReplyFormProps = {
 
 export const QuestionReplyForm: React.FC<QuestionReplyFormProps> = ({
   question,
-  getRepliesParams,
+  repliesParams,
 }) => {
+  const t = useTranslations();
   const queryClient = useQueryClient();
   const { control, getValues, reset, handleSubmit, setValue, watch } = useForm<
     ReplyDto & { replyAsAnnonymous?: boolean }
@@ -55,12 +57,12 @@ export const QuestionReplyForm: React.FC<QuestionReplyFormProps> = ({
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["questions", question._id, "replies", getRepliesParams],
+        queryKey: ["questions", question._id, "replies", repliesParams],
       });
 
       reset();
 
-      Toast.success("تم إرسال الرد بنجاح");
+      Toast.success(t("questions.replies.form.success"));
     },
 
     onError: (error) => {
@@ -95,7 +97,7 @@ export const QuestionReplyForm: React.FC<QuestionReplyFormProps> = ({
                 onReply();
               }
             }}
-            placeholder="اكتب ردك هنا..."
+            placeholder={t("questions.replies.form.input.placeholder")}
           />
         )}
       />
@@ -121,7 +123,7 @@ export const QuestionReplyForm: React.FC<QuestionReplyFormProps> = ({
               />
             )}
           />
-          هوية مجهولة
+          {t("questions.replies.form.anonymous.label")}
         </label>
 
         <Controller
@@ -129,7 +131,7 @@ export const QuestionReplyForm: React.FC<QuestionReplyFormProps> = ({
           name="replierName"
           render={({ field: { value, onChange } }) => (
             <Input
-              placeholder="اسمك المستعار"
+              placeholder={t("questions.replies.form.anonymous.placeholder")}
               value={value}
               onChange={onChange}
               classNames={{
@@ -148,7 +150,7 @@ export const QuestionReplyForm: React.FC<QuestionReplyFormProps> = ({
           icon={faPaperPlane}
           className="!h-9 !px-4 !text-xs !font-bold !bg-primary !text-secondary hover:!bg-accent transition-colors shrink-0 w-full sm:w-auto sm:ms-auto"
         >
-          إرسال
+          {t("common.submit")}
         </Button>
       </div>
     </div>

@@ -6,7 +6,6 @@ import { LogoutButton } from "./LogoutButton";
 import { Drawer } from "./Drawer";
 import { Button } from "./Button";
 import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons/faBarsStaggered";
-import { privateLinks, publicLinks } from "@/tools/pages-links";
 import { Popover } from "./Popover";
 import { useSession } from "next-auth/react";
 import { Icon } from "./Icon";
@@ -16,9 +15,47 @@ import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { Link as LocaleLink, usePathname } from "@/i18n/navigation";
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { _Translator, useTranslations } from "next-intl";
+import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
+import { faMessage } from "@fortawesome/free-solid-svg-icons/faMessage";
+import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+import { faHouse } from "@fortawesome/free-solid-svg-icons/faHouse";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 
 const popoverItemClass =
   "flex items-center gap-2 px-4 py-2 font-bold text-slate-300 cursor-pointer hover:text-white hover:bg-white/5";
+
+const getMainPrivateNavLinks = (t: _Translator) => [
+  {
+    title: t("links.private.messages"),
+    path: "/messages",
+    icon: faMessage,
+  },
+  {
+    title: t("links.private.questions"),
+    path: "/questions",
+    icon: faComments,
+  },
+  {
+    title: t("links.public.communityQuestions"),
+    path: "/public-questions",
+    icon: faBolt,
+  },
+];
+
+const getMainPublicLinks = (t: _Translator) => [
+  { title: t("links.public.home"), path: "/", icon: faHouse },
+  {
+    title: t("links.public.howItWorks"),
+    path: "/how-it-works",
+    icon: faCircleQuestion,
+  },
+  {
+    title: t("links.public.communityQuestions"),
+    path: "/public-questions",
+    icon: faBolt,
+  },
+];
 
 type HeaderProps = {
   token?: string;
@@ -29,14 +66,13 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
   const [hideTopRow, setHideTopRow] = useState(false);
 
   const { data } = useSession();
-
-  const user = data?.user;
-
   const pathname = usePathname();
+  const t = useTranslations("app");
 
   const isOnAuthPage = pathname.startsWith("/auth/");
+  const user = data?.user;
 
-  const links = token ? privateLinks : publicLinks;
+  const links = token ? getMainPrivateNavLinks(t) : getMainPublicLinks(t);
 
   const LinkToUse = token ? Link : LocaleLink;
 
@@ -147,7 +183,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
             <LinkToUse href="/" className="flex items-center shrink-0">
               <Image
                 src="/images/logo.png"
-                alt="بصراحة"
+                alt={t("name")}
                 width={160}
                 height={35}
                 quality={100}
@@ -168,7 +204,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                         onClick={toggle}
                         aria-haspopup="menu"
                         aria-expanded={open}
-                        className="!bg-transparent !p-0 overflow-hidden rounded-full ring-2 ring-white/10 h-14 w-14 !shadow-none"
+                        className="!bg-transparent !p-0 overflow-hidden rounded-full ring-2 ring-white/10 h-14 w-14 !shadow-none [&>div]:w-full [&>div]:h-full"
                       >
                         {user?.avatar ? (
                           <Image
@@ -177,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                             width={100}
                             height={100}
                             quality={100}
-                            className="w-full h-full object-cover"
+                            className="!w-full h-full object-cover"
                           />
                         ) : (
                           <Icon
@@ -195,12 +231,12 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                     <div className="flex flex-col py-1">
                       <Link href="/profile" className={popoverItemClass}>
                         <Icon icon={faUser} />
-                        <span>الملف الشخصي</span>
+                        <span>{t("links.private.profile")}</span>
                       </Link>
 
                       <Link href="/settings" className={popoverItemClass}>
                         <Icon icon={faGear} />
-                        <span>الإعدادات</span>
+                        <span>{t("links.private.settings")}</span>
                       </Link>
 
                       <hr className="border-white/10" />
@@ -219,13 +255,13 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
                     href="/login"
                     className="rounded-xl px-5 py-2.5 font-bold text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
                   >
-                    تسجيل الدخول
+                    {t("links.public.login")}
                   </LocaleLink>
                   <LocaleLink
                     href="/signup"
                     className="flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 font-bold text-white shadow-lg shadow-accent/20 transition-all hover:-translate-y-0.5 hover:bg-accent/90"
                   >
-                    <span>إنشاء حساب</span>
+                    {t("links.public.signUp")}
                   </LocaleLink>
 
                   <LanguageSwitcher />
@@ -257,13 +293,13 @@ export const Header: React.FC<HeaderProps> = ({ token }) => {
               href="/login"
               className="flex items-center justify-center rounded-xl px-4 py-2.5 text-center font-bold text-slate-300 transition-colors hover:bg-white/5 hover:text-white"
             >
-              تسجيل الدخول
+              {t("links.public.login")}
             </LocaleLink>
             <LocaleLink
               href="/signup"
               className="flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-center font-bold text-white shadow-lg shadow-accent/20 transition-all hover:bg-accent/90"
             >
-              إنشاء حساب
+              {t("links.public.signUp")}
             </LocaleLink>
           </div>
         ) : null}

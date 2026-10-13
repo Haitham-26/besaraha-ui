@@ -6,7 +6,6 @@ import { Question } from "@/model/question/Question";
 import { Reply } from "@/model/reply/types/Reply";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons/faAngleLeft";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
-import { faLock } from "@fortawesome/free-solid-svg-icons/faLock";
 import { faEarthAmericas } from "@fortawesome/free-solid-svg-icons/faEarthAmericas";
 
 import { formattedDate } from "@/tools/Date";
@@ -19,8 +18,7 @@ import { QuestionReplyForm } from "./replies/QuestionReplyForm";
 import { Pagination } from "@/app/components/Pagination";
 import { NextClient } from "@/tools/NextClient";
 import { useSearchParams } from "next/navigation";
-import { getClientLocaleCookies } from "@/tools/getClientLocaleCookies";
-import { AppLangs } from "@/model/shared/types/AppLangs.enum";
+import { useTranslations } from "next-intl";
 
 type QuestionCardProps = {
   question: Question;
@@ -41,20 +39,17 @@ export default function QuestionCard({
 }: QuestionCardProps) {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
+  const t = useTranslations();
 
-  const isOnProfilePage = pathname === "/questions";
-  const isListView = isOnProfilePage || pathname === "/public-questions";
+  const isOnPrivatePage = pathname === "/questions";
+  const isListView = isOnPrivatePage || pathname === "/public-questions";
 
   const userId = session?.user?._id;
   const isOwner = question.userId === userId;
 
-  const lang = getClientLocaleCookies();
-
-  const prefix = lang !== AppLangs.EN ? `/${lang}` : "";
-
   const repliesPage = Number(searchParams.get("page") || 1) || 1;
 
-  const getRepliesParams = {
+  const repliesParams = {
     questionId: question._id,
     page: repliesPage,
     limit: REPLIES_LIMIT,
@@ -66,14 +61,14 @@ export default function QuestionCard({
     isLoading: repliesLoading,
     isFetching: repliesFetching,
   } = useQuery({
-    queryKey: ["questions", question._id, "replies", getRepliesParams],
+    queryKey: ["questions", question._id, "replies", repliesParams],
 
     queryFn: async () => {
       const { data } = await NextClient<DataWithMeta<Reply>>(
         `/questions/${question._id}/replies`,
         {
           method: "GET",
-          params: getRepliesParams,
+          params: repliesParams,
         },
       );
 
@@ -84,7 +79,7 @@ export default function QuestionCard({
   });
 
   return (
-    <div className="max-w-2xl mx-auto w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
+    <div className="w-full bg-surface border border-border rounded-2xl p-5 sm:p-7">
       <div className="flex items-center justify-between mb-4 text-xs text-text-muted">
         <span className="flex items-center gap-1.5">
           <Icon icon={faClock} className="text-accent" />
@@ -92,18 +87,18 @@ export default function QuestionCard({
           <span className="dir-ltr">{formattedDate(question.createdAt)}</span>
         </span>
 
-        {isOnProfilePage && isOwner ? (
+        {isOnPrivatePage && isOwner && question.isPublic ? (
           <span className="bg-surface-muted rounded-3xl flex items-center gap-1 font-bold text-[10px] py-2 px-3">
-            <Icon icon={question.isPublic ? faEarthAmericas : faLock} />
+            <Icon icon={faEarthAmericas} />
 
-            {question.isPublic ? "عام" : "خاص"}
+            {t("questions.properties.isPublic")}
           </span>
         ) : null}
       </div>
 
       {isListView ? (
         <Link
-          href={`${prefix}/question/${question._id}`}
+          href={`/question/${question._id}`}
           className="group/title flex items-center justify-between gap-3"
         >
           <h2 className="text-lg font-bold text-text-primary leading-snug line-clamp-2 group-hover/title:text-accent transition-colors">
@@ -112,7 +107,7 @@ export default function QuestionCard({
 
           <Icon
             icon={faAngleLeft}
-            className="text-text-muted shrink-0 group-hover/title:text-accent transition-colors"
+            className="text-text-muted shrink-0 group-hover/title:text-accent transition-colors ltr:rotate-180"
           />
         </Link>
       ) : (
@@ -146,13 +141,13 @@ export default function QuestionCard({
             </div>
           ) : (
             <p className="text-text-muted text-sm text-center py-4">
-              لا توجد ردود بعد، كن أول من يرد
+              {t("questions.replies.empty")}
             </p>
           )}
 
           <QuestionReplyForm
             question={question}
-            getRepliesParams={getRepliesParams}
+            repliesParams={repliesParams}
           />
         </div>
       ) : null}

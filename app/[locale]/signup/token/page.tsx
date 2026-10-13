@@ -1,8 +1,8 @@
 import { redirect } from "@/i18n/navigation";
 import { AuthFormContainer } from "../../../components/AuthFormContainer";
 import { SignUpTokenContent } from "./_components/SignUpTokenContent";
-import { cookies } from "next/headers";
 import { AppLangs } from "@/model/shared/types/AppLangs.enum";
+import { getLocale, getTranslations } from "next-intl/server";
 
 type Props = {
   searchParams: Promise<{
@@ -11,20 +11,25 @@ type Props = {
 };
 
 export default async function Page({ searchParams }: Props) {
-  const [{ email = "" }, _cookies] = await await Promise.all([
+  const [{ email }, locale, t] = await Promise.all([
     searchParams,
-    cookies(),
+    getLocale(),
+    getTranslations("signupToken"),
   ]);
 
   if (!email) {
     return redirect({
       href: "/signup",
-      locale: _cookies.get("locale")?.value || AppLangs.EN,
+      locale: locale || AppLangs.EN,
     });
   }
 
   return (
-    <AuthFormContainer title="بصراحة">
+    <AuthFormContainer
+      title={t.rich("title", {
+        span: (chunk) => <span className="text-accent">{chunk}</span>,
+      })}
+    >
       <SignUpTokenContent email={email} />
     </AuthFormContainer>
   );

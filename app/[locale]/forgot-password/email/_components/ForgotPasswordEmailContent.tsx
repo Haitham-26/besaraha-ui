@@ -6,12 +6,14 @@ import { useRouter } from "@/i18n/navigation";
 import { ForgotPasswordEmailDto } from "@/model/auth/forgot-password/dto/ForgotPasswordEmailDto";
 import { NextClient } from "@/tools/NextClient";
 import { Toast } from "@/tools/Toast";
+import { useTranslations } from "next-intl";
 import React, { Fragment, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export const ForgotPasswordEmailContent: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
+  const t = useTranslations();
   const router = useRouter();
   const { control, getValues, handleSubmit, watch, reset } =
     useForm<ForgotPasswordEmailDto>({
@@ -49,10 +51,10 @@ export const ForgotPasswordEmailContent: React.FC = () => {
       <Controller
         control={control}
         name="email"
-        rules={{ required: "البريد الإلكتروني مطلوب" }}
+        rules={{ required: t("errors.fieldRequired") }}
         render={({ field: { value, onChange }, fieldState: { error } }) => (
           <AuthInput
-            title="البريد الإلكتروني"
+            title={t("forgotPasswordEmail.email")}
             value={value}
             onChange={onChange}
             valid={!error}
@@ -67,7 +69,7 @@ export const ForgotPasswordEmailContent: React.FC = () => {
         onClick={handleSubmit(onSubmit)}
         disabled={!email}
       >
-        استمرار
+        {t("common.continue")}
       </Button>
     </Fragment>
   );

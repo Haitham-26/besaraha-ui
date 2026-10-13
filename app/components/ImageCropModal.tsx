@@ -26,7 +26,7 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const t = useTranslations();
+  const t = useTranslations("common");
 
   const handleCropComplete = useCallback((_area: Area, pixels: Area) => {
     setCroppedAreaPixels(pixels);
@@ -54,7 +54,7 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-2xl bg-white p-4 shadow-xl">
         <h2 className="text-center text-lg font-bold text-slate-600">
-          تعديل الصورة
+          {t("imageUpload.crop.title")}
         </h2>
 
         <div className="relative h-80 w-full overflow-hidden rounded-xl bg-slate-900">
@@ -70,7 +70,9 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({
         </div>
 
         <label className="flex items-center gap-3 text-sm text-slate-500">
-          <span className="shrink-0 font-bold">التكبير</span>
+          <span className="shrink-0 font-bold">
+            {t("imageUpload.crop.zoom")}
+          </span>
           <input
             type="range"
             min={1}
@@ -84,15 +86,14 @@ export const ImageCropModal: React.FC<ImageCropModalProps> = ({
 
         <div className="flex justify-end gap-2">
           <Button onClick={onCancel} disabled={isSaving} variant="outline">
-            إلغاء
+            {t("cancel")}
           </Button>
           <Button
-            type="button"
             onClick={handleSave}
             loading={isSaving}
             disabled={isSaving || !croppedAreaPixels}
           >
-            {t("common.save")}
+            {t("save")}
           </Button>
         </div>
       </div>

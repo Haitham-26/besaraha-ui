@@ -4,13 +4,16 @@ import { faUserSecret } from "@fortawesome/free-solid-svg-icons/faUserSecret";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons/faCircleUser";
 import { Icon } from "@/app/components/Icon";
 import { QuestionReplyLikeButton } from "./QuestionReplyLikeButton";
+import { useTranslations } from "next-intl";
 
 type QuestionReplyProps = {
   reply: Reply;
 };
 
 export default function QuestionReply({ reply }: QuestionReplyProps) {
-  const isAnonymous = !reply.name || reply.name === "مجهول";
+  const t = useTranslations("questions.replies.card");
+
+  const isAnonymous = !reply.name || reply.name === "anonymous";
 
   return (
     <div className="group relative flex flex-col gap-3 p-5 rounded-3xl bg-surface border border-border/60 hover:border-accent/20 hover:bg-surface-muted/30 transition-all duration-300">
@@ -30,7 +33,7 @@ export default function QuestionReply({ reply }: QuestionReplyProps) {
           </div>
           <div>
             <p className="text-sm font-black text-text-primary">
-              {reply.name || "مجهول الهوية"}
+              {isAnonymous ? t("anonymous") : reply.name}
             </p>
             <p className="text-[10px] text-text-muted font-bold tracking-tight uppercase">
               {formattedDate(reply.createdAt)}

@@ -1,7 +1,7 @@
 import React from "react";
 
 type AuthFormContainerProps = {
-  title: string;
+  title: string | React.ReactNode;
   subtitle?: string;
   children: React.ReactNode | React.ReactNode[];
 };
@@ -20,7 +20,7 @@ export const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
 
       <div className="w-full md:max-w-[480px] relative z-10">
         <div className="text-center mb-10 space-y-2">
-          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter italic">
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-normal italic">
             {title}
           </h1>
         </div>

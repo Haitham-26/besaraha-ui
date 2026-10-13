@@ -5,6 +5,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import { faAngleLeft } from "@fortawesome/free-solid-svg-icons/faAngleLeft";
 import { Icon } from "./Icon";
 import { PageMeta } from "@/model/shared/types/PageMeta";
+import { useTranslations } from "next-intl";
 
 const getLinkStyles = (active?: boolean) => {
   const base =
@@ -16,6 +17,8 @@ const getLinkStyles = (active?: boolean) => {
 
   return `${base} bg-surface border-border text-text-muted hover:border-accent hover:text-accent`;
 };
+
+const pageLinkStyle = getLinkStyles();
 
 type PaginationProps = {
   meta?: PageMeta;
@@ -30,11 +33,13 @@ export const Pagination: React.FC<PaginationProps> = ({
   searchParams,
   shouldUseLocalePrefix = false,
 }) => {
-  const LinkToUse = shouldUseLocalePrefix ? LocaleLink : Link;
+  const t = useTranslations("common.pagination");
 
   if (!meta || meta.total <= meta.limit) {
     return null;
   }
+
+  const LinkToUse = shouldUseLocalePrefix ? LocaleLink : Link;
 
   const getPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams);
@@ -49,14 +54,14 @@ export const Pagination: React.FC<PaginationProps> = ({
       {meta.page > 1 ? (
         <LinkToUse
           href={getPageUrl(meta.page - 1)}
-          className={getLinkStyles()}
-          aria-label="الصفحة السابقة"
+          className={pageLinkStyle}
+          aria-label={t("prev")}
         >
-          <Icon icon={faAngleRight} />
+          <Icon icon={faAngleRight} className="ltr:rotate-180" />
         </LinkToUse>
       ) : (
-        <span className={`${getLinkStyles()} opacity-40 cursor-not-allowed`}>
-          <Icon icon={faAngleRight} />
+        <span className={`${pageLinkStyle} opacity-40 cursor-not-allowed`}>
+          <Icon icon={faAngleRight} className="ltr:rotate-180" />
         </span>
       )}
 
@@ -79,14 +84,14 @@ export const Pagination: React.FC<PaginationProps> = ({
       {meta.hasNext ? (
         <LinkToUse
           href={getPageUrl(meta.page + 1)}
-          className={getLinkStyles()}
-          aria-label="الصفحة التالية"
+          className={pageLinkStyle}
+          aria-label={t("next")}
         >
-          <Icon icon={faAngleLeft} />
+          <Icon icon={faAngleLeft} className="ltr:rotate-180" />
         </LinkToUse>
       ) : (
-        <span className={`${getLinkStyles()} opacity-40 cursor-not-allowed`}>
-          <Icon icon={faAngleLeft} />
+        <span className={`${pageLinkStyle} opacity-40 cursor-not-allowed`}>
+          <Icon icon={faAngleLeft} className="ltr:rotate-180" />
         </span>
       )}
     </div>

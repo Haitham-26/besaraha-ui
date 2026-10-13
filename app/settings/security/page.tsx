@@ -13,6 +13,9 @@ import { useSession } from "next-auth/react";
 import { SignUpMethods } from "@/model/user/types/SignUpMethods.enum";
 import { useRouter } from "next/navigation";
 
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 64;
+
 export default function Page() {
   const t = useTranslations();
   const router = useRouter();
@@ -87,15 +90,15 @@ export default function Page() {
           rules={{
             required: t("errors.fieldRequired"),
             minLength: {
-              value: 6,
+              value: MIN_PASSWORD_LENGTH,
               message: t("errors.minLength", {
-                length: 6,
+                length: MIN_PASSWORD_LENGTH,
               }),
             },
             maxLength: {
-              value: 64,
+              value: MAX_PASSWORD_LENGTH,
               message: t("errors.maxLength", {
-                length: 64,
+                length: MAX_PASSWORD_LENGTH,
               }),
             },
           }}
@@ -117,15 +120,15 @@ export default function Page() {
           rules={{
             required: t("errors.fieldRequired"),
             minLength: {
-              value: 6,
+              value: MIN_PASSWORD_LENGTH,
               message: t("errors.minLength", {
-                length: 6,
+                length: MIN_PASSWORD_LENGTH,
               }),
             },
             maxLength: {
-              value: 64,
+              value: MAX_PASSWORD_LENGTH,
               message: t("errors.maxLength", {
-                length: 64,
+                length: MAX_PASSWORD_LENGTH,
               }),
             },
             validate: (value) =>
@@ -150,15 +153,15 @@ export default function Page() {
           rules={{
             required: t("errors.fieldRequired"),
             minLength: {
-              value: 6,
+              value: MIN_PASSWORD_LENGTH,
               message: t("errors.minLength", {
-                length: 6,
+                length: MIN_PASSWORD_LENGTH,
               }),
             },
             maxLength: {
-              value: 64,
+              value: MAX_PASSWORD_LENGTH,
               message: t("errors.maxLength", {
-                length: 64,
+                length: MAX_PASSWORD_LENGTH,
               }),
             },
             validate: (value) =>

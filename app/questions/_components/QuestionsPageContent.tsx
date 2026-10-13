@@ -6,14 +6,17 @@ import { faComments } from "@fortawesome/free-solid-svg-icons/faComments";
 import QuestionCard from "./QuestionCard";
 import { Empty } from "../../components/Empty";
 import { Pagination } from "../../components/Pagination";
-import { QuestionCreateModalAndButton } from "./QuestionCreateModalAndButton";
+import { QuestionCreateModal } from "./QuestionCreateModal";
 import { QuestionsFilters } from "./QuestionsFilters";
 import { GetQuestionsResponseDto } from "@/model/question/dto/GetQuestionsResponseDto";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/app/components/Spinner";
 import { NextClient } from "@/tools/NextClient";
 import { GenericSortType } from "@/model/shared/dto/GenericSortType";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/app/components/Button";
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus";
 
 const PATHNAME = "/questions";
 
@@ -31,6 +34,11 @@ export function QuestionsPageContent({
   searchParams,
   normalizedParams,
 }: QuestionsPageContentProps) {
+  const [createQuestionModalVisible, setCreateQuestionModalVisible] =
+    useState(false);
+
+  const t = useTranslations("questions");
+
   const { data: questions, isLoading } = useQuery<GetQuestionsResponseDto>({
     queryKey: ["questions", "user", normalizedParams],
     queryFn: async () => {
@@ -44,19 +52,17 @@ export function QuestionsPageContent({
   });
 
   return (
-    <div className="w-full min-h-screen bg-surface-muted p-4 pt-6 md:p-8 lg:p-12">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <aside className="lg:col-span-4 space-y-6">
+    <main className="w-full bg-background pt-10 pb-7 lg:pb-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 px-6">
+        <aside className="md:col-span-4 space-y-6">
           <div className="bg-primary rounded-[2.5rem] p-8 text-secondary shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-[-20%] right-[-20%] w-40 h-40 bg-accent rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity" />
-
             <div className="relative z-10">
               <div className="inline-flex items-center justify-center p-3 bg-secondary/10 backdrop-blur-md rounded-2xl mb-6">
                 <Icon icon={faComments} className="text-accent text-2xl" />
               </div>
 
               <h1 className="text-4xl font-black mb-4 leading-tight">
-                مركز الأسئلة
+                {t("side.title")}
               </h1>
 
               <div className="flex items-baseline gap-2 mb-8">
@@ -65,23 +71,29 @@ export function QuestionsPageContent({
                 </span>
 
                 <span className="text-secondary/40 text-sm font-bold tracking-widest uppercase">
-                  سؤال نشط
+                  {t("side.totalTitle")}
                 </span>
               </div>
 
-              <QuestionCreateModalAndButton />
+              <Button
+                onClick={() => setCreateQuestionModalVisible(true)}
+                className="w-full !h-14 !rounded-2xl !bg-accent !text-secondary font-black shadow-lg shadow-accent/20"
+                icon={faPlus}
+              >
+                {t("side.button")}
+              </Button>
             </div>
           </div>
 
           <QuestionsFilters />
         </aside>
 
-        <main className="lg:col-span-8">
-          <div className="bg-surface border border-border rounded-[3rem] shadow-sm min-h-[600px] flex flex-col">
-            <div className="px-8 py-6 border-b border-border flex justify-between items-center bg-white/50 backdrop-blur-sm">
+        <div className="md:col-span-8">
+          <div className="bg-surface border border-border rounded-4xl shadow-sm min-h-[16rem] flex flex-col">
+            <div className="px-8 py-6 border-b border-border rounded-t-4xl flex justify-between items-center bg-white/50 backdrop-blur-sm">
               <h2 className="font-bold text-text-primary flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                قائمة الأسئلة
+                <span className="w-2 h-2 rounded-full bg-accent" />
+                {t("menu.title")}
               </h2>
             </div>
 
@@ -112,14 +124,23 @@ export function QuestionsPageContent({
 
               {!questions?.data?.length && !isLoading ? (
                 <Empty
-                  title="لا توجد نتائج"
-                  description="جرب تغيير فلاتر البحث أو ابدأ بإضافة سؤال جديد."
+                  title={t("menu.empty.title")}
+                  description={t("menu.empty.description")}
+                  action={{
+                    title: t("menu.empty.action"),
+                    onClick: () => setCreateQuestionModalVisible(true),
+                  }}
                 />
               ) : null}
             </div>
           </div>
-        </main>
+        </div>
       </div>
-    </div>
+
+      <QuestionCreateModal
+        open={createQuestionModalVisible}
+        onClose={() => setCreateQuestionModalVisible(false)}
+      />
+    </main>
   );
 }
